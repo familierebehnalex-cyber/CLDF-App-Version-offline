@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       full_refresh:
-        description: 'Alle Seiten neu einlesen'
+        description: Alle Seiten neu einlesen
         required: false
         default: false
         type: boolean
@@ -22,6 +22,7 @@ jobs:
   update:
     runs-on: ubuntu-latest
     timeout-minutes: 330
+
     steps:
       - name: Repository laden
         uses: actions/checkout@v4
@@ -35,7 +36,9 @@ jobs:
         shell: bash
         run: |
           EXTRA=""
-          if [ "${{ github.event.inputs.full_refresh }}" = "true" ]; then EXTRA="--full"; fi
+          if [ "${{ github.event.inputs.full_refresh }}" = "true" ]; then
+            EXTRA="--full"
+          fi
           node tools/sync-getinline.js --concurrency=3 --delay=300 $EXTRA
 
       - name: Geänderte Daten speichern
@@ -45,6 +48,7 @@ jobs:
             echo "Keine Änderungen."
             exit 0
           fi
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A data/getinline-dances.json assets/getinline-data.js data/getinline-sync-checkpoint.json
