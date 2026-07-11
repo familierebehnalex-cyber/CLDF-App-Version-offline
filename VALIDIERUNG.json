@@ -1,30 +1,103 @@
-{
-  "appVersion": "4.1.0",
-  "generatedAt": "2026-07-10T11:32:31.862Z",
-  "requiredFilesPresent": true,
-  "javascriptSyntaxValid": true,
-  "essentialDomIdsPresent": true,
-  "getInLineParserTestsPassed": true,
-  "audioFingerprintSelfTestPassed": true,
-  "staticOfflineServer": true,
-  "serviceWorkerPresent": true,
-  "originalDesignStylesSha256": "4aec6ede441e7e071a86f89e595f3ba3fe9c831ce11488e379b6413d6f76ba6a",
-  "cldfBaseDances": 135,
-  "imageMappings": 659,
-  "imageUniqueDances": 182,
-  "mergedLocalDanceNamesWithoutGetInLine": 196,
-  "getInLineEmbeddedCount": 0,
-  "mergedDanceNamesIncludingGetInLine": 196,
-  "songMetadataEntries": 582,
-  "songsWithArtist": 307,
-  "songsWithBpm": 237,
-  "microphoneSeconds": 12,
-  "audioFingerprintAlgorithm": "cldf-landmark-v1",
-  "embeddedAudioFingerprints": 0,
-  "indexedDbAudioLibrary": true,
-  "indexedDbGetInLineImport": true,
-  "githubCatalogUpdater": true,
-  "githubPagesWorkflow": true,
-  "serverApiRemoved": true,
-  "forbiddenOnlineRecognitionReferences": []
-}
+# CLDF Offline-App v4.5
+
+Installierbare Line-Dance-PWA im ursprünglichen CLDF-Design. Die Kernfunktionen laufen lokal: Tanzsuche, Lied–Tanz-Zuordnung, Favoriten, Übungslisten, Audio-Fingerprints, BPM-/Motion-/Rhythmusregeln sowie eine neue MediaPipe-Videoanalyse.
+
+## Lied erkennen
+
+Der Benutzer tippt auf **„Lied aufnehmen“**. Beim ersten Mal wird die normale Mikrofonfreigabe des Handys/Browsers angefragt. Die App nimmt ungefähr zwölf Sekunden auf und verarbeitet die Aufnahme lokal.
+
+Reihenfolge:
+
+1. lokaler Audio-Fingerprint-Treffer;
+2. feste Lied–Tanz-Zuordnung;
+3. BPM, Taktart, Motion und Rhythmus als Reserve.
+
+Die Aufnahme wird nicht hochgeladen und nicht dauerhaft gespeichert.
+
+## Tanz per Video erkennen
+
+Die App enthält MediaPipe Pose mit lokal eingebautem Lite-Modell. Es werden 33 Körperpunkte verfolgt. Zur Verfügung stehen:
+
+- **Live-Kamera starten** – 18 Sekunden automatische Liveanalyse;
+- **Video aufnehmen** – Aufnahme mit der Handykamera;
+- **Video auswählen** – vorhandene Datei lokal auswerten;
+- **Referenzvideo hinzufügen** – eigene Demo als Bewegungssignatur speichern.
+
+Die Videoanalyse erkennt unter anderem Fußbewegungen, Kreuzen, Vorwärts-/Rückwärtsbewegungen, Side Steps, Touch/Kick/Hitch sowie Viertel-/Halbdrehungen. Daraus wird eine lokale Pose- und Schritt-Signatur erstellt.
+
+Vergleichsreihenfolge bei Video:
+
+1. sicher erkannter Videoton und feste Lied–Tanz-Zuordnung;
+2. eigene MediaPipe-Referenzvideos;
+3. maschinenlesbare Sheet-Schrittmuster;
+4. BPM nur als letzte Reserve.
+
+Eingebaut sind zunächst acht vorbereitete Startermuster: Electric Slide, Tush Push, Black Coffee, God Blessed Texas, Canadian Stomp, Copperhead Road, Stroll Along Cha Cha und 16-Step. Weitere Tänze können später als symbolische Sheet-Muster oder durch eigene Referenzvideos ergänzt werden.
+
+Die Videoerkennung ist bewusst als **Beta-Vorschlag** gekennzeichnet. Ohne sicheren Liedtreffer behauptet die App nicht, einen Tanz zweifelsfrei erkannt zu haben.
+
+## Offline-Betrieb
+
+MediaPipe-JavaScript, WASM-Dateien und BlazePose-GHUM-Lite-Modell liegen im Projekt. Nach dem ersten Laden über HTTPS beziehungsweise localhost werden sie durch den Service Worker zwischengespeichert. Die Körperanalyse benötigt keinen externen KI-Dienst und verursacht keine laufenden API-Kosten.
+
+## Eigene Musikbibliothek
+
+Unter **Mehr → Eigene Musikbibliothek** können rechtmäßig vorhandene Audiodateien einmalig eingelesen werden. Gespeichert werden nur akustische Merkmale in IndexedDB. Für eine zentral vorbereitete Vereinsausgabe stehen `MUSIKREFERENZEN-ERSTELLEN.bat` und `FINGERPRINTS-EINBAUEN.bat` bereit.
+
+## Lokale Daten
+
+- 135 ursprüngliche CLDF-Tänze
+- 659 vollständige Lied–Tanz-Zuordnungen aus den bereitgestellten Bildern
+- 196 eindeutige lokale Tanznamen vor Get-in-Line
+- 582 Lieddatensätze
+- 237 Lieddatensätze mit BPM-Angaben
+- 8 eingebaute maschinenlesbare Sheet-Schrittmuster
+- abgeschnittene Bildtexte wurden nicht übernommen
+
+## Get-in-Line
+
+Der Importer übernimmt nur die vereinbarten Metadaten: Tanzname, Lied/Interpret, Choreograf/in, Level, Counts/Walls, Tags/Restarts/Bridges/Breaks/Ending und den direkten Tanzsheet-Link. Vollständige Schritttexte werden nicht kopiert.
+
+Lokale Aktualisierung:
+
+```text
+GETINLINE-KATALOG-AKTUALISIEREN.bat
+```
+
+oder:
+
+```bash
+npm run sync:getinline
+```
+
+## Installation
+
+### Windows-Test
+
+1. ZIP vollständig entpacken.
+2. Node.js 18 oder neuer installieren.
+3. `STARTEN-AM-PC.bat` doppelt anklicken.
+4. `http://localhost:4173` öffnen.
+
+### GitHub Pages / Handy
+
+Den vollständigen Ordnerinhalt in das GitHub-Repository hochladen. GitHub Pages muss aus `main` und `/(root)` bereitstellen. Danach die HTTPS-Adresse am Handy öffnen und über das Browsermenü installieren.
+
+## Datenschutz
+
+- keine kostenpflichtige Musikerkennungs-API
+- kein AudD-Schlüssel
+- Mikrofon und Kamera nur nach Benutzeraktion
+- Audio- und Videoanalyse lokal
+- ausgewählte Video- und Audiodateien werden nicht hochgeladen
+- nur berechnete Signaturen können lokal gespeichert werden
+
+## Prüfung
+
+```bash
+npm run test:video-steps
+npm run validate
+npm start
+```
+
+`VALIDIERUNG.json` und `TESTBERICHT.md` dokumentieren den geprüften Stand.

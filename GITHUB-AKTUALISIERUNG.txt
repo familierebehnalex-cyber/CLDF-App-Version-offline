@@ -1,0 +1,24 @@
+CLDF Offline-App v4.5 – Inhalt
+==============================
+
+- ursprüngliches CLDF-Design und Seitenaufbau
+- ursprüngliche Hero-Grafiken und Symbole unverändert
+- installierbare Offline-PWA
+- MediaPipe Pose / BlazePose GHUM Lite lokal eingebaut
+- Live-Kamera mit 18-Sekunden-Körper- und Schritterkennung
+- Skelett-Overlay während der Liveanalyse
+- Videoaufnahme und Auswahl vorhandener Videos
+- eigene Referenzsignaturen ohne Speicherung des Videos
+- 8 eingebaute symbolische Sheet-Schrittmuster
+- 135 CLDF-Grundtänze
+- 659 vollständige Bild-Zuordnungen
+- 196 lokale Tanznamen vor Get-in-Line
+- 582 Lieddatensätze, 237 davon mit BPM
+- Mikrofonaufnahme mit automatischem Stopp nach ungefähr 12 Sekunden
+- lokale Audio-Fingerprint-Engine
+- Favoriten, Übungslisten, Suche, Verlauf, Datenexport und Sicherung
+- Get-in-Line-Importer und GitHub-Aktualisierung
+- keine AudD-Abhängigkeit, kein API-Schlüssel, kein kostenpflichtiger Server
+
+Wichtig: Für die Video-Namensbestimmung aller Tänze müssen später weitere
+symbolische Schrittfolgen und/oder eigene Referenzvideos ergänzt werden.

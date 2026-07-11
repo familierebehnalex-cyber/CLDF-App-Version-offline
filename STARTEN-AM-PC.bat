@@ -1,15 +1,66 @@
-@echo off
-setlocal
-cd /d "%~dp0"
-title CLDF Offline-App v4.0
-where node >nul 2>nul
-if errorlevel 1 (
-  echo Node.js wurde nicht gefunden.
-  echo Bitte Node.js 18 oder neuer installieren.
-  pause
-  exit /b 1
-)
-start "CLDF Offline-Server" /D "%~dp0" cmd /k node server.js
-timeout /t 2 /nobreak >nul
-start "" http://localhost:4173
-exit /b 0
+{
+  "name": "CLDF Offline – Line Dance only!",
+  "short_name": "CLDF Offline",
+  "description": "Offline Line-Dance-App mit lokaler Liedzuordnung, Audio-Fingerprints sowie MediaPipe-Körper- und Schritterkennung.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#3a1d0f",
+  "theme_color": "#3a1d0f",
+  "lang": "de",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "./assets/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./assets/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "id": "./",
+  "categories": [
+    "music",
+    "sports",
+    "lifestyle"
+  ],
+  "shortcuts": [
+    {
+      "name": "Lied erkennen",
+      "short_name": "Erkennen",
+      "url": "./#home",
+      "icons": [
+        {
+          "src": "./assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Tänze suchen",
+      "short_name": "Suche",
+      "url": "./#search",
+      "icons": [
+        {
+          "src": "./assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

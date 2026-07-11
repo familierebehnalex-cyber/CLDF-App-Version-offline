@@ -1,66 +1,89 @@
-{
-  "name": "CLDF Offline – Line Dance only!",
-  "short_name": "CLDF Offline",
-  "description": "Offline Line-Dance-Tanzfinder mit lokaler Liedzuordnung, eigener Audio-Fingerprint-Bibliothek sowie BPM-, Motion- und Rhythmusanalyse.",
-  "start_url": "./",
-  "scope": "./",
-  "display": "standalone",
-  "background_color": "#3a1d0f",
-  "theme_color": "#3a1d0f",
-  "lang": "de",
-  "orientation": "portrait-primary",
-  "icons": [
-    {
-      "src": "./assets/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "./assets/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
-      "src": "./assets/icon-maskable-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "./assets/icon-maskable-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
-  ],
-  "id": "./",
-  "categories": [
-    "music",
-    "sports",
-    "lifestyle"
-  ],
-  "shortcuts": [
-    {
-      "name": "Lied erkennen",
-      "short_name": "Erkennen",
-      "url": "./#home",
-      "icons": [
-        {
-          "src": "./assets/icon-192.png",
-          "sizes": "192x192"
-        }
-      ]
-    },
-    {
-      "name": "Tänze suchen",
-      "short_name": "Suche",
-      "url": "./#search",
-      "icons": [
-        {
-          "src": "./assets/icon-192.png",
-          "sizes": "192x192"
-        }
-      ]
-    }
-  ]
-}
+120dad22723f90ca7584eaffe14ca48a515ae395fda864c25418ea59b69b8423  ./.github/workflows/deploy-pages.yml
+db79a7c2974f414b2bcd39ead57c1b4706e290aefd19efd17cd8d0336622d530  ./.github/workflows/update-getinline.yml
+1bab488bdde427144fcfea7e5d570d01380c5e5733aa041f874076533ce27d02  ./01-ERST-LESEN-GITHUB-RENDER.txt
+106a3b255f0fa3d1b277bf6cfdb763f7fbb5c334b24eb26db9443afe1876fa12  ./02-WAS-IST-ENTHALTEN.txt
+91778638c66f4791ea4d5cf71e7afd82a1bdab61d4867a708274a2129c210959  ./404.html
+f475531e7e40e7d1563fecc89923669fa39f9d441072175d929d0eaa40699b11  ./Dockerfile
+7a4807069dd3aa0f506acd9dd86df6dfbcd5a2a921dbabb2e1bc985267d340c7  ./ERST-LESEN.txt
+3719e3f878417382741f622dd7c214f77affec56bedbbd50a79be3c6b06dba6a  ./FERTIGSTELLUNGSBERICHT.md
+2702be396e6b5650f5895d8bed0d510a2a66d3209a6349577551d35eb06b2372  ./FINGERPRINTS-EINBAUEN.bat
+175eee963814d2185c6e69f9e7ddc128299af013d29a5a0731922051b9ac7dd3  ./GETINLINE-KATALOG-AKTUALISIEREN.bat
+bf3a34b2e1f20ee6bd9ccb56c1da60346f6add5b15abe3688dd7f0591d9cca1a  ./KOMPLETT-AKTUALISIEREN-UND-STARTEN.bat
+5b90acb907777fa7e68263f410ff9374d70b9c04983bfa8d8e066da53c2c5076  ./MUSIKREFERENZEN-ERSTELLEN.bat
+64b3a200ba4413dc5d139e10efa2067702bdfa67ee11d958d839dd51ea2a554a  ./ONLINE-EINRICHTUNG.txt
+646c3ab1caa1fec6bfea9bee2d4d07aa966c29ab257e7575124059734d869c14  ./README.md
+d5873f5792c0bea29bea4ce8caa350ba0954678582c9aeaefa589d5eff7752c8  ./RELEASE-NOTES.md
+87fba94ec6178326c2541c0c5976c3113a93c72313cb553bc5eb2b0bb0d0a05c  ./STARTEN-AM-PC.bat
+d43851746003f6799c1fe9d35b74ff56013ca20621adcd997e2ae8d355661141  ./TESTBERICHT.md
+46c8376139ec57a32017a533a34195ef7e84a9b4be3a666e9f217ac6fdf39626  ./THIRD-PARTY-NOTICES.md
+ec499cdedae8ac02b08072e6925625c13dc8e3d08dd5d8439f620cbaa7d3bc66  ./VALIDIERUNG-ORIGINALDESIGN.json
+22a8f2433ef82e272e9be9688e18b859d59d2169e0c8415ad21d13121e9fbfaf  ./VALIDIERUNG.json
+d3f0ac3ec0434500cf7181288f27b5efa23094fde9a9530e80b8db100d3905c8  ./assets/app.js
+1c4ac6ae7fe2b01f0a238afeaa4d296e735f65a38c33ece6cc4fc7c323a5bd66  ./assets/apple-touch-icon.png
+c1cedc9b43166baba41d2a21439dd92c71513398fb61ca12ca5f3c10cacfe8af  ./assets/audio-engine.js
+e13938b28aab8c1d3b2aecfda37cfe2ec91b1d9e75708d3e7d2c8b265490080e  ./assets/audio-fingerprints.js
+cc73c553d5c7dfa9ec48ab4d0fc5f7d9058ccbc2ce63ec5387af316f3bdf2512  ./assets/cldf-hero-1200.webp
+7e9fc962990d8954692884f3b8eadaa0da84a84140e2314643189c3d1fcd4eda  ./assets/cldf-hero.webp
+b7587bd7f2fc18ff80861a409b48e1ef17baf73068461b5c478e556b859ae93f  ./assets/data.js
+4fd268f2b0fbb5e96e398d2ba4a3dafb52bee5e5a68ed1a5efdf73d6d509c10d  ./assets/getinline-data.js
+3b1d0b6286d4fe7782521bfb834760c5466f73c1eb006bd170529807285f4518  ./assets/icon-128.png
+0330a00d7d33ed350067b1414f441721f85eb657972c54f06af60de2aa4d30f6  ./assets/icon-192.png
+504387e3caad43211ddc2330c294a7aeac405b272a464f9e0e266d8c4a9fd4ea  ./assets/icon-256.png
+5f758f26af0e28555947a65d6e74d9685fe8639efe8561b71a672718505470cf  ./assets/icon-512.png
+3d2d35d9a9945f943d4da15fe7ab1ba695b8e9f60bed8853f4039afe7a9d9bd8  ./assets/icon-64.png
+a33f1b84817c9c90357e9090f154983fd335ce525fc10a3d7eee17dba9da3fed  ./assets/icon-maskable-192.png
+e4b166bb5276e22cabaa9dca1f9ef8e0f55fb45892228a5fc1898962252b0386  ./assets/icon-maskable-512.png
+5f758f26af0e28555947a65d6e74d9685fe8639efe8561b71a672718505470cf  ./assets/icon-source.png
+fb1c1e177e6db85c4c30183f6049b219d1bdddebde5695fd9d9e528111ced5d8  ./assets/image-mappings.js
+d16047018d58a8ad43d654fc30e34e13575b1e0d469e95b1527941e7c340ee6f  ./assets/local-store.js
+cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30  ./assets/mediapipe/pose/LICENSE-APACHE-2.0.txt
+9dad28188ae54ea420e3d29c23360b040a0dfb88954b99a3e456b8a8c93cf2a1  ./assets/mediapipe/pose/README.md
+fcb703afcce65d0a1c540f6a70c3bb45fc84521498c21a9d4160265dde648ab4  ./assets/mediapipe/pose/pose.js
+f17bfbecadb61c3be1baa8b8d851cc6619c870a87167b32848ad20db306b9d61  ./assets/mediapipe/pose/pose_landmark_lite.tflite
+a63c614bef30d35947f13be361820b1e4e3bec9cfeebf4d11216a18373108e85  ./assets/mediapipe/pose/pose_solution_packed_assets.data
+d7aa29b7d8e11b5c97a58d719e982dd15c2de72995d95112d60492b854840a36  ./assets/mediapipe/pose/pose_solution_packed_assets_loader.js
+3983d1dca31d945d81abb70b18dd61f28ef4736e112463d7cfb1cbadef588127  ./assets/mediapipe/pose/pose_solution_simd_wasm_bin.js
+195a929430e2ce130b3efb82e64ba27c8e68cb0f6bad870b715688060ea6f7e2  ./assets/mediapipe/pose/pose_solution_simd_wasm_bin.wasm
+3fcfd9574a04fcf4a0b9271b9b4429c6b9a70278300a5e54c45ddf2001e41422  ./assets/mediapipe/pose/pose_solution_wasm_bin.js
+a5589369289e1f1e007c106e8ffb26e85a5be762c6db9551ed36213f8f58378d  ./assets/mediapipe/pose/pose_solution_wasm_bin.wasm
+dc8efd1c2d62007b34278467407fda5f70847f41310e0e39f0f59fc17b1d01f7  ./assets/mediapipe/pose/pose_web.binarypb
+6a111107c196e177d12b519937d7896e8426f6b364875a0dac89bdcf12aa4ebc  ./assets/offline-bootstrap.js
+112884678e9a766b856e48abb4279add12849c01ba30c221450df597cb1ad57b  ./assets/song-metadata.js
+787e41ed9f5d1297e87aa758eb8df9afa644076077cd09e5ec47935fb7bb6fb0  ./assets/step-sheet-patterns.js
+c85dbeceabcfadfe7cfaad6c200892961b1c6ea91eaecb61177084ea2cb1eaf7  ./assets/styles.css
+f0d42f29040125f0a341662c199fa4c6d7dbc6460d8fcfe460998c3d6486f1ab  ./assets/video-motion.js
+1a98f28f5079224cb64bf1e7679fd20259226de76273c4136dd3e3de2e54ff60  ./data/CLDF-BPM-Liste.csv
+4b20d367e7d7cf6a80c1177bf89cfe290c14e059de5388a6023681ca9d10a139  ./data/CLDF-Tanzdatenbank.csv
+3860ce592122f7fdf65bfc52b72f576bbde2a823208abf1fa052a213d9aef6fe  ./data/NOCH-ZU-PRUEFEN.csv
+45334df66c93176c16ba920b3a351d4e57016faebcdfbf863f2e3ad67ef1b316  ./data/audio-fingerprints.json
+88e012f41416b9fc9b8675aa35596573b42123eae43da7108862478735c0c2b4  ./data/bild-lied-tanz-zuordnungen.json
+98250b571121716ef9ea33ecd8e6a04ce8e7f98eb8ffffad97134188a1ab5557  ./data/bild-lied-tanz-zuordnungen.tsv
+aa2df22873d64e190d2072ad1796a71b5577a89e5823d399d3d08235bfff76cc  ./data/cldf-data.json
+5d3794dd9b9a0387dec3130fd819dd98b3cd725d445beaafd9bee9770f9605de  ./data/getinline-dances.json
+88e012f41416b9fc9b8675aa35596573b42123eae43da7108862478735c0c2b4  ./data/image-song-dance-mappings.json
+0ea182b15728eaaa02aecaa5c49825a6899593b1b96ac67580bbaade1bc8b7e5  ./data/import-audit.json
+b01eef94888fa6a8caed419989d97ed296dc67c855bf5e5d40c8b7a3110c2d3d  ./data/song-metadata.json
+d55bdb1710498d9f0068d9b5c6d582042de28b983bb72a3edd9dce2828f4b1cc  ./docs/DATENSCHUTZ.html
+6bf40b9f0c5c0c2d0c782ee5d3349728ad923171965c1e356fe5c850ff084304  ./docs/GETINLINE-IMPORT.md
+647af7aa77f27d4993b1b86bc77d3edb42d6f65af0f13eeae79fe20f90640dc2  ./docs/QUELLEN-UND-RECHTE.md
+52a1f3c1e33669c1b84197c764cdeeb0f335e002fc4d8e47054233083f9e281a  ./docs/TESTPLAN.md
+a2b8f2d4f738dfdde6806ce9507a746668107ab6d417898891b31b2bc9afd637  ./docs/VIDEO-ERKENNUNG.md
+3319c2e59485e70044dde6583da70bd2568f1f829b12d33ace4c1d9b2613da65  ./docs/VORSCHAU.png
+91778638c66f4791ea4d5cf71e7afd82a1bdab61d4867a708274a2129c210959  ./index.html
+514e230346f9b1da7039ed94f0efe74ac1f47efc717b5d3599041a687fe1c0a2  ./manifest.webmanifest
+4b5143865f8085f143aef225a07914a332529f0bbac4dfb215d05a91c2501808  ./package-lock.json
+6e561a806efc6faaeb5cca1ad6e0a01a0c6426615fb7060689bf9829065232b7  ./package.json
+b977c3038860281406b76f4c3c9f337a3ee928aa2aebf3a847ddfa765ba6e6d1  ./render.yaml
+bd19e732fb759316ec1b4fcc66998e5c8352f5a07532a33fbc92f89a72748ace  ./server.js
+5602fe86fa65fd98f74dbc790e61762da7c10085914e42adcdce6a6f177308b1  ./service-worker.js
+8899f663027ff4e30240482c58f8dec5db2f5398b330d88b564e90be3f8201d2  ./tools/README.md
+c0e03a7cc27459c936b10a82726e07c61faadda10068de184a148d2e92d0c934  ./tools/catalog-count.js
+ccb1fba5008f3c01604f33fe5623db65dea1c62ac9fde5c006bd8778f9c9c70c  ./tools/fingerprint-builder.html
+010c817109ba5b5c4f03d0db3ecf36bb6c3acc45a3e7fe1b4e1307199c2b7eee  ./tools/fixtures/getinline-sample.html
+2f952cc29809106260e9ca30b5df5abfe72eab317bbfdf57f85b6f902faac6c1  ./tools/getinline-lib.js
+dfcfb0c924a25c88f98c6387f918bfb4c3482a723540c2068bc01067501270c7  ./tools/install-fingerprints.js
+e093ae71fbf4d88effd7fb1d28b8163856906b9ceb5fd340caf71e0dcc3b1572  ./tools/sync-getinline.js
+795d35204950c76351c2952a364d0c677f3fe084a7ea19c3ca14291d117edce4  ./tools/test-audio-fingerprint.js
+a114d53b327658ecbce2dacc8dbae07a0dab00b235c09e2a6590dbce8452dc52  ./tools/test-getinline-parser.js
+fb88e08d87b6d73ebbfcda6de76a3d0681bc3c563bf15772d1905b926e0ad4b5  ./tools/test-video-step-matcher.js
+36225fd6ad4d10d92c7fe48e9f373988731edb569aba47142eaeed83ac0228fa  ./tools/validate-build.js

@@ -1,0 +1,24 @@
+{
+  "name": "cldf-offline-app",
+  "version": "4.5.0",
+  "lockfileVersion": 3,
+  "requires": true,
+  "packages": {
+    "": {
+      "name": "cldf-offline-app",
+      "version": "4.5.0",
+      "engines": {
+        "node": ">=18.17"
+      },
+      "scripts": {
+        "start": "node server.js",
+        "sync:getinline": "node tools/sync-getinline.js",
+        "sync:getinline:full": "node tools/sync-getinline.js --full",
+        "test:getinline": "node tools/test-getinline-parser.js",
+        "validate": "node tools/validate-build.js",
+        "test:fingerprint": "node tools/test-audio-fingerprint.js",
+        "test:video-steps": "node tools/test-video-step-matcher.js"
+      }
+    }
+  }
+}

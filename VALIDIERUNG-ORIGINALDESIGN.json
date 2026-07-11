@@ -1,17 +1,29 @@
-{
-  "version": "4.1.0",
-  "original_design_preserved": true,
-  "visible_dom_structure_matches_original": true,
-  "css_and_graphic_assets_match_original": {
-    "assets/styles.css": true,
-    "assets/cldf-hero-1200.webp": true,
-    "assets/cldf-hero.webp": true,
-    "assets/icon-128.png": true,
-    "assets/icon-192.png": true,
-    "assets/icon-512.png": true
-  },
-  "hidden_technical_controls_do_not_affect_layout": true,
-  "javascript_validation_passed": true,
-  "getinline_parser_test_passed": true,
-  "audio_fingerprint_test_passed": true
-}
+# Release Notes – CLDF Offline-App v4.5
+
+## Neu
+
+- MediaPipe Pose vollständig lokal eingebaut
+- 33 Körperpunkte für Oberkörper, Hüfte, Knie, Knöchel, Fersen und Fußspitzen
+- Live-Kameraanalyse mit automatischem 18-Sekunden-Ablauf
+- Skelettanzeige während der Liveaufnahme
+- Schrittmerkmale wie Side, Forward, Back, Cross, Touch, Kick, Hitch und Turn
+- Vergleich eigener Referenzvideos über Pose- und Schritt-Signaturen
+- maschinenlesbarer Sheet-Schrittvergleich
+- acht vorbereitete Startermuster
+- kombinierter Treffer, wenn Referenzvideo und Sheet-Muster denselben Tanz stützen
+- klare Beta-Kennzeichnung ohne falsche „sicher erkannt“-Aussage
+
+## Beibehalten
+
+- ursprüngliche CLDF-Grafiken, Farben und Grundaufbau
+- Lied–Tanz-Zuordnung hat Vorrang
+- lokale Audio-Fingerprints
+- BPM, Motion und Rhythmus nur als Reserve
+- Offline-PWA und GitHub-Pages-Unterstützung
+- Get-in-Line-Metadaten und externe Tanzsheet-Links
+
+## Grenzen
+
+- Noch keine vollständigen Sheet-Muster für alle Tänze
+- keine Garantie bei verdeckten Füßen, Kamerabewegung oder mehreren Personen
+- eigene Referenzvideos verbessern die Erkennung deutlich

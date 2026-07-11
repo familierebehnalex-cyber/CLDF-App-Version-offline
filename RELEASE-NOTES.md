@@ -1,30 +1,19 @@
-# Release Notes – CLDF Offline-App v4.1
+CLDF GitHub-Update v4.5 – MediaPipe und Schritterkennung
+========================================================
 
-## Neu
+1. Diese ZIP vollständig entpacken.
+2. Im GitHub-Repository auf Code → Add file → Upload files gehen.
+3. Den gesamten INHALT dieses entpackten Ordners in das Upload-Feld ziehen.
+4. Vorhandene Dateien überschreiben lassen und Commit changes wählen.
+5. Warten, bis GitHub Pages neu veröffentlicht wurde.
+6. Die App am Handy öffnen und einmal mit Strg+F5 beziehungsweise durch
+   Schließen/erneutes Öffnen aktualisieren. Der Service Worker verwendet
+   einen neuen Cache-Namen.
 
-- Lokale Audio-Fingerprint-Erkennung für selbst eingelesene Musikreferenzen.
-- Einlesen mehrerer Audiodateien direkt in der App.
-- Export, Import und Löschen der lokalen Fingerprint-Bibliothek.
-- IndexedDB-Speicher für große Fingerprint- und Get-in-Line-Daten.
-- Lokaler Import/Export eines erzeugten Get-in-Line-Katalogs.
-- Automatische Get-in-Line-Aktualisierung über eine enthaltene GitHub-Aktion.
-- GitHub-Pages-Deployment ohne Server-API.
-- Robuster Offline-Service-Worker mit aktualisierbaren Katalogdateien.
-- Ergänzung von 53 weiteren eindeutigen Liedmetadaten; insgesamt 237 Einträge mit BPM.
-
-## Beibehalten
-
-- Aufbau und CSS-Design der gelieferten CLDF-App.
-- 135 CLDF-Tänze.
-- 659 vollständige Lied–Tanz-Zuordnungen aus den Bildern.
-- Favoriten, Übungslisten, Tanzsuche, manuelle Liedsuche, BPM-Eingabe und Tap-Tempo.
-
-## Entfernt
-
-- AudD-API und API-Schlüssel.
-- kostenpflichtige Online-Musikerkennung.
-- Server-Endpunkt für Audio-Uploads.
-
-## Bewusste Grenze
-
-Musikdateien und kommerzielle Audioaufnahmen sind nicht Bestandteil der App. Für die exakte Offline-Titelerkennung liest der Betreiber beziehungsweise Benutzer eigene rechtmäßig vorhandene Musikdateien einmalig ein. Der vollständige Get-in-Line-Katalog wird mit dem mitgelieferten Aktualisierer erzeugt; die Erstellungsumgebung konnte den großen Abruf nicht ausführen.
+WICHTIG
+-------
+- Die Unterordner unter assets/mediapipe/pose müssen vollständig hochgeladen werden.
+- Die Originalgrafiken und ursprünglichen CSS-Regeln bleiben unverändert.
+- Zunächst sind 8 symbolische Startermuster eingebaut. Für die übrigen Tänze
+  werden später weitere geprüfte Schrittfolgen oder eigene Referenzvideos ergänzt.
+- Ein realer Handykamera-Test ist nach dem Upload erforderlich.
