@@ -1,14 +1,16 @@
 'use strict';
 
 (() => {
-  const DATA = window.CLDF_DATA || { dances: [], motionCatalog: [], specialRhythms: [], appVersion: '4.1.0', databaseVersion: 'unbekannt' };
+  const DATA = window.CLDF_DATA || { dances: [], motionCatalog: [], specialRhythms: [], appVersion: '4.5.1', databaseVersion: 'unbekannt' };
   const GETINLINE_DATA = window.GETINLINE_DATA || { dances: [], count: 0, generatedAt: null };
   const VM = window.CLDFVideoMotion;
+  const STEP_PATTERN_DB = window.CLDF_STEP_SHEET_PATTERNS || { patterns: [] };
+  const STEP_PATTERNS = Array.isArray(STEP_PATTERN_DB.patterns) ? STEP_PATTERN_DB.patterns : [];
   const AUDIO = window.CLDFAudioEngine;
   const STORE = window.CLDFLocalStore;
   const FINGERPRINT_DB = window.CLDF_AUDIO_FINGERPRINTS || { entries: [] };
   const SONG_META = window.CLDF_SONG_METADATA || { entries: [] };
-  const APP_VERSION = '4.1.0';
+  const APP_VERSION = '4.5.1';
   const DATABASE_VERSION = DATA.databaseVersion || 'unbekannt';
   const CLDF_DANCES = Array.isArray(DATA.dances) ? DATA.dances : [];
   let GETINLINE_DANCES = Array.isArray(GETINLINE_DATA.dances) ? GETINLINE_DATA.dances : [];
@@ -85,6 +87,7 @@
     microphonePermissionStatus: null,
     motionReferences: readJson(STORAGE.motionReferences, []),
     videoBusy: false,
+    liveVideoController: null,
     onlineServiceReady: false,
     onlineServiceMessage: 'Noch nicht geprüft',
     audioFingerprints: [],
@@ -1464,9 +1467,9 @@
     const score = Number.isFinite(options.score) ? Math.round(options.score) : null;
     const motion = canonicalMotion(dance.motion);
     const explanation = exact
-      ? `Dieses Lied ist in der Tanzdatenbank diesem Tanz zugeordnet${score !== null ? ` · ${score} % Lied-Übereinstimmung` : ''}${options.videoConfirmed ? ' · Bewegung im Video passt zur lokalen Referenz.' : ''}.`
+      ? `Dieses Lied ist in der Tanzdatenbank diesem Tanz zugeordnet${score !== null ? ` · ${score} % Lied-Übereinstimmung` : ''}${options.videoConfirmed ? ' · Körper- und Schrittanalyse passt zum Tanz.' : ''}.`
       : video
-        ? `Die Bewegung im Video ähnelt einer gespeicherten Referenz${score !== null ? ` · Beta-Vergleich ${score} %` : ''}. Diese Erkennung ist eine zusätzliche Orientierung und ersetzt die Lied-/Tanzsheet-Zuordnung nicht.`
+        ? `MediaPipe hat Körper und Schritte ausgewertet${score !== null ? ` · Beta-Vergleich ${score} %` : ''}. Der Treffer kann aus einer eigenen Referenz, einem Sheet-Schrittmuster oder beidem stammen und ersetzt keine sichere Liedzuordnung.`
         : `Dieser Tanz passt anhand des gemessenen Tempos am besten. Das Lied selbst wurde nicht sicher erkannt${score !== null ? ` · Vorschlagswert ${score} %` : ''}.`;
     container.innerHTML = `
       <div class="primary-dance-kicker">${exact ? '✓ Erkannter Tanz' : video ? '🎥 Video-Tanzerkennung · Beta' : '↯ Bester Tempo-Vorschlag'}</div>
@@ -1513,18 +1516,53 @@
     }
     const descriptors = VM?.describeSignature ? VM.describeSignature(signature) : [];
     const matchedDance = match?.reference?.danceId ? state.dances.find((dance) => dance.id === match.reference.danceId) : null;
+    const isSheet = match?.reference?.type === 'sheet-pattern';
+    const sourceName = isSheet ? 'Sheet-Schrittmuster' : 'Bewegungsreferenz';
     const status = options.conflict
-      ? `Die Bewegung ähnelt „${matchedDance?.title || match.reference.danceTitle || 'einer anderen Referenz'}“, aber das erkannte Lied und das Tanzsheet haben Vorrang.`
+      ? `Die Körperbewegung ähnelt „${matchedDance?.title || match?.reference?.danceTitle || 'einem anderen Tanz'}“, aber das erkannte Lied und seine feste Tanzzuordnung haben Vorrang.`
       : matchedDance
-        ? `Beste lokale Bewegungsreferenz: ${matchedDance.title} · ${Math.round(match.score || 0)} % Beta-Übereinstimmung.`
-        : state.motionReferences.length
-          ? 'Keine Bewegungsreferenz war ähnlich genug für eine sichere Beta-Zuordnung.'
-          : 'Noch keine lokalen Bewegungsreferenzen gespeichert. Der Videoton und BPM können trotzdem ausgewertet werden.';
+        ? `Bestes lokales ${sourceName}: ${matchedDance.title} · ${Math.round(match.score || 0)} % Beta-Übereinstimmung.`
+        : (state.motionReferences.length || STEP_PATTERNS.length)
+          ? 'Kein Körper- oder Schrittmuster war eindeutig genug für eine belastbare Beta-Zuordnung.'
+          : 'Noch keine lokalen Bewegungsreferenzen oder Sheet-Muster gespeichert.';
     container.innerHTML = `
-      <strong>🎥 Bewegungsanalyse${options.confirmed ? ' bestätigt den Liedtreffer' : ' · Beta'}</strong>
+      <strong>🎥 MediaPipe Körper- und Schrittanalyse${options.confirmed ? ' bestätigt den Liedtreffer' : ' · Beta'}</strong>
       <small>${escapeHtml(status)}</small>
       <div class="chip-row">${descriptors.map((item) => `<span class="chip">${escapeHtml(item)}</span>`).join('')}</div>`;
     container.classList.remove('hidden');
+  }
+
+  function combineVideoMatches(referenceMatches = [], sheetMatches = []) {
+    const byDance = new Map();
+    for (const item of referenceMatches) {
+      const danceId = item?.reference?.danceId;
+      if (!danceId) continue;
+      byDance.set(danceId, {
+        ...item,
+        reference: { ...item.reference, type: item.reference.type || 'video-reference' },
+        sources: ['video-reference'],
+      });
+    }
+    for (const item of sheetMatches) {
+      const danceId = item?.reference?.danceId;
+      if (!danceId) continue;
+      const existing = byDance.get(danceId);
+      if (!existing) {
+        byDance.set(danceId, { ...item, sources: ['sheet-pattern'] });
+        continue;
+      }
+      const best = existing.score >= item.score ? existing : item;
+      const combinedScore = Math.min(100, Math.max(existing.score, item.score) + Math.round(Math.min(existing.score, item.score) * 0.08));
+      byDance.set(danceId, {
+        ...best,
+        score: combinedScore,
+        confidence: Math.max(existing.confidence || 0, item.confidence || 0),
+        sources: ['video-reference', 'sheet-pattern'],
+        details: { ...(existing.details || {}), ...(item.details || {}), combined: true },
+        reference: { ...best.reference, type: 'combined' },
+      });
+    }
+    return [...byDance.values()].sort((left, right) => right.score - left.score || (right.confidence || 0) - (left.confidence || 0));
   }
 
   function acceptedMotionMatch(matches = []) {
@@ -1532,7 +1570,9 @@
     const second = matches[1];
     if (!best) return null;
     const separation = best.score - (second?.score || 0);
-    return best.score >= 70 && (separation >= 4 || best.score >= 82) ? best : null;
+    const isSheetOnly = best.reference?.type === 'sheet-pattern';
+    const minimum = isSheetOnly ? 68 : 70;
+    return best.score >= minimum && (separation >= 5 || best.score >= 84) ? best : null;
   }
 
   function showExactSongResult(song, confidence, source, tempo = {}, addToHistory = true, options = {}) {
@@ -1617,19 +1657,23 @@
     const uniqueDances = new Set(refs.map((reference) => reference.danceId)).size;
     const countBadge = $('#motionReferenceCount');
     if (!countBadge) return;
-    countBadge.textContent = `${count} Referenz${count === 1 ? '' : 'en'}`;
+    countBadge.textContent = `${count} Referenz${count === 1 ? '' : 'en'} · ${STEP_PATTERNS.length} Sheet-Muster`;
     const status = $('#motionReferenceStatus');
-    status.classList.toggle('warning', count === 0);
-    status.classList.toggle('good', count > 0);
+    status.classList.toggle('warning', count === 0 && STEP_PATTERNS.length === 0);
+    status.classList.toggle('good', count > 0 || STEP_PATTERNS.length > 0);
     $('#motionReferenceStatusTitle').textContent = count
-      ? `${uniqueDances} Tanz${uniqueDances === 1 ? '' : 'e'} für Videovergleich vorbereitet`
-      : 'Noch keine Bewegungsreferenz';
+      ? `${uniqueDances} Tanz${uniqueDances === 1 ? '' : 'e'} mit eigenen Referenzen vorbereitet`
+      : STEP_PATTERNS.length
+        ? `${STEP_PATTERNS.length} maschinenlesbare Sheet-Muster aktiv`
+        : 'Noch keine Bewegungsreferenz';
     $('#motionReferenceStatusText').textContent = count
-      ? `${count} lokale Video-Signatur${count === 1 ? '' : 'en'} gespeichert. Mehrere Blickwinkel pro Tanz verbessern den Vergleich.`
-      : 'Füge für bekannte Tänze eigene kurze Demo-Videos hinzu. Alles bleibt lokal auf diesem Gerät.';
+      ? `${count} lokale MediaPipe-Signatur${count === 1 ? '' : 'en'} gespeichert; zusätzlich sind ${STEP_PATTERNS.length} Sheet-Muster eingebaut.`
+      : STEP_PATTERNS.length
+        ? 'Grundlegende Schritte werden bereits mit den eingebauten Sheet-Mustern verglichen. Eigene Referenzvideos erhöhen die Genauigkeit.'
+        : 'Füge für bekannte Tänze eigene kurze Demo-Videos hinzu. Alles bleibt lokal auf diesem Gerät.';
     const list = $('#motionReferenceList');
     if (!refs.length) {
-      list.innerHTML = '<div class="empty-state">Noch keine Video-Referenz vorhanden.</div>';
+      list.innerHTML = STEP_PATTERNS.length ? `<div class="empty-state">Noch keine eigene Video-Referenz vorhanden. ${STEP_PATTERNS.length} Sheet-Muster sind bereits aktiv.</div>` : '<div class="empty-state">Noch keine Video-Referenz vorhanden.</div>';
       return;
     }
     list.innerHTML = [...refs]
@@ -2091,10 +2135,18 @@
     copy.textContent = text;
   }
 
+  function videoMatchSourceLabel(match) {
+    const type = match?.reference?.type;
+    if (type === 'combined') return 'Referenzvideo + Sheet-Schritte';
+    if (type === 'sheet-pattern') return 'Sheet-Schrittvergleich';
+    return 'Bewegungsreferenz';
+  }
+
   function showVideoDanceResult(dance, match, signature, tempo = {}, alternatives = [], addToHistory = true) {
     const bpm = Number.isFinite(tempo.bpm) ? Math.round(tempo.bpm) : NaN;
-    $('#resultModeLabel').textContent = 'Video-Bewegungsvergleich · Beta';
-    $('#resultTitle').textContent = 'Tanz im Video erkannt';
+    const sourceLabel = videoMatchSourceLabel(match);
+    $('#resultModeLabel').textContent = `${sourceLabel} · Beta`;
+    $('#resultTitle').textContent = 'Wahrscheinlicher Tanz im Video';
     $('#songResult').classList.add('hidden');
     $('#tempoResult').classList.remove('hidden');
     $('#bpmValue').textContent = Number.isFinite(bpm) ? bpm : '–';
@@ -2102,28 +2154,70 @@
     $('#alternateBpmRow').classList.toggle('hidden', possibleBpms.length < 2);
     $('#alternateBpmValue').textContent = possibleBpms.join(', ');
     $('#analysisSummary').textContent = Number.isFinite(bpm)
-      ? `Kein Liedtreffer. Die lokale Bewegungsreferenz hat Vorrang vor dem BPM-Fallback; gemessen wurden etwa ${bpm} BPM.`
-      : 'Kein Liedtreffer. Der Tanz wurde anhand einer gespeicherten Bewegungsreferenz vorgeschlagen.';
+      ? `Kein sicherer Liedtreffer. ${sourceLabel} ergibt den besten Beta-Treffer; gemessen wurden zusätzlich etwa ${bpm} BPM.`
+      : `Kein sicherer Liedtreffer. ${sourceLabel} ergibt den besten Beta-Treffer. Die Anzeige ist ein Vorschlag und keine sichere Identifikation.`;
     $('#motionChips').innerHTML = (VM?.describeSignature?.(signature) || []).map((item) => `<span class="chip">${escapeHtml(item)}</span>`).join('');
     renderVideoMotionSummary(signature, match);
     renderPrimaryDanceResult(dance, { mode: 'video', score: match?.score });
     const otherMatches = alternatives
-      .filter((item) => item.reference?.danceId !== dance.id && item.score >= 55)
+      .filter((item) => item.reference?.danceId !== dance.id && item.score >= 50)
       .slice(0, 5)
       .map((item) => ({ item, dance: state.dances.find((candidate) => candidate.id === item.reference.danceId) }))
       .filter((entry) => entry.dance);
     const scores = new Map(otherMatches.map((entry) => [entry.dance.id, entry.item.score]));
-    renderAdditionalMatches(otherMatches.map((entry) => entry.dance), 'Weitere Video-Möglichkeiten', 'Keine weitere Bewegungsreferenz war ähnlich genug.', scores);
+    renderAdditionalMatches(otherMatches.map((entry) => entry.dance), 'Weitere Video-Möglichkeiten', 'Kein weiterer Körper- oder Schritttreffer war ähnlich genug.', scores);
     showView('result');
-    if (addToHistory) addHistory({ type: 'video', danceId: dance.id, title: dance.title, score: match?.score || 0, bpm: Number.isFinite(bpm) ? bpm : null });
+    if (addToHistory) addHistory({ type: 'video', danceId: dance.id, title: dance.title, score: match?.score || 0, bpm: Number.isFinite(bpm) ? bpm : null, source: sourceLabel });
+  }
+
+  async function finishVideoRecognition(signature, audioResult, audioWarning = null, sourceLabel = 'Tanzvideo') {
+    const referenceMatches = VM?.rankReferences ? VM.rankReferences(signature, state.motionReferences) : [];
+    const sheetMatches = VM?.rankSheetPatterns ? VM.rankSheetPatterns(signature, STEP_PATTERNS, state.dances) : [];
+    const matches = combineVideoMatches(referenceMatches, sheetMatches);
+    const accepted = acceptedMotionMatch(matches);
+    setTaskProgress(false);
+
+    if (audioResult?.song) {
+      const bestForDisplay = accepted || matches[0] || null;
+      showExactSongResult(
+        audioResult.song,
+        audioResult.confidence,
+        `${sourceLabel}-Ton · ${audioResult.source}`,
+        audioResult.tempo,
+        true,
+        { videoMotion: signature, motionMatch: bestForDisplay },
+      );
+      setVideoRecognitionStatus('good', 'Videoanalyse abgeschlossen', 'Das Lied wurde erkannt. Die feste Lied–Tanz-Zuordnung hatte Vorrang; Körper, Schritte und Sheet-Muster wurden zusätzlich geprüft.');
+      return;
+    }
+
+    if (accepted) {
+      const dance = state.dances.find((candidate) => candidate.id === accepted.reference.danceId);
+      if (dance) {
+        showVideoDanceResult(dance, accepted, signature, audioResult?.tempo || {}, matches);
+        setVideoRecognitionStatus('good', 'Videoanalyse abgeschlossen', `${dance.title} wurde durch ${videoMatchSourceLabel(accepted)} als bester Beta-Treffer vorgeschlagen.`);
+        return;
+      }
+    }
+
+    showAnalysisResult(
+      audioResult?.tempo || { bpm: NaN, confidence: 0, possibleBpms: [] },
+      true,
+      'Videoanalyse: kein eindeutiger Lied-, Körper- oder Schritttreffer',
+      { videoMotion: signature, motionMatch: matches[0] || null, recognizedSong: audioResult?.recognizedSong },
+    );
+    setVideoRecognitionStatus('', 'Videoanalyse abgeschlossen', (state.motionReferences.length || STEP_PATTERNS.length)
+      ? 'Kein eindeutiger Körper- oder Schritttreffer. Deshalb werden nur vorsichtige BPM-Vorschläge angezeigt.'
+      : 'Noch keine Referenzen oder Sheet-Muster. Deshalb werden Videoton und BPM als Reserve verwendet.');
+    if (audioWarning) toast(`${sourceLabel}-Ton nicht auswertbar: ${audioWarning.message || 'keine Audiospur'}. Körper und Schritte wurden trotzdem geprüft.`, 4500);
   }
 
   async function analyzeDanceVideo(file) {
     if (!file || !isVideoFile(file)) return toast('Bitte ein unterstütztes Tanzvideo auswählen.', 4500);
-    if (!VM?.analyzeVideo) return toast('Die Videoanalyse ist auf diesem Gerät nicht verfügbar.', 4500);
+    if (!VM?.analyzeVideo) return toast('Die MediaPipe-Videoanalyse ist auf diesem Gerät nicht verfügbar.', 4500);
     if (state.videoBusy) return toast('Es läuft bereits eine Videoanalyse.');
     state.videoBusy = true;
-    setVideoRecognitionStatus('busy', 'Video wird ausgewertet', 'Zuerst wird der Videoton lokal geprüft, danach wird die Bewegung lokal geprüft.');
+    setVideoRecognitionStatus('busy', 'Video wird ausgewertet', 'Zuerst wird der Videoton lokal geprüft, danach verfolgt MediaPipe Körper und Schritte.');
     let audioResult = { song: null, confidence: 0, source: '', tempo: { bpm: NaN, confidence: 0, possibleBpms: [] } };
     let audioWarning = null;
     try {
@@ -2133,54 +2227,163 @@
         audioWarning = error;
         console.warn('Videoton konnte nicht ausgewertet werden.', error);
       }
-      setTaskProgress(true, 'Bewegung im Video wird analysiert', 'Videobilder werden stark verkleinert und lokal mit Referenzen verglichen.', 2);
+      setTaskProgress(true, 'MediaPipe analysiert Körper und Schritte', 'Oberkörper und Füße müssen vollständig sichtbar sein.', 2);
       const signature = await VM.analyzeVideo(file, {
-        onProgress: (percent, text) => setTaskProgress(true, 'Bewegung im Video wird analysiert', text, percent),
+        onProgress: (percent, text) => setTaskProgress(true, 'MediaPipe analysiert Körper und Schritte', text, percent),
       });
-      const matches = VM.rankReferences(signature, state.motionReferences);
-      const accepted = acceptedMotionMatch(matches);
-      setTaskProgress(false);
-
-      if (audioResult.song) {
-        const bestForDisplay = accepted || matches[0] || null;
-        showExactSongResult(
-          audioResult.song,
-          audioResult.confidence,
-          `Videoton · ${audioResult.source}`,
-          audioResult.tempo,
-          true,
-          { videoMotion: signature, motionMatch: bestForDisplay },
-        );
-        setVideoRecognitionStatus('good', 'Videoanalyse abgeschlossen', 'Das Lied wurde im Videoton erkannt. Die Tanzsheet-Zuordnung hatte Vorrang; die Bewegung wurde zusätzlich geprüft.');
-        return;
-      }
-
-      if (accepted) {
-        const dance = state.dances.find((candidate) => candidate.id === accepted.reference.danceId);
-        if (dance) {
-          showVideoDanceResult(dance, accepted, signature, audioResult.tempo, matches);
-          setVideoRecognitionStatus('good', 'Videoanalyse abgeschlossen', `${dance.title} wurde als Beta-Bewegungstreffer vorgeschlagen.`);
-          return;
-        }
-      }
-
-      showAnalysisResult(
-        audioResult.tempo,
-        true,
-        'Videoanalyse: kein eindeutiger Lied- oder Bewegungstreffer',
-        { videoMotion: signature, motionMatch: matches[0] || null, recognizedSong: audioResult.recognizedSong },
-      );
-      setVideoRecognitionStatus('', 'Videoanalyse abgeschlossen', state.motionReferences.length
-        ? 'Kein eindeutiger Bewegungstreffer. Deshalb werden BPM-Vorschläge angezeigt.'
-        : 'Noch keine Bewegungsreferenzen. Deshalb werden Videoton und BPM als Reserve verwendet.');
-      if (audioWarning) toast(`Videoton nicht auswertbar: ${audioWarning.message || 'keine Audiospur'}. Bewegung wurde trotzdem geprüft.`, 4500);
+      await finishVideoRecognition(signature, audioResult, audioWarning, 'Tanzvideo');
     } catch (error) {
       console.error(error);
       setTaskProgress(false);
       setVideoRecognitionStatus('error', 'Videoanalyse fehlgeschlagen', error.message || 'Das Video konnte nicht ausgewertet werden.');
-      toast(`Video konnte nicht analysiert werden: ${error.message || 'unbekannter Fehler'}`, 4500);
+      toast(`Video konnte nicht analysiert werden: ${error.message || 'unbekannter Fehler'}`, 5000);
     } finally {
       state.videoBusy = false;
+    }
+  }
+
+  function preferredRecorderOptions() {
+    if (!window.MediaRecorder) return null;
+    const types = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm', 'video/mp4'];
+    const mimeType = types.find((type) => !MediaRecorder.isTypeSupported || MediaRecorder.isTypeSupported(type));
+    return mimeType ? { mimeType } : {};
+  }
+
+  function liveCameraErrorMessage(error) {
+    const name = error?.name || '';
+    if (!window.isSecureContext) return 'Die Live-Kamera benötigt die HTTPS-Adresse der App. Bitte nicht über eine lokale Datei öffnen.';
+    if (name === 'NotAllowedError' || name === 'PermissionDeniedError') return 'Der Kamerazugriff wurde nicht erlaubt. Öffne die Website-Einstellungen des Browsers und erlaube Kamera und Mikrofon.';
+    if (name === 'NotFoundError' || name === 'DevicesNotFoundError') return 'Auf diesem Gerät wurde keine verfügbare Kamera gefunden.';
+    if (name === 'NotReadableError' || name === 'TrackStartError') return 'Die Kamera wird möglicherweise bereits von einer anderen App verwendet. Schließe andere Kamera-Apps und versuche es erneut.';
+    if (name === 'OverconstrainedError' || name === 'ConstraintNotSatisfiedError') return 'Die gewünschte Kameraeinstellung wird nicht unterstützt. Die App versucht beim nächsten Start eine einfachere Einstellung.';
+    return error?.message || 'Kamera oder MediaPipe konnten nicht gestartet werden.';
+  }
+
+  async function waitForLiveVideo(video, timeout = 12000) {
+    if (video.readyState >= 2 && video.videoWidth > 0) return;
+    await new Promise((resolve, reject) => {
+      const timer = setTimeout(() => { cleanup(); reject(new Error('Die Kamera liefert noch kein Bild. Bitte Browser-Berechtigung prüfen und erneut starten.')); }, timeout);
+      const cleanup = () => {
+        clearTimeout(timer);
+        video.removeEventListener('loadeddata', ready);
+        video.removeEventListener('playing', ready);
+        video.removeEventListener('error', failed);
+      };
+      const ready = () => {
+        if (video.videoWidth > 0 && video.readyState >= 2) { cleanup(); resolve(); }
+      };
+      const failed = () => { cleanup(); reject(new Error('Das Kamerabild konnte nicht geöffnet werden.')); };
+      video.addEventListener('loadeddata', ready);
+      video.addEventListener('playing', ready);
+      video.addEventListener('error', failed, { once: true });
+      ready();
+    });
+  }
+
+  async function startLiveDanceRecognition() {
+    if (state.videoBusy) return toast('Es läuft bereits eine Videoanalyse.');
+    if (!window.isSecureContext) return toast('Die Live-Kamera funktioniert nur über die HTTPS-Adresse der App.', 5500);
+    if (!navigator.mediaDevices?.getUserMedia) return toast('Die Live-Kamera wird von diesem Browser nicht unterstützt.', 5000);
+    if (!VM?.analyzeLiveVideo || !VM?.ensurePose) return toast('Die MediaPipe-Dateien fehlen oder wurden nicht geladen. Bitte das Kamera-Fix-Paket vollständig hochladen.', 6500);
+    state.videoBusy = true;
+    const controller = new AbortController();
+    state.liveVideoController = controller;
+    let stream = null;
+    let recorder = null;
+    let recorderStopped = null;
+    const chunks = [];
+    const dialog = openDialog(`
+      <div class="live-dance-panel">
+        <p class="eyebrow">MediaPipe · Live-Beta</p>
+        <h2>Live-Tanzerkennung</h2>
+        <p>Stelle das Handy ruhig auf. Die Person muss mit Oberkörper und Füßen vollständig sichtbar sein. Die Analyse endet automatisch nach 18 Sekunden.</p>
+        <div class="live-dance-preview">
+          <video id="liveDanceVideo" autoplay playsinline muted></video>
+          <canvas id="liveDanceCanvas" aria-hidden="true"></canvas>
+        </div>
+        <div class="progress-track"><span id="liveDanceProgressBar"></span></div>
+        <strong id="liveDanceProgressText">Kamera wird gestartet …</strong>
+        <button id="cancelLiveDanceBtn" class="secondary-btn" type="button">Abbrechen</button>
+      </div>`, { focusSelector: '#cancelLiveDanceBtn' });
+    const video = $('#liveDanceVideo', dialog);
+    const canvas = $('#liveDanceCanvas', dialog);
+    const progressBar = $('#liveDanceProgressBar', dialog);
+    const progressText = $('#liveDanceProgressText', dialog);
+    const cleanup = () => {
+      try { if (recorder?.state === 'recording') recorder.stop(); } catch {}
+      stream?.getTracks().forEach((track) => track.stop());
+      state.liveVideoController = null;
+    };
+    const abort = () => controller.abort();
+    $('#cancelLiveDanceBtn', dialog)?.addEventListener('click', () => { abort(); closeDialog(); }, { once: true });
+    dialog.addEventListener('close', abort, { once: true });
+    try {
+      const videoConstraints = { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } };
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true });
+      } catch (firstError) {
+        console.warn('Kamera mit Ton konnte nicht geöffnet werden; erneuter Versuch ohne Ton.', firstError);
+        stream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: false });
+        toast('Die Kamera läuft ohne Ton. Die Körper- und Schritterkennung funktioniert trotzdem.', 4500);
+      }
+      video.srcObject = stream;
+      await video.play();
+      await waitForLiveVideo(video);
+      if (progressText) progressText.textContent = 'MediaPipe wird geladen …';
+      await VM.ensurePose();
+      const recorderOptions = preferredRecorderOptions();
+      if (recorderOptions) {
+        try {
+          recorder = new MediaRecorder(stream, recorderOptions);
+          recorder.ondataavailable = (event) => { if (event.data?.size) chunks.push(event.data); };
+          recorderStopped = new Promise((resolve) => { recorder.onstop = resolve; });
+          recorder.start(500);
+        } catch (recorderError) {
+          console.warn('Live-Videoton kann auf diesem Gerät nicht aufgenommen werden; Körperanalyse läuft weiter.', recorderError);
+          recorder = null;
+          recorderStopped = null;
+          toast('Die Kamera läuft. Der Videoton kann auf diesem Gerät nicht aufgezeichnet werden; die Schritterkennung funktioniert trotzdem.', 5000);
+        }
+      }
+      setVideoRecognitionStatus('busy', 'Live-Video wird ausgewertet', 'MediaPipe verfolgt jetzt Körper und Schritte.');
+      const signature = await VM.analyzeLiveVideo(video, {
+        durationSeconds: 18,
+        signal: controller.signal,
+        onFrame: (results) => VM.drawPose?.(canvas, video, results),
+        onProgress: (percent, text) => {
+          if (progressBar) progressBar.style.width = `${Math.round(percent)}%`;
+          if (progressText) progressText.textContent = text;
+        },
+      });
+      if (recorder?.state === 'recording') recorder.stop();
+      if (recorderStopped) await recorderStopped;
+      const recordedBlob = chunks.length ? new Blob(chunks, { type: recorder?.mimeType || 'video/webm' }) : null;
+      cleanup();
+      closeDialog();
+      let audioResult = { song: null, confidence: 0, source: '', tempo: { bpm: NaN, confidence: 0, possibleBpms: [] } };
+      let audioWarning = null;
+      if (recordedBlob?.size > 1200) {
+        try {
+          audioResult = await identifyAudioBlob(recordedBlob, { mediaLabel: 'Live-Videoton', keepProgress: true });
+        } catch (error) {
+          audioWarning = error;
+        }
+      }
+      await finishVideoRecognition(signature, audioResult, audioWarning, 'Live-Kamera');
+    } catch (error) {
+      cleanup();
+      if (dialog.open) closeDialog();
+      if (error?.name !== 'AbortError') {
+        console.error(error);
+        const message = liveCameraErrorMessage(error);
+        setVideoRecognitionStatus('error', 'Live-Analyse fehlgeschlagen', message);
+        toast(`Live-Analyse fehlgeschlagen: ${message}`, 6500);
+      } else {
+        setVideoRecognitionStatus('', 'Live-Analyse abgebrochen', 'Du kannst die Kamera jederzeit erneut starten.');
+      }
+    } finally {
+      state.videoBusy = false;
+      state.liveVideoController = null;
     }
   }
 
@@ -2565,7 +2768,7 @@
     items.push({ title: 'Get-in-Line-Katalog', text: GETINLINE_DANCES.length ? `${GETINLINE_DANCES.length} Metadatensätze mit Tanzsheet-Links geladen.` : 'Noch leer; Aktualisierer oder Katalogimport verwenden.', level: GETINLINE_DANCES.length ? '' : 'warn' });
     const micPermission = await refreshMicrophoneStatus();
     items.push({ title: 'Mikrofon', text: supportsLiveMicrophone() ? `Live-Aufnahme unterstützt · Berechtigung: ${micPermission === 'granted' ? 'erlaubt' : micPermission === 'denied' ? 'blockiert' : 'noch nicht erteilt'}.` : 'Live-Aufnahme nicht verfügbar; Dateiauswahl bleibt nutzbar.', level: micPermission === 'denied' ? 'error' : supportsLiveMicrophone() ? '' : 'warn' });
-    items.push({ title: 'Video-Tanzerkennung', text: VM?.analyzeVideo ? `${state.motionReferences.length} lokale Bewegungsreferenzen · Videoanalyse verfügbar.` : 'Videoanalyse wird von diesem Browser nicht unterstützt.', level: VM?.analyzeVideo ? '' : 'warn' });
+    items.push({ title: 'Video-Tanzerkennung', text: VM?.analyzeVideo ? `MediaPipe aktiv · ${state.motionReferences.length} eigene Referenzen · ${STEP_PATTERNS.length} Sheet-Muster.` : 'MediaPipe-Videoanalyse wird von diesem Browser nicht unterstützt.', level: VM?.analyzeVideo ? '' : 'warn' });
     renderDiagnostics(items);
     return items;
   }
@@ -2617,6 +2820,7 @@
     $('#captureAudioFile').addEventListener('change', async (event) => { const file = event.target.files?.[0]; if (file) await analyseBlob(file); event.target.value = ''; });
     $('#captureDanceVideo').addEventListener('change', async (event) => { const file = event.target.files?.[0]; if (file) await analyzeDanceVideo(file); event.target.value = ''; });
     $('#danceVideoFile').addEventListener('change', async (event) => { const file = event.target.files?.[0]; if (file) await analyzeDanceVideo(file); event.target.value = ''; });
+    $('#liveDanceVideoBtn')?.addEventListener('click', startLiveDanceRecognition);
     $('#enableMicrophoneBtn').addEventListener('click', async () => {
       if (!supportsLiveMicrophone() || state.microphonePermission === 'denied') showMicrophoneHelp(state.microphonePermission);
       else await enableMicrophoneAccess();
@@ -2712,7 +2916,7 @@
     await checkOnlineService(false);
     runDiagnostics();
     handleInitialRoute();
-    $('#versionText').textContent = `CLDF v4.1 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${allFingerprintEntries().length} Audio-Referenzen · Liedzuordnung zuerst · BPM/Motion als Reserve`;
+    $('#versionText').textContent = `CLDF v4.5.1 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${allFingerprintEntries().length} Audio-Referenzen · Liedzuordnung zuerst · BPM/Motion als Reserve`;
     if (storage.get(STORAGE.splashSeen)) {
       $('#splash').classList.add('hidden');
       $('#app').classList.remove('hidden');

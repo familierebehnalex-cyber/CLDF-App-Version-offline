@@ -1,0 +1,17 @@
+CLDF Kamera-Fix v4.5.1
+
+Der Fehler entstand, weil im GitHub-Projekt noch die alte assets/app.js (v4.1) lag und die Ordner assets/mediapipe/pose sowie assets/step-sheet-patterns.js fehlten.
+
+Für GitHub:
+1. ZIP entpacken.
+2. Im Repository: Add file -> Upload files.
+3. Den GANZEN entpackten Ordner CLDF-GitHub-Kamera-Fix-v4.5.1 in das Upload-Feld ziehen. Nicht nur einzelne Dateien markieren.
+4. Warten, bis auch Pfade wie assets/mediapipe/pose/pose.js angezeigt werden.
+5. Commit changes.
+6. Actions abwarten, bis Pages build and deployment grün ist.
+7. App öffnen und einmal mit ?v=451 aufrufen oder Browserdaten/alte installierte App aktualisieren.
+
+Nach erfolgreichem Laden muss unter Mehr -> Bewegungsreferenzen stehen:
+0 eigene Referenzen · 8 Sheet-Muster
+
+Die Live-Kamera funktioniert nur über HTTPS und benötigt die einmalige Kamera-Berechtigung.
