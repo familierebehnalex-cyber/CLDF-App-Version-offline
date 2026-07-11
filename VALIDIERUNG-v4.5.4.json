@@ -1,0 +1,20 @@
+{
+  "version": "4.5.4",
+  "purpose": "Kamera-Vorschau und temporäre Live-Aufnahme im Hochformat 9:16",
+  "changes": [
+    "Live-Vorschau nutzt object-fit cover im 9:16-Rahmen",
+    "Canvas-Aufnahmestrom mit 540x960 Pixeln und 24 fps",
+    "Kameraton wird als geklonte Audiospur übernommen",
+    "Fallback auf originalen Kamerastrom bei fehlendem captureStream",
+    "Service-Worker-Cache auf v4.5.4 erhöht"
+  ],
+  "checks": {
+    "app_js_syntax": "passed",
+    "video_motion_js_syntax": "passed",
+    "service_worker_js_syntax": "passed",
+    "portrait_canvas_dimensions": "540x960",
+    "preview_aspect_ratio": "9:16",
+    "real_device_camera_test": "not_performed"
+  },
+  "note": "Der endgültige Kameratest muss auf dem Ziel-Handy erfolgen."
+}

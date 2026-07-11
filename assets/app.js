@@ -10,7 +10,7 @@
   const STORE = window.CLDFLocalStore;
   const FINGERPRINT_DB = window.CLDF_AUDIO_FINGERPRINTS || { entries: [] };
   const SONG_META = window.CLDF_SONG_METADATA || { entries: [] };
-  const APP_VERSION = '4.5.3';
+  const APP_VERSION = '4.5.4';
   const DATABASE_VERSION = DATA.databaseVersion || 'unbekannt';
   const CLDF_DANCES = Array.isArray(DATA.dances) ? DATA.dances : [];
   let GETINLINE_DANCES = Array.isArray(GETINLINE_DATA.dances) ? GETINLINE_DATA.dances : [];
@@ -2249,6 +2249,66 @@
     return mimeType ? { mimeType } : {};
   }
 
+  function drawVideoCoverToCanvas(context, video, targetWidth, targetHeight) {
+    const sourceWidth = video.videoWidth || 0;
+    const sourceHeight = video.videoHeight || 0;
+    if (!sourceWidth || !sourceHeight) return false;
+    const sourceRatio = sourceWidth / sourceHeight;
+    const targetRatio = targetWidth / targetHeight;
+    let sourceX = 0;
+    let sourceY = 0;
+    let cropWidth = sourceWidth;
+    let cropHeight = sourceHeight;
+    if (sourceRatio > targetRatio) {
+      cropWidth = sourceHeight * targetRatio;
+      sourceX = (sourceWidth - cropWidth) / 2;
+    } else if (sourceRatio < targetRatio) {
+      cropHeight = sourceWidth / targetRatio;
+      sourceY = (sourceHeight - cropHeight) / 2;
+    }
+    context.clearRect(0, 0, targetWidth, targetHeight);
+    context.drawImage(video, sourceX, sourceY, cropWidth, cropHeight, 0, 0, targetWidth, targetHeight);
+    return true;
+  }
+
+  function createPortraitRecordingPipeline(video, sourceStream) {
+    if (!video || !sourceStream || typeof document === 'undefined') return null;
+    const canvas = document.createElement('canvas');
+    if (typeof canvas.captureStream !== 'function') return null;
+    canvas.width = 540;
+    canvas.height = 960;
+    const context = canvas.getContext('2d', { alpha: false, desynchronized: true });
+    if (!context) return null;
+    let frameId = 0;
+    let stopped = false;
+    const render = () => {
+      if (stopped) return;
+      drawVideoCoverToCanvas(context, video, canvas.width, canvas.height);
+      frameId = requestAnimationFrame(render);
+    };
+    render();
+    const outputStream = canvas.captureStream(24);
+    const sourceAudio = sourceStream.getAudioTracks?.()[0];
+    let clonedAudio = null;
+    if (sourceAudio) {
+      try {
+        clonedAudio = sourceAudio.clone();
+        outputStream.addTrack(clonedAudio);
+      } catch (error) {
+        console.warn('Ton konnte nicht in den Hochkant-Aufnahmestrom übernommen werden.', error);
+      }
+    }
+    return {
+      stream: outputStream,
+      stop() {
+        stopped = true;
+        if (frameId) cancelAnimationFrame(frameId);
+        outputStream.getVideoTracks().forEach((track) => track.stop());
+        try { clonedAudio?.stop(); } catch {}
+      },
+    };
+  }
+
   function liveCameraErrorMessage(error) {
     const name = error?.name || '';
     if (!window.isSecureContext) return 'Die Live-Kamera benötigt die HTTPS-Adresse der App. Bitte nicht über eine lokale Datei öffnen.';
@@ -2291,12 +2351,13 @@
     let stream = null;
     let recorder = null;
     let recorderStopped = null;
+    let portraitRecording = null;
     const chunks = [];
     const dialog = openDialog(`
       <div class="live-dance-panel">
         <p class="eyebrow">MediaPipe · Live-Beta</p>
         <h2>Live-Tanzerkennung</h2>
-        <p>Stelle das Handy hochkant und ruhig auf. Die Person muss mit Oberkörper und Füßen vollständig sichtbar sein. Die Analyse endet automatisch nach 18 Sekunden.</p>
+        <p>Stelle das Handy hochkant und ruhig auf. Die Person muss mit Oberkörper und Füßen vollständig sichtbar sein. Vorschau und Aufnahme werden im Hochformat 9:16 angepasst. Die Analyse endet automatisch nach 18 Sekunden.</p>
         <div class="live-dance-preview">
           <video id="liveDanceVideo" autoplay playsinline muted></video>
           <canvas id="liveDanceCanvas" aria-hidden="true"></canvas>
@@ -2312,6 +2373,7 @@
     const progressText = $('#liveDanceProgressText', dialog);
     const cleanup = () => {
       try { if (recorder?.state === 'recording') recorder.stop(); } catch {}
+      try { portraitRecording?.stop(); } catch {}
       stream?.getTracks().forEach((track) => track.stop());
       state.liveVideoController = null;
       dialog.classList.remove('live-camera-dialog');
@@ -2325,6 +2387,7 @@
         width: { ideal: 720, max: 1080 },
         height: { ideal: 1280, max: 1920 },
         aspectRatio: { ideal: 9 / 16 },
+        resizeMode: { ideal: 'crop-and-scale' },
       };
       try {
         stream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true });
@@ -2341,11 +2404,16 @@
       const recorderOptions = preferredRecorderOptions();
       if (recorderOptions) {
         try {
-          recorder = new MediaRecorder(stream, recorderOptions);
+          portraitRecording = createPortraitRecordingPipeline(video, stream);
+          const recordingStream = portraitRecording?.stream || stream;
+          recorder = new MediaRecorder(recordingStream, recorderOptions);
           recorder.ondataavailable = (event) => { if (event.data?.size) chunks.push(event.data); };
           recorderStopped = new Promise((resolve) => { recorder.onstop = resolve; });
           recorder.start(500);
+          if (!portraitRecording) console.warn('Dieser Browser unterstützt keine Canvas-Aufnahme; es wird der originale Kamerastrom aufgezeichnet.');
         } catch (recorderError) {
+          try { portraitRecording?.stop(); } catch {}
+          portraitRecording = null;
           console.warn('Live-Videoton kann auf diesem Gerät nicht aufgenommen werden; Körperanalyse läuft weiter.', recorderError);
           recorder = null;
           recorderStopped = null;
@@ -2923,7 +2991,7 @@
     await checkOnlineService(false);
     runDiagnostics();
     handleInitialRoute();
-    $('#versionText').textContent = `CLDF v4.5.3 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${allFingerprintEntries().length} Audio-Referenzen · Liedzuordnung zuerst · BPM/Motion als Reserve`;
+    $('#versionText').textContent = `CLDF v4.5.4 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${allFingerprintEntries().length} Audio-Referenzen · Liedzuordnung zuerst · BPM/Motion als Reserve`;
     if (storage.get(STORAGE.splashSeen)) {
       $('#splash').classList.add('hidden');
       $('#app').classList.remove('hidden');
