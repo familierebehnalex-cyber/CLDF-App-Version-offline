@@ -10,7 +10,7 @@
   const STORE = window.CLDFLocalStore;
   const FINGERPRINT_DB = window.CLDF_AUDIO_FINGERPRINTS || { entries: [] };
   const SONG_META = window.CLDF_SONG_METADATA || { entries: [] };
-  const APP_VERSION = '4.5.1';
+  const APP_VERSION = '4.5.2';
   const DATABASE_VERSION = DATA.databaseVersion || 'unbekannt';
   const CLDF_DANCES = Array.isArray(DATA.dances) ? DATA.dances : [];
   let GETINLINE_DANCES = Array.isArray(GETINLINE_DATA.dances) ? GETINLINE_DATA.dances : [];
@@ -2296,7 +2296,7 @@
       <div class="live-dance-panel">
         <p class="eyebrow">MediaPipe · Live-Beta</p>
         <h2>Live-Tanzerkennung</h2>
-        <p>Stelle das Handy ruhig auf. Die Person muss mit Oberkörper und Füßen vollständig sichtbar sein. Die Analyse endet automatisch nach 18 Sekunden.</p>
+        <p>Stelle das Handy hochkant und ruhig auf. Die Person muss mit Oberkörper und Füßen vollständig sichtbar sein. Die Analyse endet automatisch nach 18 Sekunden.</p>
         <div class="live-dance-preview">
           <video id="liveDanceVideo" autoplay playsinline muted></video>
           <canvas id="liveDanceCanvas" aria-hidden="true"></canvas>
@@ -2305,6 +2305,7 @@
         <strong id="liveDanceProgressText">Kamera wird gestartet …</strong>
         <button id="cancelLiveDanceBtn" class="secondary-btn" type="button">Abbrechen</button>
       </div>`, { focusSelector: '#cancelLiveDanceBtn' });
+    dialog.classList.add('live-camera-dialog');
     const video = $('#liveDanceVideo', dialog);
     const canvas = $('#liveDanceCanvas', dialog);
     const progressBar = $('#liveDanceProgressBar', dialog);
@@ -2313,12 +2314,18 @@
       try { if (recorder?.state === 'recording') recorder.stop(); } catch {}
       stream?.getTracks().forEach((track) => track.stop());
       state.liveVideoController = null;
+      dialog.classList.remove('live-camera-dialog');
     };
     const abort = () => controller.abort();
     $('#cancelLiveDanceBtn', dialog)?.addEventListener('click', () => { abort(); closeDialog(); }, { once: true });
     dialog.addEventListener('close', abort, { once: true });
     try {
-      const videoConstraints = { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } };
+      const videoConstraints = {
+        facingMode: { ideal: 'environment' },
+        width: { ideal: 720, max: 1080 },
+        height: { ideal: 1280, max: 1920 },
+        aspectRatio: { ideal: 9 / 16 },
+      };
       try {
         stream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true });
       } catch (firstError) {
@@ -2916,7 +2923,7 @@
     await checkOnlineService(false);
     runDiagnostics();
     handleInitialRoute();
-    $('#versionText').textContent = `CLDF v4.5.1 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${allFingerprintEntries().length} Audio-Referenzen · Liedzuordnung zuerst · BPM/Motion als Reserve`;
+    $('#versionText').textContent = `CLDF v4.5.2 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${allFingerprintEntries().length} Audio-Referenzen · Liedzuordnung zuerst · BPM/Motion als Reserve`;
     if (storage.get(STORAGE.splashSeen)) {
       $('#splash').classList.add('hidden');
       $('#app').classList.remove('hidden');

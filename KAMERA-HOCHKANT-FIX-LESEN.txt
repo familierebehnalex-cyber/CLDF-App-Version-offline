@@ -1,0 +1,10 @@
+CLDF v4.5.2 – Kamera-Hochkant-Fix
+
+Geändert wurde nur der Live-Kamera-Bereich:
+- Kamera wird bevorzugt im Hochformat 9:16 angefordert.
+- Vorschau passt sich dem Handybildschirm an.
+- Das vollständige Kamerabild bleibt sichtbar (kein seitliches Abschneiden).
+- MediaPipe-Skelett liegt deckungsgleich über dem Video.
+- Das ursprüngliche App-Design außerhalb des Kamerafensters bleibt unverändert.
+
+GitHub: Inhalt des Update-Pakets hochladen und vorhandene Dateien ersetzen. Danach auf den grünen Pages-Haken warten und die App mit ?v=452 öffnen.
