@@ -1,0 +1,17 @@
+{
+  "name": "cldf-offline-app",
+  "version": "4.1.0",
+  "private": true,
+  "description": "CLDF Offline Line Dance App mit lokaler Audio-Fingerprint-Erkennung",
+  "scripts": {
+    "start": "node server.js",
+    "sync:getinline": "node tools/sync-getinline.js",
+    "sync:getinline:full": "node tools/sync-getinline.js --full",
+    "test:getinline": "node tools/test-getinline-parser.js",
+    "validate": "node tools/validate-build.js",
+    "test:fingerprint": "node tools/test-audio-fingerprint.js"
+  },
+  "engines": {
+    "node": ">=18.17"
+  }
+}

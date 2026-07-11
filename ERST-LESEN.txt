@@ -1,0 +1,78 @@
+CLDF Offline-App v4.1
+=====================
+
+Diese Version verwendet den Aufbau und das Design der ursprünglich gelieferten CLDF-App.
+Die App arbeitet ohne AudD, API-Schlüssel oder kostenpflichtigen Musikerkennungsserver.
+
+SCHNELLSTART AM PC
+------------------
+1. ZIP vollständig entpacken.
+2. Node.js 18 oder neuer installieren.
+3. STARTEN-AM-PC.bat doppelt anklicken.
+4. Die App öffnet sich unter http://localhost:4173.
+
+HANDY / OFFLINE-INSTALLATION
+----------------------------
+1. Den App-Ordner auf GitHub Pages, Render oder einem anderen HTTPS-Webspace veröffentlichen.
+2. Die HTTPS-Adresse einmal am Handy öffnen.
+3. Im Browser „App installieren“ oder „Zum Startbildschirm“ wählen.
+4. Beim ersten Tipp auf „Lied erkennen“ den Mikrofonzugriff einmal erlauben.
+5. Danach stehen App, Tanzdaten, Liedzuordnungen und Analyse offline zur Verfügung.
+   Nur das Öffnen eines externen Get-in-Line-Tanzsheet-Links braucht Internet.
+
+EXAKTE LIEDERKENNUNG OFFLINE EINRICHTEN
+---------------------------------------
+Eine vollständig lokale Titelerkennung benötigt akustische Referenzen der Aufnahmen.
+Aus rechtlichen Gründen sind keine Musikdateien in der ZIP enthalten.
+
+Einmalige Einrichtung:
+1. In der App „Mehr“ öffnen.
+2. Unter „Eigene Musikbibliothek“ auf „Musikdateien einlesen“ tippen.
+3. Eigene, rechtmäßig vorhandene Musikdateien auswählen.
+4. Liedzuordnung bestätigen, wenn der Dateiname nicht eindeutig ist.
+
+Die App speichert nur kompakte Audio-Fingerprints im Browser, nicht die Musikdateien.
+Danach muss der Benutzer für die Erkennung nur noch „Lied erkennen“ antippen.
+
+Für eine zentral vorbereitete Vereinsversion können die Referenzen mit
+MUSIKREFERENZEN-ERSTELLEN.bat erzeugt und anschließend mit
+FINGERPRINTS-EINBAUEN.bat fest in die App eingebaut werden. Dann müssen
+Endbenutzer keine Musikdateien selbst einlesen.
+Ohne sicheren Fingerprint-Treffer ermittelt die App BPM und nutzt Taktart, Motion,
+Rhythmus sowie die festen Lied–Tanz-Zuordnungen für passende Vorschläge.
+
+GET-IN-LINE-KATALOG
+-------------------
+Der App-Code enthält den vollständigen Importweg für Get-in-Line-Metadaten:
+Tanzname, Lied/Interpret, Choreograf/in, Level, Counts/Walls, Tags, Restarts,
+Bridges/Breaks/Ending sowie den direkten Tanzsheet-Link. Vollständige Schritttexte
+werden nicht kopiert.
+
+Die gelieferte ZIP enthält noch keinen vollständig abgerufenen Get-in-Line-Katalog.
+Er wird einmalig erzeugt mit:
+  GETINLINE-KATALOG-AKTUALISIEREN.bat
+
+Danach sind data/getinline-dances.json und assets/getinline-data.js gefüllt.
+Alternativ kann die enthaltene GitHub-Aktion den Katalog automatisch aktualisieren.
+Eine erzeugte getinline-dances.json lässt sich auch direkt unter
+„Mehr → Get-in-Line-Katalog → Katalogdatei einspielen“ lokal laden.
+
+DATENSTAND IN DIESER ZIP
+------------------------
+- 135 ursprüngliche CLDF-Tänze
+- 659 vollständige Lied–Tanz-Zuordnungen aus den bereitgestellten Bildern
+- 196 zusammengeführte lokale Tanznamen vor Get-in-Line
+- 582 lokale Lieddatensätze
+- 237 Lieddatensätze mit BPM-Angaben
+- Motion-, Rhythmus- und Taktregeln lokal in der App
+- abgeschnittene Bildtexte wurden nicht übernommen
+
+WICHTIGE DATEIEN
+----------------
+STARTEN-AM-PC.bat                       App lokal starten
+GETINLINE-KATALOG-AKTUALISIEREN.bat    Get-in-Line-Metadaten erzeugen/aktualisieren
+MUSIKREFERENZEN-ERSTELLEN.bat           eigene Musik lokal in Fingerprints umwandeln
+FINGERPRINTS-EINBAUEN.bat               Fingerprints fest in die Vereins-App einbauen
+KOMPLETT-AKTUALISIEREN-UND-STARTEN.bat Katalog aktualisieren und App starten
+VALIDIERUNG.json                        technischer Prüfbericht
+README.md                               ausführliche Dokumentation

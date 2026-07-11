@@ -1,0 +1,17 @@
+{
+  "version": "4.1.0",
+  "original_design_preserved": true,
+  "visible_dom_structure_matches_original": true,
+  "css_and_graphic_assets_match_original": {
+    "assets/styles.css": true,
+    "assets/cldf-hero-1200.webp": true,
+    "assets/cldf-hero.webp": true,
+    "assets/icon-128.png": true,
+    "assets/icon-192.png": true,
+    "assets/icon-512.png": true
+  },
+  "hidden_technical_controls_do_not_affect_layout": true,
+  "javascript_validation_passed": true,
+  "getinline_parser_test_passed": true,
+  "audio_fingerprint_test_passed": true
+}

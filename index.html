@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#3a1d0f">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="CLDF – Offline-Line-Dance-App mit Liedzuordnung, BPM-, Motion- und Rhythmusanalyse.">
+  <meta name="application-name" content="CLDF">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <link rel="icon" href="./assets/icon-64.png" sizes="64x64" type="image/png">
+  <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./assets/styles.css">
+  <title>CLDF – Line Dance App</title>
+</head>
+<body>
+  <noscript>Diese App benötigt JavaScript.</noscript>
+
+  <section id="splash" class="splash" aria-label="CLDF Startbildschirm">
+    <img class="splash-image" src="./assets/cldf-hero-1200.webp" alt="CLDF Adler mit Kopfhörern im Western-Design">
+    <div class="splash-shade"></div>
+    <div class="splash-content">
+      <div class="splash-badge">CLDF</div>
+      <h1>Line Dance only!</h1>
+      <p>Musik erkennen. Passende Tänze finden. Gemeinsam tanzen.</p>
+      <button id="enterApp" class="primary-btn splash-button" type="button">App öffnen</button>
+      <small>Offline-Erkennung · Lied zuerst · BPM als Reserve</small>
+    </div>
+  </section>
+
+  <div id="app" class="app hidden">
+    <header class="app-header">
+      <button id="brandHome" class="brand" type="button" aria-label="Zur Startseite">
+        <img src="./assets/icon-128.png" alt="">
+        <span><strong>CLDF</strong><small>Line Dance only!</small></span>
+      </button>
+      <div class="header-actions">
+        <span id="connectionPill" class="connection-pill" title="Offlinestatus wird geprüft">Wird geprüft</span>
+      </div>
+    </header>
+
+    <div id="offlineBanner" class="online-required-banner hidden" role="status"><strong>Offline-Modus</strong><span>Die Tanzdaten und die lokale Analyse bleiben verfügbar. Nur externe Tanzsheet-Links benötigen Internet.</span></div>
+
+    <main>
+      <section id="view-home" class="view active" aria-labelledby="homeTitle">
+        <article class="home-hero">
+          <div class="hero-copy">
+            <p class="eyebrow">CLDF Tanzfinder</p>
+            <h1 id="homeTitle">Musik erkennen – Tanz anzeigen</h1>
+            <p>Nimm etwa 12 Sekunden Musik auf. Die App prüft lokale Lied-Fingerprints und Zuordnungen. Nur wenn kein eindeutiges Lied erkannt wird, werden Tänze nach BPM, Motion und Rhythmus vorgeschlagen.</p>
+          </div>
+
+          <button id="recordBtn" class="record-button" type="button" aria-pressed="false">
+            <span class="record-rings" aria-hidden="true"></span>
+            <span class="record-icon" aria-hidden="true">🎙</span>
+            <strong id="recordLabel">Lied aufnehmen</strong>
+            <small id="recordHint">Tippen zum Starten</small>
+          </button>
+
+          <div id="recordProgress" class="record-progress hidden" aria-live="polite">
+            <div class="progress-track"><span id="progressBar"></span></div>
+            <span id="progressText">0 / 12 Sekunden</span>
+          </div>
+
+          <div id="fingerprintProgress" class="task-progress hidden" aria-live="polite">
+            <strong id="fingerprintProgressTitle">Wird vorbereitet …</strong>
+            <small id="fingerprintProgressText"></small>
+            <div class="progress-track"><span id="fingerprintProgressBar"></span></div>
+          </div>
+
+          <div id="microphoneStatusCard" class="microphone-status checking" role="status" aria-live="polite">
+            <span class="microphone-status-icon" aria-hidden="true">🎙</span>
+            <div class="microphone-status-copy">
+              <strong id="microphoneStatusTitle">Mikrofonstatus wird geprüft</strong>
+              <small id="microphoneStatusText">Du kannst die Freigabe mit einem Tipp testen.</small>
+            </div>
+            <button id="enableMicrophoneBtn" class="text-button" type="button">Mikrofon freigeben</button>
+          </div>
+
+          <div id="securityNotice" class="security-notice hidden" role="alert">
+            <strong>Mikrofon nicht verfügbar</strong>
+            <p id="securityNoticeText"></p>
+            <button id="showInstallHelpBtn" class="text-button" type="button">Online-Hilfe öffnen</button>
+          </div>
+
+          <div class="recognition-actions">
+            <label class="primary-btn file-button">Handyaufnahme verwenden
+              <input id="captureAudioFile" type="file" accept="audio/*" capture>
+            </label>
+            <label class="secondary-btn file-button">Musikdatei testen
+              <input id="audioFile" type="file" accept="audio/*,video/mp4,video/webm,.mp4,.webm,.m4v,.mov">
+            </label>
+            <button id="manualSongBtn" class="secondary-btn" type="button">Lied aus Liste wählen</button>
+          </div>
+        </article>
+
+        <div class="status-grid">
+          <article class="status-card good">
+            <span class="status-icon">📱</span>
+            <div><strong>Offline-Erkennung</strong><small>Analyse direkt auf dem Handy</small></div>
+          </article>
+          <article class="status-card">
+            <span class="status-icon">★</span>
+            <div><strong id="danceCount">0 Tänze</strong><small>CLDF-Tanzdatenbank</small></div>
+          </article>
+          <article class="status-card good">
+            <span class="status-icon">♫</span>
+            <div><strong>Lied zuerst</strong><small>Tanzsheet-Zuordnung hat Vorrang</small></div>
+          </article>
+          <article class="status-card">
+            <span class="status-icon">↯</span>
+            <div><strong id="qualityCount">0 geprüft</strong><small>BPM nur als Reserve</small></div>
+          </article>
+        </div>
+
+        <article class="notice-card">
+          <strong>So funktioniert die Offline-Erkennung</strong>
+          <p>Die kurze Aufnahme bleibt auf dem Gerät. Die App gleicht sie mit lokalen Lied-Fingerprints und den gespeicherten Lied–Tanz-Zuordnungen ab. Ohne eindeutigen Treffer werden BPM, Motion und Rhythmus als Reserve verwendet.</p>
+          <button id="checkOnlineServiceBtn" class="text-button" type="button">Offline-Status prüfen</button>
+        </article>
+
+        <article class="video-recognition-card" aria-labelledby="videoRecognitionTitle">
+          <div class="section-heading compact">
+            <div><p class="eyebrow">Zusatzfunktion · Beta</p><h2 id="videoRecognitionTitle">Tanz per Video erkennen</h2></div>
+            <span class="video-recognition-icon" aria-hidden="true">🎥</span>
+          </div>
+          <p class="help-text">Nimm 15–30 Sekunden auf, sodass eine Person möglichst vollständig zu sehen ist. Die App erkennt zuerst den Videoton online und vergleicht zusätzlich die Bewegung mit deinen gespeicherten Video-Referenzen.</p>
+          <div class="video-action-grid">
+            <label class="primary-btn file-button">Video aufnehmen
+              <input id="captureDanceVideo" type="file" accept="video/*" capture="environment">
+            </label>
+            <label class="secondary-btn file-button">Video auswählen
+              <input id="danceVideoFile" type="file" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.m4v,.mov">
+            </label>
+          </div>
+          <div id="videoRecognitionStatus" class="video-recognition-status" role="status" aria-live="polite">
+            <strong>Bereit für ein Tanzvideo</strong>
+            <small id="videoRecognitionStatusText">Der Videoton nutzt dieselbe lokale Lied-zuerst-Regel. Ohne Tanzsheet-Zuordnung werden Video-Referenzen geprüft; BPM bleibt die letzte Reserve.</small>
+          </div>
+          <button class="text-button" type="button" data-open-view="more" data-focus="motionReferenceSection">Video-Referenzen verwalten</button>
+        </article>
+
+        <article class="tempo-tools-card" aria-labelledby="tempoToolsTitle">
+          <div class="section-heading compact">
+            <div><p class="eyebrow">Festmodus</p><h2 id="tempoToolsTitle">Tempo im Takt bestimmen</h2></div>
+            <span class="tempo-tools-icon" aria-hidden="true">♩</span>
+          </div>
+          <p class="help-text">Wenn die Musik auf dem Fest zu laut oder undeutlich ist, tippe mindestens viermal im Takt. Die App sucht dann Tänze nach mehreren möglichen BPM-Werten.</p>
+          <div class="tap-tempo-grid">
+            <button id="tapTempoBtn" class="tap-tempo-btn" type="button">Im Takt tippen</button>
+            <button id="showTapTempoBtn" class="primary-btn" type="button" disabled>Tänze anzeigen</button>
+            <button id="resetTapTempoBtn" class="secondary-btn" type="button">Zurücksetzen</button>
+          </div>
+          <p id="tapTempoStatus" class="tempo-status" aria-live="polite">Noch nicht getippt.</p>
+          <div class="manual-bpm-row">
+            <label><span>BPM manuell eingeben</span><input id="manualBpmInput" type="number" min="40" max="220" inputmode="numeric" placeholder="z. B. 118"></label>
+            <button id="manualBpmBtn" class="secondary-btn" type="button">Tänze suchen</button>
+          </div>
+        </article>
+
+        <article class="history-card">
+          <div class="section-heading compact">
+            <div><p class="eyebrow">Zuletzt erkannt</p><h2>Verlauf</h2></div>
+            <button id="clearHistoryBtn" class="text-button" type="button">Leeren</button>
+          </div>
+          <div id="historyList" class="history-list"></div>
+        </article>
+      </section>
+
+      <section id="view-search" class="view" aria-labelledby="searchTitle">
+        <div class="section-heading">
+          <div><p class="eyebrow">CLDF + Get-in-Line</p><h1 id="searchTitle">Tänze suchen</h1></div>
+          <span id="searchCount" class="count-badge">0</span>
+        </div>
+
+        <div class="filter-panel">
+          <label class="search-field">
+            <span class="sr-only">Suche</span>
+            <input id="searchInput" type="search" placeholder="Tanz, Lied, Interpret oder Choreograf …" autocomplete="off">
+          </label>
+          <div class="filter-grid">
+            <label><span>Quelle</span><select id="sourceFilter"><option value="">Alle Quellen</option><option value="CLDF">CLDF</option><option value="Get-in-Line">Get-in-Line</option></select></label>
+            <label><span>Level</span><select id="levelFilter"><option value="">Alle Level</option></select></label>
+            <label><span>Motion</span><select id="motionFilter"><option value="">Alle Motions</option></select></label>
+            <label><span>Rhythmus</span><select id="rhythmFilter"><option value="">Alle Rhythmen</option></select></label>
+            <label><span>Datenstatus</span><select id="qualityFilter"><option value="">Alle</option><option value="core">Kerndaten geprüft</option><option value="classification">Motion geprüft</option><option value="open">Noch zu prüfen</option></select></label>
+            <label><span>Sortierung</span><select id="sortFilter"><option value="title">Tanzname A–Z</option><option value="year-desc">Neueste zuerst</option><option value="level">Level</option><option value="quality">Datenqualität</option></select></label>
+          </div>
+          <button id="resetFiltersBtn" class="text-button" type="button">Filter zurücksetzen</button>
+        </div>
+
+        <div id="danceList" class="dance-list"></div>
+        <button id="loadMoreBtn" class="secondary-btn load-more hidden" type="button">Weitere Tänze anzeigen</button>
+      </section>
+
+      <section id="view-favorites" class="view" aria-labelledby="favoritesTitle">
+        <div class="section-heading">
+          <div><p class="eyebrow">Persönliche Liste</p><h1 id="favoritesTitle">Meine Tänze</h1></div>
+          <span id="favoriteCount" class="count-badge">0</span>
+        </div>
+        <div id="favoriteList" class="dance-list"></div>
+      </section>
+
+      <section id="view-practice" class="view" aria-labelledby="practiceTitle">
+        <div class="section-heading">
+          <div><p class="eyebrow">Nächste Runde</p><h1 id="practiceTitle">Übungsliste</h1></div>
+          <span id="practiceCount" class="count-badge">0</span>
+        </div>
+        <div id="practiceList" class="dance-list"></div>
+      </section>
+
+      <section id="view-more" class="view" aria-labelledby="moreTitle">
+        <div class="section-heading">
+          <div><p class="eyebrow">Einstellungen & Verwaltung</p><h1 id="moreTitle">Mehr</h1></div>
+        </div>
+
+        <div class="settings-stack">
+          <article id="setupSection" class="settings-card setup-card">
+            <div class="card-icon">✓</div>
+            <div>
+              <h2>Einrichtungsassistent</h2>
+              <p>Prüft Offline-Daten, Mikrofon, lokale Liedanalyse und Videoanalyse.</p>
+              <button id="openOnboardingBtn" class="primary-btn small" type="button">Assistent starten</button>
+            </div>
+          </article>
+
+          <article id="onlineServiceSection" class="settings-card">
+            <div class="section-heading compact">
+              <div><p class="eyebrow">Lokale Erkennung</p><h2>Offline-Analyse</h2></div>
+              <span class="count-badge">LOKAL</span>
+            </div>
+            <div id="onlineServiceStatus" class="catalog-status warning">
+              <span class="catalog-status-icon">📱</span>
+              <div><strong id="onlineServiceStatusTitle">Offline-Daten werden geprüft</strong><small id="onlineServiceStatusText">Tänze, Liedzuordnungen und Analyse werden beim Start kontrolliert.</small></div>
+            </div>
+            <div class="button-grid">
+              <button id="checkOnlineServiceBtnSettings" class="primary-btn" type="button">Offline-Status erneut prüfen</button>
+            </div>
+            <p class="help-text">Die App benötigt keinen AudD-Schlüssel. Für die genaue Titelerkennung werden lokale Audio-Fingerprints verwendet; ohne Treffer bleiben BPM-, Motion- und Rhythmusvorschläge verfügbar.</p>
+          </article>
+
+
+          <article id="getinlineCatalogSection" class="settings-card">
+            <div class="section-heading compact">
+              <div><p class="eyebrow">Externer Tanzkatalog</p><h2>Get-in-Line</h2></div>
+              <span id="getinlineCatalogCount" class="count-badge">0 Tänze</span>
+            </div>
+            <div id="getinlineCatalogStatus" class="catalog-status warning">
+              <span class="catalog-status-icon">📄</span>
+              <div><strong id="getinlineCatalogStatusTitle">Katalog wird geprüft</strong><small id="getinlineCatalogStatusText">Titel, Musik, Interpret, Choreograf, Level, Counts, Walls sowie Tags/Restarts werden aus dem jeweiligen Tanzsheet übernommen.</small></div>
+            </div>
+            <p class="help-text">Die vollständige Schrittbeschreibung wird nicht kopiert. Jeder Eintrag öffnet über <strong>„Tanzsheet öffnen“</strong> die originale Get-in-Line-Seite.</p>
+            <div class="inline-links"><a href="https://www.get-in-line.de/" target="_blank" rel="noopener noreferrer">Get-in-Line öffnen</a></div>
+          </article>
+
+          <article id="motionReferenceSection" class="settings-card">
+            <div class="section-heading compact">
+              <div><p class="eyebrow">Video-Tanzerkennung · Beta</p><h2>Bewegungsreferenzen</h2></div>
+              <span id="motionReferenceCount" class="count-badge">0 Referenzen</span>
+            </div>
+            <div class="catalog-status warning" id="motionReferenceStatus">
+              <span class="catalog-status-icon">🎥</span>
+              <div><strong id="motionReferenceStatusTitle">Noch keine Bewegungsreferenz</strong><small id="motionReferenceStatusText">Füge für bekannte Tänze eigene kurze Demo-Videos hinzu. Die Bewegungsmerkmale bleiben auf diesem Gerät.</small></div>
+            </div>
+            <div class="button-grid">
+              <label class="primary-btn file-button">Referenzvideo hinzufügen
+                <input id="motionReferenceFiles" type="file" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.m4v,.mov" multiple>
+              </label>
+              <button id="exportMotionRefsBtn" class="secondary-btn" type="button">Referenzen exportieren</button>
+              <button id="importMotionRefsBtn" class="secondary-btn" type="button">Referenzen importieren</button>
+              <input id="importMotionRefsFile" class="hidden" type="file" accept="application/json">
+              <button id="clearMotionRefsBtn" class="danger-btn" type="button">Referenzen löschen</button>
+            </div>
+            <p class="help-text"><strong>Wichtig:</strong> Die reine Bewegungserkennung ist eine ergänzende Beta-Funktion. Für eine brauchbare Zuordnung braucht jeder Tanz mindestens ein gut sichtbares Referenzvideo. Lied und Tanzsheet haben weiterhin Vorrang.</p>
+            <div id="motionReferenceList" class="catalog-list"></div>
+          </article>
+
+          <article class="settings-card">
+            <div class="section-heading compact">
+              <div><p class="eyebrow">Datenstand</p><h2>Datenqualität</h2></div>
+              <span id="databaseVersionBadge" class="count-badge">v2.0</span>
+            </div>
+            <div id="qualityStats" class="quality-grid"></div>
+            <p class="help-text">Unklare Angaben werden bewusst als „Zu prüfen“ angezeigt. Sie können direkt in der App korrigiert und anschließend exportiert werden.</p>
+          </article>
+
+          <article class="settings-card">
+            <h2>Datenbank & Sicherung</h2>
+            <p>Eigene Korrekturen, neue Tänze, Favoriten und Bewegungsreferenzen lassen sich sichern und auf ein anderes Gerät übertragen.</p>
+            <div class="button-grid">
+              <button id="addDanceBtn" class="primary-btn" type="button">Tanz hinzufügen</button>
+              <button id="exportDancesBtn" class="secondary-btn" type="button">Tanzdaten exportieren</button>
+              <button id="importDancesBtn" class="secondary-btn" type="button">Tanzdaten importieren</button>
+              <input id="importDancesFile" class="hidden" type="file" accept="application/json">
+              <button id="exportBackupBtn" class="secondary-btn" type="button">Komplettes Backup</button>
+              <button id="importBackupBtn" class="secondary-btn" type="button">Backup einspielen</button>
+              <input id="importBackupFile" class="hidden" type="file" accept="application/json">
+              <button id="exportCsvBtn" class="secondary-btn" type="button">CSV exportieren</button>
+              <button id="resetAppDataBtn" class="danger-btn" type="button">Eigene Änderungen zurücksetzen</button>
+            </div>
+          </article>
+
+          <article class="settings-card">
+            <div class="section-heading compact">
+              <div><p class="eyebrow">Geräteprüfung</p><h2>Diagnose</h2></div>
+              <button id="runDiagnosticsBtn" class="secondary-btn small" type="button">Neu prüfen</button>
+            </div>
+            <div id="diagnosticsList" class="diagnostics-list"></div>
+          </article>
+
+          <article class="settings-card">
+            <h2>Motion-Lexikon</h2>
+            <p>Alle sechs Motion-Obergruppen und die zugehörigen Rhythmen sind in der App hinterlegt.</p>
+            <div id="motionCatalog" class="motion-catalog"></div>
+            <p class="help-text"><strong>Hinweis:</strong> „Nicht motionspezifisch / Mixed“ und „Zu prüfen“ sind Datenbankzustände, keine zusätzlichen Motions.</p>
+          </article>
+
+          <article class="settings-card">
+            <h2>Datenschutz & Verein</h2>
+            <p>Audioausschnitte, Favoriten, eigene Tanzdaten und Bewegungssignaturen bleiben auf dem Gerät. Nur externe Tanzsheet-Links benötigen Internet.</p>
+            <div class="inline-links">
+              <a href="./docs/DATENSCHUTZ.html" target="_blank" rel="noopener">Datenschutzhinweise</a>
+              <a href="https://country-hochrhein.de/" target="_blank" rel="noopener">Vereinswebsite</a>
+              <a href="https://www.youtube.com/@CLDF2013" target="_blank" rel="noopener">CLDF YouTube</a>
+            </div>
+          </article>
+
+          <article class="settings-card version-card">
+            <img src="./assets/icon-128.png" alt="">
+            <div><h2>CLDF v4.1 Offline</h2><p id="versionText">CLDF-Tänze + Get-in-Line-Metadaten · direkter Tanzsheet-Link · Lied zuerst · BPM als Reserve</p></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="view-result" class="view" aria-labelledby="resultTitle">
+        <button id="backFromResult" class="back-button" type="button">← Zurück</button>
+        <article class="result-hero">
+          <p id="resultModeLabel" class="eyebrow">Offline-Analyse</p>
+          <h1 id="resultTitle">Ergebnis</h1>
+          <div id="songResult" class="song-result hidden"></div>
+          <div id="videoMotionResult" class="video-motion-result hidden"></div>
+          <div id="tempoResult" class="tempo-result">
+            <div class="metric-ring"><strong id="bpmValue">–</strong><span>BPM</span></div>
+            <p id="analysisSummary">Noch keine Analyse.</p>
+            <div id="alternateBpmRow" class="alternate-bpm-row hidden"><strong>Mögliche Tempi:</strong><span id="alternateBpmValue">–</span></div>
+            <div id="motionChips" class="chip-row"></div>
+          </div>
+        </article>
+        <article id="primaryDanceResult" class="primary-dance-result hidden" aria-live="polite"></article>
+        <div class="section-heading result-heading">
+          <div><p class="eyebrow">Passende Tänze</p><h2 id="matchHeading">Tanz-Abgleich</h2></div>
+        </div>
+        <div id="matchList" class="dance-list"></div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Hauptnavigation">
+      <button data-view="home" class="active" type="button"><span>🎙</span><small>Erkennen</small></button>
+      <button data-view="search" type="button"><span>⌕</span><small>Suche</small></button>
+      <button data-view="favorites" type="button"><span>☆</span><small>Meine Tänze</small></button>
+      <button data-view="practice" type="button"><span>♬</span><small>Üben</small></button>
+      <button data-view="more" type="button"><span>☰</span><small>Mehr</small></button>
+    </nav>
+  </div>
+
+  <dialog id="appDialog" class="app-dialog">
+    <button id="closeDialog" class="dialog-close" type="button" aria-label="Schließen">×</button>
+    <div id="dialogContent"></div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <div hidden aria-hidden="true">
+    <input id="audioFingerprintFiles" type="file" accept="audio/*" multiple>
+    <span id="audioFingerprintCount"></span>
+    <div id="audioFingerprintStatus"><strong id="audioFingerprintStatusTitle"></strong><small id="audioFingerprintStatusText"></small></div>
+    <div id="audioFingerprintList"></div>
+    <button id="exportFingerprintsBtn" type="button"></button>
+    <button id="importFingerprintsBtn" type="button"></button>
+    <input id="importFingerprintsFile" type="file" accept="application/json">
+    <button id="clearFingerprintsBtn" type="button"></button>
+    <button id="importGetInLineBtn" type="button"></button>
+    <input id="importGetInLineFile" type="file" accept="application/json">
+    <button id="exportGetInLineBtn" type="button"></button>
+    <button id="clearGetInLineBtn" type="button"></button>
+  </div>
+
+  <script src="./assets/data.js"></script>
+  <script src="./assets/getinline-data.js"></script>
+  <script src="./assets/image-mappings.js"></script>
+  <script src="./assets/song-metadata.js"></script>
+  <script src="./assets/audio-fingerprints.js"></script>
+  <script src="./assets/local-store.js"></script>
+  <script src="./assets/audio-engine.js"></script>
+  <script src="./assets/offline-bootstrap.js"></script>
+  <script src="./assets/video-motion.js"></script>
+  <script src="./assets/app.js"></script>
+  <script>if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(console.warn));</script>
+</body>
+</html>
