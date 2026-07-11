@@ -1,0 +1,12 @@
+CLDF v4.5.3 – Kamera-Schwarzbild-Fix
+
+Ursache:
+Das transparente MediaPipe-Zeichenfeld lag mit einem dunklen CSS-Hintergrund über dem Kameravideo. Dadurch war nur eine schwarze Fläche sichtbar, obwohl die Kamera lief.
+
+Korrektur:
+- Kameravideo liegt sichtbar auf Ebene 1.
+- Das MediaPipe-Skelett liegt transparent auf Ebene 2.
+- Hochformat 9:16 bleibt erhalten.
+- Neuer Service-Worker-Cache v4.5.3 verhindert, dass die fehlerhafte CSS-Datei weiterverwendet wird.
+
+Nach GitHub-Upload auf den grünen Pages-Haken warten. Danach die App über ?v=453 öffnen. Auf dem Handy die installierte App gegebenenfalls vollständig schließen und erneut öffnen.

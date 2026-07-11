@@ -10,7 +10,7 @@
   const STORE = window.CLDFLocalStore;
   const FINGERPRINT_DB = window.CLDF_AUDIO_FINGERPRINTS || { entries: [] };
   const SONG_META = window.CLDF_SONG_METADATA || { entries: [] };
-  const APP_VERSION = '4.5.2';
+  const APP_VERSION = '4.5.3';
   const DATABASE_VERSION = DATA.databaseVersion || 'unbekannt';
   const CLDF_DANCES = Array.isArray(DATA.dances) ? DATA.dances : [];
   let GETINLINE_DANCES = Array.isArray(GETINLINE_DATA.dances) ? GETINLINE_DATA.dances : [];
@@ -2923,7 +2923,7 @@
     await checkOnlineService(false);
     runDiagnostics();
     handleInitialRoute();
-    $('#versionText').textContent = `CLDF v4.5.2 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${allFingerprintEntries().length} Audio-Referenzen · Liedzuordnung zuerst · BPM/Motion als Reserve`;
+    $('#versionText').textContent = `CLDF v4.5.3 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${allFingerprintEntries().length} Audio-Referenzen · Liedzuordnung zuerst · BPM/Motion als Reserve`;
     if (storage.get(STORAGE.splashSeen)) {
       $('#splash').classList.add('hidden');
       $('#app').classList.remove('hidden');
