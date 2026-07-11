@@ -10,7 +10,7 @@
   const STORE = window.CLDFLocalStore;
   const FINGERPRINT_DB = window.CLDF_AUDIO_FINGERPRINTS || { entries: [] };
   const SONG_META = window.CLDF_SONG_METADATA || { entries: [] };
-  const APP_VERSION = '4.5.4';
+  const APP_VERSION = '4.5.5';
   const DATABASE_VERSION = DATA.databaseVersion || 'unbekannt';
   const CLDF_DANCES = Array.isArray(DATA.dances) ? DATA.dances : [];
   let GETINLINE_DANCES = Array.isArray(GETINLINE_DATA.dances) ? GETINLINE_DATA.dances : [];
@@ -2357,13 +2357,17 @@
       <div class="live-dance-panel">
         <p class="eyebrow">MediaPipe · Live-Beta</p>
         <h2>Live-Tanzerkennung</h2>
-        <p>Stelle das Handy hochkant und ruhig auf. Die Person muss mit Oberkörper und Füßen vollständig sichtbar sein. Vorschau und Aufnahme werden im Hochformat 9:16 angepasst. Die Analyse endet automatisch nach 18 Sekunden.</p>
+        <p>Stelle das Handy hochkant und ruhig auf. Die Person muss mit Oberkörper und Füßen vollständig sichtbar sein. Vorschau und Aufnahme werden im Hochformat 9:16 angepasst. Die App wertet die erkannten Schritte bereits während der Aufnahme aus. Die Aufnahme läuft mindestens 30 Sekunden und endet danach automatisch.</p>
         <div class="live-dance-preview">
           <video id="liveDanceVideo" autoplay playsinline muted></video>
           <canvas id="liveDanceCanvas" aria-hidden="true"></canvas>
         </div>
         <div class="progress-track"><span id="liveDanceProgressBar"></span></div>
         <strong id="liveDanceProgressText">Kamera wird gestartet …</strong>
+        <div class="live-step-analysis" aria-live="polite">
+          <div><span>Erkannte Schritte</span><strong id="liveDanceSteps">Noch keine sicheren Schrittmerkmale</strong></div>
+          <div><span>Vorläufiger Tanzvergleich</span><strong id="liveDanceCandidates">Die Auswertung beginnt, sobald genug Körperbilder vorliegen.</strong></div>
+        </div>
         <button id="cancelLiveDanceBtn" class="secondary-btn" type="button">Abbrechen</button>
       </div>`, { focusSelector: '#cancelLiveDanceBtn' });
     dialog.classList.add('live-camera-dialog');
@@ -2371,6 +2375,8 @@
     const canvas = $('#liveDanceCanvas', dialog);
     const progressBar = $('#liveDanceProgressBar', dialog);
     const progressText = $('#liveDanceProgressText', dialog);
+    const liveSteps = $('#liveDanceSteps', dialog);
+    const liveCandidates = $('#liveDanceCandidates', dialog);
     const cleanup = () => {
       try { if (recorder?.state === 'recording') recorder.stop(); } catch {}
       try { portraitRecording?.stop(); } catch {}
@@ -2422,12 +2428,37 @@
       }
       setVideoRecognitionStatus('busy', 'Live-Video wird ausgewertet', 'MediaPipe verfolgt jetzt Körper und Schritte.');
       const signature = await VM.analyzeLiveVideo(video, {
-        durationSeconds: 18,
+        durationSeconds: 30,
         signal: controller.signal,
+        partialIntervalMs: 2400,
         onFrame: (results) => VM.drawPose?.(canvas, video, results),
+        onPartialSignature: (partialSignature) => {
+          const stepLabels = partialSignature.stepTokens
+            .slice(-7)
+            .map((token) => VM.stepLabels?.[token] || token);
+          if (liveSteps) liveSteps.textContent = stepLabels.length
+            ? stepLabels.join(' · ')
+            : 'Noch keine sicheren Schrittmerkmale';
+
+          const referenceMatches = VM.rankReferences
+            ? VM.rankReferences(partialSignature, state.motionReferences)
+            : [];
+          const sheetMatches = VM.rankSheetPatterns
+            ? VM.rankSheetPatterns(partialSignature, STEP_PATTERNS, state.dances)
+            : [];
+          const provisionalMatches = combineVideoMatches(referenceMatches, sheetMatches).slice(0, 3);
+          if (liveCandidates) {
+            liveCandidates.innerHTML = provisionalMatches.length
+              ? provisionalMatches.map((match) => {
+                const dance = state.dances.find((candidate) => candidate.id === match.reference?.danceId);
+                return dance ? `<span>${escapeHtml(dance.title)} · ${Math.round(match.score)} %</span>` : '';
+              }).filter(Boolean).join('')
+              : 'Noch kein passender Tanzvergleich möglich.';
+          }
+        },
         onProgress: (percent, text) => {
           if (progressBar) progressBar.style.width = `${Math.round(percent)}%`;
-          if (progressText) progressText.textContent = text;
+          if (progressText) progressText.textContent = `${text} · Schritte werden live verglichen`;
         },
       });
       if (recorder?.state === 'recording') recorder.stop();
@@ -2991,7 +3022,7 @@
     await checkOnlineService(false);
     runDiagnostics();
     handleInitialRoute();
-    $('#versionText').textContent = `CLDF v4.5.4 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${allFingerprintEntries().length} Audio-Referenzen · Liedzuordnung zuerst · BPM/Motion als Reserve`;
+    $('#versionText').textContent = `CLDF v4.5.5 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${allFingerprintEntries().length} Audio-Referenzen · Liedzuordnung zuerst · BPM/Motion als Reserve`;
     if (storage.get(STORAGE.splashSeen)) {
       $('#splash').classList.add('hidden');
       $('#app').classList.remove('hidden');

@@ -1,0 +1,14 @@
+CLDF v4.5.5 – 30-Sekunden-Live-Schrittanalyse
+
+Neu:
+- Die Live-Kamera nimmt automatisch mindestens 30 Sekunden auf.
+- MediaPipe wertet Körper und Schritte bereits während der Aufnahme aus.
+- Im Kamerafenster werden die zuletzt erkannten Schrittmerkmale angezeigt.
+- Während der Aufnahme erscheinen bis zu drei vorläufige Tanzvorschläge.
+- Nach 30 Sekunden wird die vollständige Schrittfolge erneut mit den eingebauten Sheet-Mustern und eigenen Video-Referenzen verglichen.
+- Ein vorläufiger Treffer ist keine sichere Identifikation. Die endgültige Anzeige erfolgt erst nach Abschluss der Aufnahme.
+
+Wichtig:
+- Die Person muss vollständig sichtbar sein, besonders beide Füße.
+- Das Handy muss ruhig und hochkant stehen.
+- Zurzeit sind 8 maschinenlesbare Sheet-Muster eingebaut. Weitere Tänze benötigen zusätzliche Muster oder eigene Referenzaufnahmen.

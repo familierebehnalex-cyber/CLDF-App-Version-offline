@@ -595,7 +595,7 @@ button:disabled, input:disabled { cursor: not-allowed; opacity: .52; }
 .badge.source-badge { color: #174a5b; background: #dff5fb; border: 1px solid #a9dce8; }
 #getinlineCatalogSection .catalog-status { margin-top: 8px; }
 
-/* CLDF v4.5.4 – Hochformat-Vorschau und echte 9:16-Aufnahme */
+/* CLDF v4.5.5 – Hochformat-Aufnahme mit 30-Sekunden-Live-Schrittanalyse */
 .live-camera-dialog {
   width: min(96vw, 520px);
   max-height: 96dvh;
@@ -658,4 +658,41 @@ button:disabled, input:disabled { cursor: not-allowed; opacity: .52; }
 @media (max-height: 700px) and (orientation: portrait) {
   .live-dance-preview { width: min(68vw, 280px); }
   .live-dance-panel > p:not(.eyebrow) { font-size: .78rem; }
+}
+
+
+/* CLDF v4.5.5 – laufende Schritt- und Tanzvorschau */
+.live-step-analysis {
+  display: grid;
+  gap: 8px;
+  margin: 8px 0 12px;
+}
+.live-step-analysis > div {
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255,255,255,.68);
+}
+.live-step-analysis span {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--muted);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+}
+.live-step-analysis strong {
+  display: block;
+  color: var(--wood-900);
+  font-size: .84rem;
+  line-height: 1.35;
+}
+#liveDanceCandidates span {
+  display: block;
+  margin: 2px 0;
+  color: inherit;
+  font-size: inherit;
+  letter-spacing: 0;
+  text-transform: none;
 }

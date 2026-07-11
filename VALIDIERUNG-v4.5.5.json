@@ -1,0 +1,63 @@
+{
+  "appVersion": "4.5.5",
+  "generatedAt": "2026-07-11T11:56:18.757Z",
+  "requiredFilesPresent": true,
+  "javascriptSyntaxValid": true,
+  "essentialDomIdsPresent": true,
+  "getInLineParserTestsPassed": true,
+  "audioFingerprintSelfTestPassed": true,
+  "videoStepMatcherSelfTestPassed": true,
+  "mediaPipePoseBundled": true,
+  "mediaPipePoseModel": "BlazePose GHUM Lite / MediaPipe Pose 0.5.1675469404",
+  "builtInSheetPatterns": 8,
+  "liveVideoMinimumSeconds": 30,
+  "liveStepEvaluationDuringRecording": true,
+  "staticOfflineServer": true,
+  "serviceWorkerPresent": true,
+  "originalCssBasePreserved": true,
+  "originalCssBaseLines": 596,
+  "originalCssBaseSha256": "4aec6ede441e7e071a86f89e595f3ba3fe9c831ce11488e379b6413d6f76ba6a",
+  "addedCssLinesForLiveCamera": 102,
+  "originalGraphicsUnchanged": true,
+  "originalGraphicHashes": {
+    "assets/cldf-hero.webp": {
+      "expected": "7e9fc962990d8954692884f3b8eadaa0da84a84140e2314643189c3d1fcd4eda",
+      "actual": "7e9fc962990d8954692884f3b8eadaa0da84a84140e2314643189c3d1fcd4eda",
+      "unchanged": true
+    },
+    "assets/cldf-hero-1200.webp": {
+      "expected": "cc73c553d5c7dfa9ec48ab4d0fc5f7d9058ccbc2ce63ec5387af316f3bdf2512",
+      "actual": "cc73c553d5c7dfa9ec48ab4d0fc5f7d9058ccbc2ce63ec5387af316f3bdf2512",
+      "unchanged": true
+    },
+    "assets/icon-192.png": {
+      "expected": "0330a00d7d33ed350067b1414f441721f85eb657972c54f06af60de2aa4d30f6",
+      "actual": "0330a00d7d33ed350067b1414f441721f85eb657972c54f06af60de2aa4d30f6",
+      "unchanged": true
+    },
+    "assets/icon-512.png": {
+      "expected": "5f758f26af0e28555947a65d6e74d9685fe8639efe8561b71a672718505470cf",
+      "actual": "5f758f26af0e28555947a65d6e74d9685fe8639efe8561b71a672718505470cf",
+      "unchanged": true
+    }
+  },
+  "completeStylesSha256": "80de744c978878b87ef725f3740792630056f2da330e8762269e28f093018d27",
+  "cldfBaseDances": 135,
+  "imageMappings": 659,
+  "imageUniqueDances": 182,
+  "mergedLocalDanceNamesWithoutGetInLine": 196,
+  "getInLineEmbeddedCount": 0,
+  "mergedDanceNamesIncludingGetInLine": 196,
+  "songMetadataEntries": 582,
+  "songsWithArtist": 307,
+  "songsWithBpm": 237,
+  "microphoneSeconds": 12,
+  "audioFingerprintAlgorithm": "cldf-landmark-v1",
+  "embeddedAudioFingerprints": 0,
+  "indexedDbAudioLibrary": true,
+  "indexedDbGetInLineImport": true,
+  "githubCatalogUpdater": true,
+  "githubPagesWorkflow": true,
+  "serverApiRemoved": true,
+  "forbiddenOnlineRecognitionReferences": []
+}

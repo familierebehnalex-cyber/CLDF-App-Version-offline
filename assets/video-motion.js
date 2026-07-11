@@ -545,14 +545,19 @@
 
   async function analyzeLiveVideo(video, options = {}) {
     if (!video) throw new Error('Keine Live-Kamera verfügbar.');
-    const durationSeconds = Math.min(30, Math.max(8, Number(options.durationSeconds) || 18));
+    // Für einen belastbaren Schrittvergleich wird immer mindestens 30 Sekunden analysiert.
+    const requestedDuration = Number(options.durationSeconds) || 30;
+    const durationSeconds = Math.min(60, Math.max(30, requestedDuration));
     const interval = Math.max(100, Number(options.frameIntervalMs) || DEFAULTS.liveFrameIntervalMs);
+    const partialInterval = Math.max(1500, Number(options.partialIntervalMs) || 2500);
     const onProgress = typeof options.onProgress === 'function' ? options.onProgress : () => {};
     const onFrame = typeof options.onFrame === 'function' ? options.onFrame : () => {};
+    const onPartialSignature = typeof options.onPartialSignature === 'function' ? options.onPartialSignature : () => {};
     const signal = options.signal;
     await ensurePose();
     const started = performance.now();
     let lastFrame = -Infinity;
+    let lastPartial = started;
     const frames = [];
     while (performance.now() - started < durationSeconds * 1000) {
       if (signal?.aborted) throw new DOMException('Live-Aufnahme abgebrochen.', 'AbortError');
@@ -568,10 +573,22 @@
       onFrame(results);
       const elapsed = (now - started) / 1000;
       onProgress(clamp(elapsed / durationSeconds) * 100, `${Math.min(durationSeconds, Math.ceil(elapsed))} von ${durationSeconds} Sekunden`);
+
+      if (frames.length >= DEFAULTS.minPoseFrames && now - lastPartial >= partialInterval) {
+        lastPartial = now;
+        try {
+          onPartialSignature(buildSignature(frames, { duration: elapsed, partial: true }));
+        } catch (error) {
+          // Zu wenig verwertbare Bewegung ist während der laufenden Aufnahme noch kein Fehler.
+          console.debug('Zwischenstand der Live-Schrittanalyse noch nicht verfügbar.', error?.message || error);
+        }
+      }
       await new Promise((resolve) => requestAnimationFrame(resolve));
     }
-    onProgress(100, 'Live-Körperanalyse abgeschlossen');
-    return buildSignature(frames, { duration: durationSeconds });
+    const signature = buildSignature(frames, { duration: durationSeconds });
+    onPartialSignature(signature);
+    onProgress(100, '30 Sekunden aufgenommen · Live-Körper- und Schrittanalyse abgeschlossen');
+    return signature;
   }
 
   function vectorDistance(a, b) {
@@ -811,7 +828,7 @@
   }
 
   window.CLDFVideoMotion = {
-    version: '2.0.0-beta',
+    version: '2.1.0-beta',
     engine: 'mediapipe-pose',
     ensurePose,
     analyzeVideo,
