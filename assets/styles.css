@@ -65,7 +65,7 @@ img { display: block; max-width: 100%; }
   background: var(--wood-950);
   transition: opacity .35s ease, visibility .35s ease;
 }
-.splash-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 46%; }
+.splash-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
 .splash-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10, 4, 1, .05) 0%, rgba(10, 4, 1, .3) 44%, rgba(10, 4, 1, .92) 100%); }
 .splash-content {
   position: relative;
@@ -786,3 +786,34 @@ body.app-open {
 
 /* Startbox kompakt v4.5.9 */
 .splash-badge { display: none !important; }
+
+
+/* CLDF v4.6.0 – kompakte Startbox ohne Hintergrundschrift */
+.splash-content {
+  width: min(86vw, 500px) !important;
+  padding: 20px 18px calc(18px + env(safe-area-inset-bottom)) !important;
+  border-radius: 16px !important;
+  background: linear-gradient(180deg, rgba(41, 18, 7, .42), rgba(41, 18, 7, .78)) !important;
+  box-shadow: 0 8px 18px rgba(0,0,0,.18) !important;
+}
+.splash p {
+  margin: 0 auto 14px !important;
+  max-width: 26rem !important;
+}
+.splash-button {
+  width: min(100%, 310px) !important;
+}
+.splash h1 {
+  display: none !important;
+}
+@media (max-width: 480px) {
+  .splash-content {
+    width: min(84vw, 360px) !important;
+    padding: 18px 14px calc(16px + env(safe-area-inset-bottom)) !important;
+    border-radius: 14px !important;
+  }
+  .splash p {
+    font-size: .95rem;
+    line-height: 1.45;
+  }
+}
