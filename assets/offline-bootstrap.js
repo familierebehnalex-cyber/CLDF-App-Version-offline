@@ -54,7 +54,7 @@
     if (!dance.bpmMax && dance.knownBpms.length) dance.bpmMax = Math.max(...dance.knownBpms);
   }
   DATA.dances = dances;
-  DATA.appVersion = '4.7.1';
+  DATA.appVersion = '4.7.2';
   DATA.databaseVersion = '2026.07.10-offline-images-audio-meta-v4';
   window.CLDF_DATA = DATA;
 })();

@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const required = [
   'index.html', 'manifest.webmanifest', 'service-worker.js', 'server.js',
   'assets/app.js', 'assets/audio-engine.js', 'assets/local-store.js', 'assets/styles.css',
-  'assets/data.js', 'assets/getinline-data.js', 'assets/image-mappings.js', 'assets/song-metadata.js', 'assets/radio-api-data.js',
+  'assets/data.js', 'assets/getinline-data.js', 'assets/image-mappings.js', 'assets/song-metadata.js', 'assets/radio-api-data.js', 'assets/radio-live-api.js',
   'assets/video-motion.js', 'assets/step-sheet-patterns.js', 'assets/mediapipe/pose/pose.js',
   'assets/mediapipe/pose/pose_landmark_lite.tflite', 'assets/mediapipe/pose/pose_solution_simd_wasm_bin.wasm',
   'data/cldf-data.json', 'data/getinline-dances.json', 'data/bild-lied-tanz-zuordnungen.json', 'data/song-metadata.json', 'data/radio-api-catalog.json',
@@ -22,7 +22,7 @@ if (missing.length) {
   process.exit(1);
 }
 
-for (const relative of ['server.js', 'assets/app.js', 'assets/audio-engine.js', 'assets/local-store.js', 'assets/offline-bootstrap.js', 'assets/video-motion.js', 'assets/step-sheet-patterns.js', 'service-worker.js', 'tools/sync-getinline.js', 'tools/test-video-step-matcher.js']) {
+for (const relative of ['server.js', 'assets/app.js', 'assets/audio-engine.js', 'assets/local-store.js', 'assets/offline-bootstrap.js', 'assets/radio-live-api.js', 'assets/video-motion.js', 'assets/step-sheet-patterns.js', 'service-worker.js', 'tools/sync-getinline.js', 'tools/test-video-step-matcher.js']) {
   execFileSync(process.execPath, ['--check', path.join(ROOT, relative)], { stdio: 'pipe' });
 }
 
@@ -36,7 +36,7 @@ const normalize = (value = '') => String(value).normalize('NFD').replace(/[\u030
 const merged = new Set((cldf.dances || []).map((dance) => normalize(dance.title)));
 for (const mapping of image.mappings || []) merged.add(normalize(mapping.dance));
 for (const dance of getinline.dances || []) merged.add(normalize(dance.title));
-const sourceFiles = ['server.js', 'assets/app.js', 'index.html'].map((relative) => fs.readFileSync(path.join(ROOT, relative), 'utf8')).join('\n');
+const sourceFiles = ['server.js', 'assets/app.js', 'assets/radio-live-api.js', 'index.html'].map((relative) => fs.readFileSync(path.join(ROOT, relative), 'utf8')).join('\n');
 const forbidden = ['AUDD_API_TOKEN', '/api/recognize', 'api.audd.io'].filter((needle) => sourceFiles.includes(needle));
 const styles = fs.readFileSync(path.join(ROOT, 'assets/styles.css'));
 const stylesText = styles.toString('utf8');
@@ -72,10 +72,6 @@ if (forbiddenVisibleRadioUi.length) {
   console.error(`Nicht gewünschte Radio-Oberfläche noch vorhanden: ${forbiddenVisibleRadioUi.join(', ')}`);
   process.exit(1);
 }
-if (sourceFiles.includes('fetchCurrentRadioSong')) {
-  console.error('Live-Radio-Abruf ist noch im aktiven App-Code enthalten.');
-  process.exit(1);
-}
 if (missingDomIds.length) {
   console.error(`Fehlende wichtige HTML-Elemente: ${missingDomIds.join(', ')}`);
   process.exit(1);
@@ -84,8 +80,9 @@ execFileSync(process.execPath, [path.join(ROOT, 'tools/test-getinline-parser.js'
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-audio-fingerprint.js')], { stdio: 'pipe' });
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-video-step-matcher.js')], { stdio: 'pipe' });
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-radio-api.js')], { stdio: 'pipe' });
+execFileSync(process.execPath, [path.join(ROOT, 'tools/test-radio-live-api.js')], { stdio: 'pipe' });
 const report = {
-  appVersion: '4.7.1',
+  appVersion: '4.7.2',
   generatedAt: new Date().toISOString(),
   requiredFilesPresent: true,
   javascriptSyntaxValid: true,
@@ -94,6 +91,7 @@ const report = {
   audioFingerprintSelfTestPassed: true,
   videoStepMatcherSelfTestPassed: true,
   radioApiSelfTestPassed: true,
+  radioLiveApiSelfTestPassed: true,
   mediaPipePoseBundled: true,
   mediaPipePoseModel: 'BlazePose GHUM Lite / MediaPipe Pose 0.5.1675469404',
   builtInSheetPatterns: 8,
@@ -133,7 +131,9 @@ const report = {
   indexedDbGetInLineImport: true,
   staticRadioApiCatalog: true,
   radioCatalogUiVisible: false,
-  activeLiveRadioApi: false,
+  activeLiveRadioApi: true,
+  liveRadioApiHiddenInBackground: true,
+  liveRadioApiRefreshMinutes: 10,
   githubCatalogUpdater: fs.existsSync(path.join(ROOT, '.github/workflows/update-getinline.yml')),
   githubPagesWorkflow: fs.existsSync(path.join(ROOT, '.github/workflows/deploy-pages.yml')),
   serverApiRemoved: forbidden.length === 0,

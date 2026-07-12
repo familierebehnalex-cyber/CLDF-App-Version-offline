@@ -1,4 +1,4 @@
-CLDF Offline-App v4.7.1
+CLDF Offline-App v4.7.2
 =======================
 
 Diese Version behält das ursprüngliche CLDF-Design bei und ergänzt die Bereiche
@@ -57,4 +57,4 @@ docs/URHEBERRECHT.html              Urheber- und Nutzungsregeln
 docs/DESIGNSCHUTZ.html              Hinweise zur Schutzstrategie
 docs/RECHTLICHE-PRUEFLISTE.md       offene Betreiberprüfungen
 VALIDIERUNG.json                     technischer Prüfbericht
-TESTBERICHT-v4.7.1.md               Teststand dieser Version
+TESTBERICHT-v4.7.2.md               Teststand dieser Version

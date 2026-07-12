@@ -1,4 +1,4 @@
-# CLDF Offline-App v4.7.1
+# CLDF Offline-App v4.7.2
 
 Installierbare Line-Dance-PWA im ursprünglichen CLDF-Design. Die Kernfunktionen laufen lokal: Tanzsuche, Lied–Tanz-Zuordnung, Favoriten, Übungslisten, Audio-Fingerprints, BPM-/Motion-/Rhythmusregeln sowie eine neue MediaPipe-Videoanalyse.
 
@@ -47,7 +47,7 @@ Die bereitgestellte Sammlung wurde als lokaler Metadatenkatalog im Hintergrund e
 - 263 Tanzvorschläge, davon 63 exakt mit bekannten Tänzen verknüpft
 - keine API-Schlüssel oder Zugangsdaten erforderlich
 
-Die Daten erweitern intern die lokale Lied- und Tanzzuordnung. Eine eigene Senderkatalog-Box, eine Senderauswahl und ein Live-Titelabruf werden in v4.7.1 nicht angezeigt oder ausgeführt. Jingles, Promos, Musikdateien und Radiostreams sind nicht Bestandteil des Liedkatalogs.
+Die Daten erweitern intern die lokale Lied- und Tanzzuordnung. Zusätzlich ruft die App bei bestehender Internetverbindung im Hintergrund beim Start und danach frühestens etwa alle zehn Minuten die aktuellen und zuletzt gespielten Titel der fünf Sender über die öffentliche laut.fm-API ab. Eine Senderkatalog-Box, Senderauswahl und ein Radioplayer bleiben unsichtbar. Ohne Internet wird automatisch der lokale Katalog verwendet. Jingles, Promos, Musikdateien und Radiostreams sind nicht Bestandteil des Liedkatalogs.
 
 ## Offline-Betrieb
 
@@ -104,6 +104,7 @@ Den vollständigen Ordnerinhalt in das GitHub-Repository hochladen. GitHub Pages
 - Audio- und Videoanalyse lokal
 - ausgewählte Video- und Audiodateien werden nicht hochgeladen
 - nur berechnete Signaturen können lokal gespeichert werden
+- bei Online-Verbindung werden ausschließlich Radio-Metadaten, niemals Mikrofon-, Audio-, Kamera- oder Videodaten, über die laut.fm-API abgerufen
 
 ## Prüfung
 
@@ -117,6 +118,6 @@ npm start
 
 ## Datenschutz, Rechte und Impressum
 
-Die App enthält in v4.7.1 eigene Seiten für Datenschutz, Urheberrecht/Quellen, Designschutz, Impressum und Drittanbieter-Lizenzen. Unter **Mehr → Datenschutz, Rechte & Impressum** können außerdem alle lokal gespeicherten Nutzerdaten gemeinsam gelöscht werden.
+Die App enthält in v4.7.2 eigene Seiten für Datenschutz, Urheberrecht/Quellen, Designschutz, Impressum und Drittanbieter-Lizenzen. Unter **Mehr → Datenschutz, Rechte & Impressum** können außerdem alle lokal gespeicherten Nutzerdaten gemeinsam gelöscht werden.
 
 Die Rechtstexte bilden den technischen Stand des Pakets ab. Vor einer öffentlichen Veröffentlichung müssen insbesondere der tatsächlich eingesetzte Hosting-Anbieter, Protokollfristen, aktuelle Vertretungsangaben und die Rechtekette für Logo/Grafiken abschließend geprüft werden. Siehe `docs/RECHTLICHE-PRUEFLISTE.md`.

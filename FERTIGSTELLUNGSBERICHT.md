@@ -1,17 +1,44 @@
-# Fertigstellungsbericht – CLDF Offline-App v4.7.1
+# Fertigstellungsbericht – CLDF Offline-App v4.7.2
 
-## Änderung
+Stand: 12. Juli 2026
 
-Die sichtbare Box „Lokaler Senderkatalog / Radio-API-Sammlung“ wurde aus dem Bereich **Mehr** entfernt. Ebenso entfernt wurden sichtbare Radio-Hinweise in manueller Liedauswahl, Diagnose und Versionsanzeige.
+## Ergebnis
 
-## Weiterhin enthalten
+Die bisher nur lokal eingebundene Radio-Sammlung wurde um einen echten Live-Abruf der öffentlichen laut.fm-API ergänzt. Die Radio-Oberfläche bleibt vollständig ausgeblendet.
 
-Die importierten Lied- und Tanzzuordnungsdaten bleiben als rein lokaler Hintergrundkatalog eingebunden. Sie erweitern die Liedsuche und feste Tanzzuordnungen, ohne eine eigene Senderoberfläche anzuzeigen. Jingles und Promos bleiben ausgeschlossen.
+## Live-API
 
-## Onlineverhalten
+- fünf hinterlegte laut.fm-Sender
+- Abruf von `current_song` und `last_songs`
+- Startabruf bei bestehender Internetverbindung
+- weitere Aktualisierung frühestens etwa alle zehn Minuten
+- Zeitlimit pro Anfrage: acht Sekunden
+- keine API-Schlüssel oder Zugangsdaten
+- keine Musikdateien, Radiostreams oder Senderlogos
+- Jingles und Promos werden nicht in den Liedkatalog übernommen
+- bis zu 500 zuletzt abgerufene Einträge als lokaler Offline-Fallback
 
-Der frühere Live-Titelabruf, seine Bedienelemente und die zugehörige Fetch-Funktion wurden aus dem aktiven App-Code entfernt. Die Fassung v4.7.1 stellt daher im normalen App-Betrieb keine Verbindung zur laut.fm-API her.
+## Einbindung in die App
 
-## Prüfstatus
+Aktuelle Titel und Interpreten werden unsichtbar mit dem vorhandenen Liedkatalog zusammengeführt. Beim Sender Linedance Nahetal wird das Muster `Lied – Tanz` konservativ ausgewertet. Ein Tanzvorschlag wird nur dann fest verknüpft, wenn sein normalisierter Name exakt zu einem vorhandenen Tanz passt.
 
-JavaScript-Syntax, Build-Validierung, Radio-Datentest, Audio-Fingerprint-Test, Get-in-Line-Parser, Video-Schrittmuster, Originalgrafiken und ursprüngliche CSS-Basis wurden erfolgreich geprüft. Die Mehr-Ansicht wurde bei 390 Pixel Breite kontrolliert; es besteht kein horizontales Überlaufen und kein Senderkatalog ist sichtbar.
+## Datenschutz
+
+Mikrofon-, Kamera-, Audio- und Videodaten werden weiterhin nicht an laut.fm übertragen. Beim API-Abruf entstehen nur die technisch notwendigen Verbindungsdaten. Die Datenschutzerklärung und Lizenzhinweise wurden an diesen Stand angepasst. Der lokale Live-API-Cache wird von der zentralen Funktion „Alle lokalen Nutzerdaten löschen“ mit entfernt.
+
+## Gestaltung
+
+Die unerwünschte Box „Lokaler Senderkatalog“ bleibt entfernt. Es gibt weiterhin keine sichtbare Senderauswahl, keinen Live-Titel-Button und keinen Radioplayer.
+
+## Prüfung
+
+- JavaScript-Syntax: bestanden
+- statischer Radio-Katalogtest: bestanden
+- neuer Live-API-Selbsttest: bestanden
+- Jingle-Filter: bestanden
+- Linedance-Titelparser: bestanden
+- Offline-Fallback: bestanden
+- Audio-Fingerprint-Selbsttest: bestanden
+- Video-Schrittmuster: 8 von 8 bestanden
+- Get-in-Line-Parser: bestanden
+- Originalgrafiken und ursprüngliche CSS-Basis: unverändert

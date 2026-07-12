@@ -1,0 +1,24 @@
+CLDF v4.7.2 – LIVE-API PRÜFEN
+================================
+
+Die API arbeitet absichtlich unsichtbar im Hintergrund. Es gibt keine Senderbox.
+
+Einfache Prüfung im Browser:
+
+1. App über HTTPS oder localhost öffnen.
+2. Browser-Entwicklertools öffnen (F12).
+3. Im Reiter "Network/Netzwerk" nach "api.laut.fm" filtern.
+4. Nach dem App-Start sollten für die fünf Sender Anfragen an
+   /current_song und /last_songs erscheinen.
+5. Im Reiter "Application/Anwendung" unter Local Storage stehen danach:
+   cldf.v2.radioLiveApiEntries
+   cldf.v2.radioLiveApiStatus
+
+Manueller Konsolentest:
+
+CLDFRadioLiveAPI.getStatus()
+CLDFRadioLiveAPI.getEntries().slice(0, 10)
+CLDFRadioLiveAPI.refresh()
+
+Hinweis:
+Ein Browser, Werbeblocker, DNS-Filter oder Firmen-/Schulnetz kann externe API-Anfragen blockieren. Die App verwendet dann automatisch den lokalen Offline-Katalog.

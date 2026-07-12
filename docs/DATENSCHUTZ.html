@@ -29,7 +29,7 @@
 <body>
   <h1>Datenschutzhinweise zur CLDF Offline-App</h1>
   <p class="lead">Die App ist datensparsam aufgebaut: Audio-, Kamera- und Videodaten werden für die Erkennung direkt im Browser verarbeitet. Es gibt keine Benutzerkonten, keine Werbung und kein eingebautes Tracking.</p>
-  <div class="meta"><span>App-Version 4.7.1</span><span>Stand: 12. Juli 2026</span><span>Geltungsbereich: Web-App/PWA</span></div>
+  <div class="meta"><span>App-Version 4.7.2</span><span>Stand: 12. Juli 2026</span><span>Geltungsbereich: Web-App/PWA</span></div>
 
   <section class="card">
     <h2>1. Verantwortlicher</h2>
@@ -45,7 +45,7 @@
   <section class="card notice">
     <h2>2. Wichtigster Grundsatz</h2>
     <p>Die CLDF-App übermittelt Mikrofonaufnahmen, ausgewählte Musikdateien, Kameraaufnahmen und ausgewählte Videos nicht an einen Musikerkennungs-, KI- oder Analyseserver. Die Erkennung läuft lokal mit JavaScript, Web Audio, IndexedDB und dem mitgelieferten MediaPipe-Modell.</p>
-    <p>Eine Internetverbindung entsteht trotzdem beim erstmaligen oder erneuten Laden der App vom Webserver sowie beim bewussten Öffnen externer Links.</p>
+    <p>Eine Internetverbindung entsteht trotzdem beim erstmaligen oder erneuten Laden der App vom Webserver, beim automatischen Abruf aktueller Radio-Metadaten aus der öffentlichen laut.fm-API sowie beim bewussten Öffnen externer Links.</p>
   </section>
 
   <section class="card">
@@ -97,6 +97,7 @@
       <li>App-Einstellungen und Einrichtungsstatus,</li>
       <li>Bewegungsreferenzen,</li>
       <li>Audio-Fingerprints und importierte Get-in-Line-Katalogdaten,</li>
+      <li>bis zu 500 zuletzt online abgerufene Radio-Metadatensätze sowie den technischen Zeitpunkt des letzten Abrufs,</li>
       <li>technisch notwendige App-Dateien für den Offline-Betrieb.</li>
     </ul>
     <p>Die Speicherung dient den ausdrücklich ausgewählten App-Funktionen. Für technisch notwendige Zugriffe auf die Endeinrichtung gilt § 25 Abs. 2 Nr. 2 TDDDG. Es werden keine Werbe-, Analyse- oder Profiling-Cookies gesetzt.</p>
@@ -115,9 +116,16 @@
 
 
   <section class="card">
-    <h2>10. Lokale Radio-Metadaten</h2>
-    <p>Die mitgelieferte Sammlung enthält ausschließlich lokal gespeicherte Sender-, Interpret-, Lied- und Tanzvorschlagsmetadaten. Sie wird als Hintergrundkatalog auf dem Gerät verarbeitet; Musikdateien oder Radiostreams sind nicht Bestandteil der App.</p>
-    <p>In App-Version 4.7.1 gibt es keine sichtbare Senderauswahl und keinen Live-Titelabruf. Die App stellt im normalen Betrieb daher keine Verbindung zur laut.fm-API her. Externe Radio- oder Senderseiten werden ebenfalls nicht automatisch geöffnet.</p>
+    <h2>10. Radio-Metadaten und laut.fm-API</h2>
+    <p>Die mitgelieferte Sammlung enthält lokal gespeicherte Sender-, Interpret-, Lied- und Tanzvorschlagsmetadaten. Musikdateien, Radiostreams und Senderlogos sind nicht Bestandteil der App.</p>
+    <p>Wenn das Gerät online ist, ruft App-Version 4.7.2 im Hintergrund beim Start und danach frühestens etwa alle zehn Minuten die Endpunkte <code>current_song</code> und <code>last_songs</code> der fünf hinterlegten laut.fm-Sender ab. Es gibt weiterhin keine sichtbare Senderbox und keinen Radioplayer. Die abgerufenen Metadaten erweitern ausschließlich den Liedkatalog und werden als Offline-Fallback lokal gespeichert.</p>
+    <table>
+      <tr><th>Zweck</th><td>Aktualisierung von Liedtitel, Interpret und möglichen Tanzhinweisen für die lokale Lied–Tanz-Zuordnung.</td></tr>
+      <tr><th>Übertragene Daten</th><td>Technisch notwendige Verbindungsdaten wie IP-Adresse, Zeitpunkt, Browser-/Geräteangaben und die angefragte API-Adresse. Mikrofon-, Kamera-, Audio- oder Videodaten werden nicht an laut.fm übertragen.</td></tr>
+      <tr><th>Empfänger</th><td>LAUT AG als Betreiberin der öffentlichen laut.fm-API.</td></tr>
+      <tr><th>Rechtsgrundlage</th><td>Art. 6 Abs. 1 lit. f DSGVO; berechtigtes Interesse an einem aktuellen Liedkatalog. Die App bleibt offline nutzbar, wenn die Verbindung nicht verfügbar ist.</td></tr>
+      <tr><th>Speicherdauer</th><td>Bis zu 500 zuletzt abgerufene Metadatensätze bleiben lokal gespeichert, bis sie durch neuere Einträge ersetzt oder über „Alle lokalen Nutzerdaten löschen“ entfernt werden.</td></tr>
+    </table>
   </section>
 
   <section class="card">

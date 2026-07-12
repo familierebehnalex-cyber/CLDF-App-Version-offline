@@ -1,12 +1,28 @@
-CLDF PATCH-UPDATE v4.7.0 -> v4.7.1
-==================================
+CLDF GITHUB-UPDATE v4.7.2
+=========================
 
-1. ZIP-Datei entpacken.
-2. Alle enthaltenen Dateien und Ordner in den Stamm des bestehenden
-   GitHub-Repositorys kopieren.
-3. Vorhandene Dateien ersetzen.
-4. Commit-Nachricht: CLDF v4.7.1
-5. Nach dem GitHub-Pages-Deployment die App vollständig neu laden.
+VARIANTE A – VOLLSTÄNDIGES REPOSITORY
+-------------------------------------
+1. Diese ZIP-Datei auf dem PC entpacken.
+2. Den Inhalt des entpackten Ordners öffnen.
+3. Alle Dateien und Ordner in das bestehende GitHub-Repository kopieren.
+4. Vorhandene Dateien bei Nachfrage ersetzen.
+5. Änderungen mit einer Nachricht wie "CLDF v4.7.2" committen.
+6. Unter GitHub: Settings -> Pages muss als Quelle "GitHub Actions" eingestellt sein.
+7. Unter Actions prüfen, ob "CLDF Offline-App veröffentlichen" erfolgreich läuft.
 
-Dieses Paket enthält nur neue oder gegenüber v4.7.0 geänderte Dateien.
-Es ist nicht als eigenständige vollständige App gedacht.
+WICHTIG
+-------
+Die Dateien müssen direkt im Repository-Stamm liegen. Es darf also nicht noch
+ein zusätzlicher Ordner "CLDF-GitHub-Komplett-v4.7.2-Live-API" im Repository liegen.
+
+Nach dem Update die App einmal neu laden. Bei einer installierten PWA kann es
+nötig sein, die App vollständig zu schließen und erneut zu öffnen, damit der
+Service Worker v4.7.2 den alten Cache ersetzt.
+
+INHALT DIESER VERSION
+---------------------
+- Die sichtbare Box "Lokaler Senderkatalog" wurde entfernt.
+- Senderauswahl, Live-Titel-Schaltfläche und sichtbare Radio-Hinweise wurden entfernt.
+- Die gesammelten Lied- und Tanzdaten bleiben intern für die Suche erhalten.
+- GitHub-Pages-Workflow und Offline-PWA-Unterstützung bleiben enthalten.

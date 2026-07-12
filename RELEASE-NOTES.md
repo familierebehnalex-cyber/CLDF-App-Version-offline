@@ -1,3 +1,17 @@
+# CLDF Offline-App v4.7.2 – echte Live-API im Hintergrund
+
+- echte Online-Abfragen der öffentlichen laut.fm-API eingebaut
+- beim Online-Start und danach frühestens etwa alle zehn Minuten werden `current_song` und `last_songs` für fünf Sender abgerufen
+- neue Titel werden unsichtbar in den vorhandenen Liedkatalog übernommen
+- Linedance-Nahetal-Titel im Muster `Lied – Tanz` liefern weiterhin konservative Tanzvorschläge
+- bis zu 500 Live-Metadatensätze werden lokal als Offline-Fallback gespeichert
+- keine sichtbare Senderbox, keine Senderauswahl und kein Radioplayer
+- keine API-Schlüssel, Musikdateien oder Radiostreams erforderlich
+- Datenschutz- und Lizenzhinweise an den aktiven Live-Abruf angepasst
+- App-, Cache- und Paketversion auf 4.7.2 aktualisiert
+
+---
+
 # CLDF Offline-App v4.7.1 – Radio-Daten im Hintergrund
 
 - die sichtbare Box „Lokaler Senderkatalog / Radio-API-Sammlung“ wurde vollständig aus „Mehr“ entfernt

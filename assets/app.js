@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const DATA = window.CLDF_DATA || { dances: [], motionCatalog: [], specialRhythms: [], appVersion: '4.7.1', databaseVersion: 'unbekannt' };
+  const DATA = window.CLDF_DATA || { dances: [], motionCatalog: [], specialRhythms: [], appVersion: '4.7.2', databaseVersion: 'unbekannt' };
   const GETINLINE_DATA = window.GETINLINE_DATA || { dances: [], count: 0, generatedAt: null };
   const VM = window.CLDFVideoMotion;
   const STEP_PATTERN_DB = window.CLDF_STEP_SHEET_PATTERNS || { patterns: [] };
@@ -12,7 +12,8 @@
   const SONG_META = window.CLDF_SONG_METADATA || { entries: [] };
   const RADIO_API_DATA = window.CLDF_RADIO_API_DATA || { stations: [], entries: [], count: 0, stationCount: 0 };
   const RADIO_ENTRIES = Array.isArray(RADIO_API_DATA.entries) ? RADIO_API_DATA.entries : [];
-  const APP_VERSION = '4.7.1';
+  const RADIO_LIVE_API = window.CLDFRadioLiveAPI || null;
+  const APP_VERSION = '4.7.2';
   const DATABASE_VERSION = DATA.databaseVersion || 'unbekannt';
   const CLDF_DANCES = Array.isArray(DATA.dances) ? DATA.dances : [];
   let GETINLINE_DANCES = Array.isArray(GETINLINE_DATA.dances) ? GETINLINE_DATA.dances : [];
@@ -35,6 +36,8 @@
     onboardingSeen: 'cldf.v2.onboardingSeen',
     settings: 'cldf.v2.settings',
     motionReferences: 'cldf.v2.motionReferences',
+    radioLiveEntries: 'cldf.v2.radioLiveApiEntries',
+    radioLiveStatus: 'cldf.v2.radioLiveApiStatus',
   };
 
 
@@ -880,7 +883,9 @@
       songsByTitle.get(key).push(song);
     }
 
-    for (const entry of RADIO_ENTRIES) {
+    const liveEntries = RADIO_LIVE_API?.getEntries?.() || [];
+    const radioEntries = [...RADIO_ENTRIES, ...(Array.isArray(liveEntries) ? liveEntries : [])];
+    for (const entry of radioEntries) {
       if (!entry?.title || entry.isJingle) continue;
       const exactKey = songIdentity(entry.title, entry.artist || '');
       const titleMatches = songsByTitle.get(compactKey(entry.title)) || [];
@@ -895,7 +900,8 @@
       }
       song.radioStations = [...new Set([...(song.radioStations || []), ...(entry.stations || [])])];
       song.radioCandidateDances = [...new Set([...(song.radioCandidateDances || []), ...(entry.candidateDances || [])])];
-      song.radioExactDanceCandidates = [...new Set([...(song.radioExactDanceCandidates || []), ...(entry.exactDanceCandidates || [])])];
+      const exactFromLiveSuggestions = (entry.candidateDances || []).filter((danceTitle) => danceIdsByTitle.has(compactKey(danceTitle)));
+      song.radioExactDanceCandidates = [...new Set([...(song.radioExactDanceCandidates || []), ...(entry.exactDanceCandidates || []), ...exactFromLiveSuggestions])];
       song.radioPlayCount = Number(song.radioPlayCount || 0) + Number(entry.playCount || 0);
       song.radioLastPlayedAt = [song.radioLastPlayedAt, entry.lastPlayedAt].filter(Boolean).sort().at(-1) || '';
       if (!song.sources.includes('laut.fm-Radio-API')) song.sources.push('laut.fm-Radio-API');
@@ -3086,6 +3092,10 @@
     window.addEventListener('hashchange', handleInitialRoute);
     window.addEventListener('online', () => { updateOnlineStatus(); checkOnlineService(false); });
     window.addEventListener('offline', () => updateOnlineStatus());
+    window.addEventListener('cldf:radio-live-updated', () => {
+      // Die Live-Metadaten bleiben unsichtbar im Hintergrund und erweitern nur den Liedkatalog.
+      if ($('#view-search')?.classList.contains('active')) renderSearch(false);
+    });
     window.addEventListener('focus', refreshMicrophoneStatus);
     window.addEventListener('resize', updateViewportMetrics, { passive: true });
     window.addEventListener('orientationchange', () => setTimeout(updateViewportMetrics, 120), { passive: true });
@@ -3126,9 +3136,10 @@
     updateOnlineStatus();
     await refreshMicrophoneStatus();
     await checkOnlineService(false);
+    RADIO_LIVE_API?.start?.();
     runDiagnostics();
     handleInitialRoute();
-    $('#versionText').textContent = `CLDF v4.7.1 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${allFingerprintEntries().length} Audio-Referenzen · Liedzuordnung zuerst · BPM/Motion als Reserve`;
+    $('#versionText').textContent = `CLDF v4.7.2 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${allFingerprintEntries().length} Audio-Referenzen · Liedzuordnung zuerst · BPM/Motion als Reserve`;
     // Der Startbildschirm bleibt bei jedem neuen App-Start sichtbar,
     // bis der Benutzer bewusst auf „App öffnen“ tippt.
     $('#splash').classList.remove('hidden');

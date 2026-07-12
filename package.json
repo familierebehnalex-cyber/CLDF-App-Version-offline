@@ -1,6 +1,6 @@
 {
   "name": "cldf-offline-app",
-  "version": "4.7.1",
+  "version": "4.7.2",
   "private": true,
   "description": "CLDF Offline Line Dance App mit lokaler Audio-, Video- und Radio-API-Metadatensuche",
   "scripts": {
@@ -11,7 +11,8 @@
     "validate": "node tools/validate-build.js",
     "test:fingerprint": "node tools/test-audio-fingerprint.js",
     "test:video-steps": "node tools/test-video-step-matcher.js",
-    "test:radio": "node tools/test-radio-api.js"
+    "test:radio": "node tools/test-radio-api.js",
+    "test:radio-live": "node tools/test-radio-live-api.js"
   },
   "engines": {
     "node": ">=18.17"

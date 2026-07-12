@@ -1,0 +1,24 @@
+CLDF GITHUB-UPDATE v4.7.1 -> v4.7.2
+====================================
+
+Dieses kleine Paket ist nur für ein Repository gedacht, in dem bereits
+CLDF v4.7.1 vollständig liegt.
+
+1. ZIP entpacken.
+2. Alle enthaltenen Dateien und Ordner in den Stamm des bestehenden
+   GitHub-Repositorys hochladen.
+3. Vorhandene Dateien ersetzen/überschreiben.
+4. Darauf achten, dass assets/radio-live-api.js neu hinzugefügt wird.
+5. Änderungen committen, zum Beispiel mit "CLDF v4.7.2 Live-API".
+6. Nach dem GitHub-Pages-Deployment die App einmal vollständig neu laden.
+   Bei einer installierten PWA kann es nötig sein, die App zu schließen
+   und erneut zu öffnen, damit der Service Worker v4.7.2 aktiv wird.
+
+Die sichtbare Senderbox bleibt entfernt. Die laut.fm-API arbeitet nur im
+Hintergrund und erweitert den Liedkatalog.
+
+Kontrolle:
+- LIVE-API-PRUEFEN.txt lesen.
+- Im Browser-Netzwerk nach api.laut.fm filtern.
+- Der lokale Offline-Fallback steht in Local Storage unter
+  cldf.v2.radioLiveApiEntries.
