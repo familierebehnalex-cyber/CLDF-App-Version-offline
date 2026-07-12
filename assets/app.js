@@ -2912,11 +2912,31 @@
     if (['search', 'favorites', 'practice', 'more'].includes(route)) showView(route, { keepScroll: true });
   }
 
+  function updateViewportMetrics() {
+    const viewport = window.visualViewport;
+    const bottomOffset = viewport
+      ? Math.max(0, Math.round(window.innerHeight - viewport.height - viewport.offsetTop))
+      : 0;
+    document.documentElement.style.setProperty('--viewport-bottom-offset', `${bottomOffset}px`);
+
+    const navigation = $('.bottom-nav');
+    if (navigation) {
+      const height = Math.max(76, Math.ceil(navigation.getBoundingClientRect().height));
+      document.documentElement.style.setProperty('--actual-nav-height', `${height}px`);
+    }
+  }
+
   function bindEvents() {
     $('#enterApp').addEventListener('click', () => {
-      storage.set(STORAGE.splashSeen, '1');
       $('#splash').style.opacity = '0';
-      setTimeout(() => { $('#splash').classList.add('hidden'); $('#app').classList.remove('hidden'); if (!storage.get(STORAGE.onboardingSeen)) showOnboarding(); }, 350);
+      setTimeout(() => {
+        $('#splash').classList.add('hidden');
+        $('#app').classList.remove('hidden');
+        document.body.classList.add('app-open');
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+        updateViewportMetrics();
+        if (!storage.get(STORAGE.onboardingSeen)) showOnboarding();
+      }, 350);
     });
     $('#brandHome').addEventListener('click', () => showView('home'));
     $$('.bottom-nav button').forEach((button) => button.addEventListener('click', () => showView(button.dataset.view)));
@@ -2990,7 +3010,16 @@
     window.addEventListener('online', () => { updateOnlineStatus(); checkOnlineService(false); });
     window.addEventListener('offline', () => updateOnlineStatus());
     window.addEventListener('focus', refreshMicrophoneStatus);
-    document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshMicrophoneStatus(); });
+    window.addEventListener('resize', updateViewportMetrics, { passive: true });
+    window.addEventListener('orientationchange', () => setTimeout(updateViewportMetrics, 120), { passive: true });
+    window.visualViewport?.addEventListener('resize', updateViewportMetrics, { passive: true });
+    window.visualViewport?.addEventListener('scroll', updateViewportMetrics, { passive: true });
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        refreshMicrophoneStatus();
+        setTimeout(updateViewportMetrics, 80);
+      }
+    });
   }
 
   function showInstallHelp() {
@@ -3022,11 +3051,14 @@
     await checkOnlineService(false);
     runDiagnostics();
     handleInitialRoute();
-    $('#versionText').textContent = `CLDF v4.5.5 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${allFingerprintEntries().length} Audio-Referenzen · Liedzuordnung zuerst · BPM/Motion als Reserve`;
-    if (storage.get(STORAGE.splashSeen)) {
-      $('#splash').classList.add('hidden');
-      $('#app').classList.remove('hidden');
-    }
+    $('#versionText').textContent = `CLDF v4.5.6 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${allFingerprintEntries().length} Audio-Referenzen · Liedzuordnung zuerst · BPM/Motion als Reserve`;
+    // Der Startbildschirm bleibt bei jedem neuen App-Start sichtbar,
+    // bis der Benutzer bewusst auf „App öffnen“ tippt.
+    $('#splash').classList.remove('hidden');
+    $('#splash').style.opacity = '1';
+    $('#app').classList.add('hidden');
+    document.body.classList.remove('app-open');
+    updateViewportMetrics();
   }
 
   document.addEventListener('DOMContentLoaded', init);
