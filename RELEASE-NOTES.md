@@ -1,4 +1,38 @@
-# CLDF-App v4.6.2 – Datenschutz, Urheberrecht und Designschutz
+# CLDF Offline-App v4.7.1 – Radio-Daten im Hintergrund
+
+- die sichtbare Box „Lokaler Senderkatalog / Radio-API-Sammlung“ wurde vollständig aus „Mehr“ entfernt
+- sichtbare Radio-API- und Senderhinweise wurden aus Liedauswahl, Diagnose und Versionsanzeige entfernt
+- die importierten Lied- und Tanzzuordnungsdaten bleiben intern in der lokalen Suche verfügbar
+- ohne sichtbare Schaltfläche wird kein Live-Senderabruf durch den Nutzer ausgelöst
+- Offline-Cache und App-Version auf 4.7.1 aktualisiert
+
+---
+
+# CLDF Offline-App v4.7.0 – Radio-API-Integration
+
+## Neu
+
+- 1.265 gesammelte Radio-API-Datensätze aus fünf laut.fm-Sendern eingelesen
+- 1.254 eindeutige Lied-/Interpret-Einträge zusammengeführt
+- 1.239 abspielbare Liedmetadatensätze lokal und offline durchsuchbar
+- 263 Tanzvorschläge aus Senderdaten, davon 63 exakt mit vorhandenen Tänzen verknüpft
+- Linedance-Nahetal-Muster `Lied – Tanz` konservativ ausgewertet
+- Radio-Lieder erweitern Liedsuche, Dateinamensuche und Fingerprint-Zuordnung
+- optionaler aktueller Titel über die laut.fm-API, ausschließlich nach bewusstem Klick
+- Datenschutz- und Urheberrechtstexte um die Radio-API ergänzt
+- Jingles und Promos bleiben im Quellarchiv, werden aber nicht als Lieder angeboten
+
+## Unverändert
+
+- keine Musikdateien oder Radiostreams im Offline-Katalog
+- keine API-Schlüssel erforderlich
+- Mikrofon-, Audio- und Videoanalyse bleiben lokal
+- ursprüngliche Grafiken und CSS-Basis bleiben unverändert
+
+
+## Vorheriger Stand
+
+# CLDF-App v4.7.0 – Datenschutz, Urheberrecht und Designschutz
 
 - vollständige, technisch abgeglichene Datenschutzhinweise ergänzt
 - Impressum innerhalb der App ergänzt
@@ -7,7 +41,7 @@
 - Drittanbieter-Lizenzseite für MediaPipe ergänzt
 - zentrale Funktion zum Löschen aller lokalen Nutzerdaten ergänzt
 - Hosting-/externe-Link-Hinweise präzisiert
-- interne Versionsangaben auf v4.6.2 vereinheitlicht
+- interne Versionsangaben auf v4.7.0 vereinheitlicht
 - Service-Worker-Cache und Offline-Dateiliste aktualisiert
 
 # CLDF-App v4.5.5

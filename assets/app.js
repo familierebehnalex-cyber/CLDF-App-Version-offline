@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const DATA = window.CLDF_DATA || { dances: [], motionCatalog: [], specialRhythms: [], appVersion: '4.5.1', databaseVersion: 'unbekannt' };
+  const DATA = window.CLDF_DATA || { dances: [], motionCatalog: [], specialRhythms: [], appVersion: '4.7.1', databaseVersion: 'unbekannt' };
   const GETINLINE_DATA = window.GETINLINE_DATA || { dances: [], count: 0, generatedAt: null };
   const VM = window.CLDFVideoMotion;
   const STEP_PATTERN_DB = window.CLDF_STEP_SHEET_PATTERNS || { patterns: [] };
@@ -10,7 +10,9 @@
   const STORE = window.CLDFLocalStore;
   const FINGERPRINT_DB = window.CLDF_AUDIO_FINGERPRINTS || { entries: [] };
   const SONG_META = window.CLDF_SONG_METADATA || { entries: [] };
-  const APP_VERSION = '4.5.5';
+  const RADIO_API_DATA = window.CLDF_RADIO_API_DATA || { stations: [], entries: [], count: 0, stationCount: 0 };
+  const RADIO_ENTRIES = Array.isArray(RADIO_API_DATA.entries) ? RADIO_API_DATA.entries : [];
+  const APP_VERSION = '4.7.1';
   const DATABASE_VERSION = DATA.databaseVersion || 'unbekannt';
   const CLDF_DANCES = Array.isArray(DATA.dances) ? DATA.dances : [];
   let GETINLINE_DANCES = Array.isArray(GETINLINE_DATA.dances) ? GETINLINE_DATA.dances : [];
@@ -573,7 +575,7 @@
     if (!item) return;
     if (item.type === 'song') {
       const song = getSongCatalog().get(item.songKey);
-      if (song) showExactSongResult(song, item.confidence || 100, item.video ? 'Video aus Verlauf' : 'Aus Verlauf', { bpm: item.bpm, confidence: item.tempoConfidence || 0 }, false);
+      if (song) showCatalogSongResult(song, item.confidence || 100, item.video ? 'Video aus Verlauf' : 'Aus Verlauf', { bpm: item.bpm, confidence: item.tempoConfidence || 0 }, false);
       else toast('Dieses Lied ist nicht mehr in der Datenbank.');
     } else if (item.type === 'video') {
       const dance = state.dances.find((candidate) => candidate.id === item.danceId);
@@ -854,13 +856,53 @@
 
   function getSongCatalog() {
     const songs = new Map();
+    const danceIdsByTitle = new Map();
     for (const dance of state.dances) {
+      const danceTitleKey = compactKey(dance.title);
+      if (danceTitleKey) {
+        if (!danceIdsByTitle.has(danceTitleKey)) danceIdsByTitle.set(danceTitleKey, []);
+        danceIdsByTitle.get(danceTitleKey).push(dance.id);
+      }
       for (const music of dance.music || []) {
         if (!music.title || compactKey(music.title) === 'zu prufen') continue;
         const songKey = songIdentity(music.title, music.artist || '');
-        if (!songs.has(songKey)) songs.set(songKey, { songKey, title: music.title, artist: music.artist || '', danceIds: [] });
+        if (!songs.has(songKey)) songs.set(songKey, { songKey, title: music.title, artist: music.artist || '', danceIds: [], sources: [] });
         const song = songs.get(songKey);
         if (!song.danceIds.includes(dance.id)) song.danceIds.push(dance.id);
+        if (!song.sources.includes(dance.sourceGroup || dance.source || 'CLDF')) song.sources.push(dance.sourceGroup || dance.source || 'CLDF');
+      }
+    }
+
+    const songsByTitle = new Map();
+    for (const song of songs.values()) {
+      const key = compactKey(song.title);
+      if (!songsByTitle.has(key)) songsByTitle.set(key, []);
+      songsByTitle.get(key).push(song);
+    }
+
+    for (const entry of RADIO_ENTRIES) {
+      if (!entry?.title || entry.isJingle) continue;
+      const exactKey = songIdentity(entry.title, entry.artist || '');
+      const titleMatches = songsByTitle.get(compactKey(entry.title)) || [];
+      let song = songs.get(exactKey);
+      if (!song && titleMatches.length === 1 && (!titleMatches[0].artist || !entry.artist)) song = titleMatches[0];
+      if (!song) {
+        song = { songKey: exactKey, title: entry.title, artist: entry.artist || '', danceIds: [], sources: [] };
+        songs.set(exactKey, song);
+        const titleKey = compactKey(entry.title);
+        if (!songsByTitle.has(titleKey)) songsByTitle.set(titleKey, []);
+        songsByTitle.get(titleKey).push(song);
+      }
+      song.radioStations = [...new Set([...(song.radioStations || []), ...(entry.stations || [])])];
+      song.radioCandidateDances = [...new Set([...(song.radioCandidateDances || []), ...(entry.candidateDances || [])])];
+      song.radioExactDanceCandidates = [...new Set([...(song.radioExactDanceCandidates || []), ...(entry.exactDanceCandidates || [])])];
+      song.radioPlayCount = Number(song.radioPlayCount || 0) + Number(entry.playCount || 0);
+      song.radioLastPlayedAt = [song.radioLastPlayedAt, entry.lastPlayedAt].filter(Boolean).sort().at(-1) || '';
+      if (!song.sources.includes('laut.fm-Radio-API')) song.sources.push('laut.fm-Radio-API');
+      for (const danceTitle of song.radioExactDanceCandidates) {
+        for (const danceId of danceIdsByTitle.get(compactKey(danceTitle)) || []) {
+          if (!song.danceIds.includes(danceId)) song.danceIds.push(danceId);
+        }
       }
     }
     return songs;
@@ -1327,7 +1369,7 @@
   function openManualSongPicker() {
     const songs = [...getSongCatalog().values()].sort((a, b) => a.title.localeCompare(b.title, 'de'));
     openDialog(`
-      <div class="dialog-hero"><p class="eyebrow">Manuelle Auswahl</p><h2>Lied auswählen</h2><p>Zeigt alle Tänze aus CLDF und Get-in-Line, die diesem Lied zugeordnet sind.</p></div>
+      <div class="dialog-hero"><p class="eyebrow">Manuelle Auswahl</p><h2>Lied auswählen</h2><p>Durchsucht alle lokal gespeicherten Liedzuordnungen. Einträge ohne feste Tanzzuordnung werden entsprechend gekennzeichnet.</p></div>
       <div class="song-picker">
         <input id="songPickerSearch" type="search" placeholder="Lied oder Interpret …" autocomplete="off">
         <div id="songPickerList" class="song-picker-list"></div>
@@ -1335,11 +1377,11 @@
     const render = () => {
       const query = normalize($('#songPickerSearch').value);
       const filtered = songs.filter((song) => !query || normalize(`${song.title} ${song.artist}`).includes(query)).slice(0, 120);
-      $('#songPickerList').innerHTML = filtered.map((song) => `<button class="song-choice" type="button" data-song-key="${escapeHtml(song.songKey)}"><strong>${escapeHtml(song.title)}</strong><small>${escapeHtml(song.artist)} · ${song.danceIds.length} Tanz${song.danceIds.length === 1 ? '' : 'e'}</small></button>`).join('') || '<div class="empty-state">Kein Lied gefunden.</div>';
+      $('#songPickerList').innerHTML = filtered.map((song) => `<button class="song-choice" type="button" data-song-key="${escapeHtml(song.songKey)}"><strong>${escapeHtml(song.title)}</strong><small>${escapeHtml(song.artist || 'Interpret nicht angegeben')} · ${song.danceIds.length ? `${song.danceIds.length} Tanz${song.danceIds.length === 1 ? '' : 'e'}` : 'Noch kein fester Tanz'}</small></button>`).join('') || '<div class="empty-state">Kein Lied gefunden.</div>';
       $$('[data-song-key]', $('#songPickerList')).forEach((button) => button.addEventListener('click', () => {
         closeDialog();
         const song = getSongCatalog().get(button.dataset.songKey);
-        if (song) showExactSongResult(song, 100, 'Manuell ausgewählt', { bpm: NaN, confidence: 0 });
+        if (song) showCatalogSongResult(song, 100, 'Manuell ausgewählt', { bpm: NaN, confidence: 0 });
       }));
     };
     $('#songPickerSearch').addEventListener('input', render);
@@ -1606,6 +1648,17 @@
     if (addToHistory) addHistory({ type: 'song', songKey: song.songKey, title: song.title, artist: song.artist, confidence, bpm: Number.isFinite(tempo.bpm) ? Math.round(tempo.bpm) : null, tempoConfidence: tempo.confidence || 0, video: Boolean(options.videoMotion) });
   }
 
+  function showCatalogSongResult(song, confidence, source, tempo = {}, addToHistory = true, options = {}) {
+    if (Array.isArray(song?.danceIds) && song.danceIds.length) {
+      showExactSongResult(song, confidence, source, tempo, addToHistory, options);
+      return;
+    }
+    showAnalysisResult(tempo, addToHistory, `${source} · kein fest zugeordneter Tanz`, {
+      ...options,
+      recognizedSong: song,
+    });
+  }
+
   function showAnalysisResult(tempo, addToHistory = true, source = 'Tempo-basierte Analyse', options = {}) {
     const bpm = Number.isFinite(tempo.bpm) ? Math.round(tempo.bpm) : NaN;
     const possibleBpms = tempoValues(tempo);
@@ -1644,7 +1697,10 @@
       $('#primaryDanceResult').innerHTML = '<div class="empty-state">Noch kein belastbarer Tanzvorschlag. Tippe das Tempo im Takt oder gib die BPM manuell ein.</div>';
     }
     showView('result');
-    if (addToHistory) addHistory({ type: 'tempo', bpm: Number.isFinite(bpm) ? bpm : null, tempoConfidence: tempo.confidence || 0 });
+    if (addToHistory) {
+      if (recognizedSong?.songKey) addHistory({ type: 'song', songKey: recognizedSong.songKey, title: recognizedSong.title, artist: recognizedSong.artist || '', confidence: 100, bpm: Number.isFinite(bpm) ? bpm : null, tempoConfidence: tempo.confidence || 0 });
+      else addHistory({ type: 'tempo', bpm: Number.isFinite(bpm) ? bpm : null, tempoConfidence: tempo.confidence || 0 });
+    }
   }
 
   function persistMotionReferences() {
@@ -2107,7 +2163,7 @@
     try {
       const result = await identifyAudioBlob(blob);
       if (result.song) {
-        showExactSongResult(result.song, result.confidence, result.source, result.tempo);
+        showCatalogSongResult(result.song, result.confidence, result.source, result.tempo);
         return;
       }
       const source = result.recognizedSong
@@ -2177,7 +2233,7 @@
     const accepted = acceptedMotionMatch(matches);
     setTaskProgress(false);
 
-    if (audioResult?.song) {
+    if (audioResult?.song?.danceIds?.length) {
       const bestForDisplay = accepted || matches[0] || null;
       showExactSongResult(
         audioResult.song,
@@ -2204,7 +2260,7 @@
       audioResult?.tempo || { bpm: NaN, confidence: 0, possibleBpms: [] },
       true,
       'Videoanalyse: kein eindeutiger Lied-, Körper- oder Schritttreffer',
-      { videoMotion: signature, motionMatch: matches[0] || null, recognizedSong: audioResult?.recognizedSong },
+      { videoMotion: signature, motionMatch: matches[0] || null, recognizedSong: audioResult?.song || audioResult?.recognizedSong },
     );
     setVideoRecognitionStatus('', 'Videoanalyse abgeschlossen', (state.motionReferences.length || STEP_PATTERNS.length)
       ? 'Kein eindeutiger Körper- oder Schritttreffer. Deshalb werden nur vorsichtige BPM-Vorschläge angezeigt.'
@@ -2859,6 +2915,26 @@
     toast('Eigene App-Daten zurückgesetzt.');
   }
 
+  async function deleteAllLocalUserData() {
+    const confirmed = confirm('Wirklich alle lokal gespeicherten CLDF-Nutzerdaten löschen? Dazu gehören Favoriten, Verlauf, eigene Tänze, Einstellungen, Audio-Fingerprints, Katalogimporte und Bewegungsreferenzen. Diese Aktion kann nicht rückgängig gemacht werden.');
+    if (!confirmed) return;
+    try {
+      state.mediaStream?.getTracks?.().forEach((track) => track.stop());
+      state.liveVideoController?.abort?.();
+      Object.values(STORAGE).forEach((key) => storage.remove(key));
+      if (STORE?.clearAllData) await STORE.clearAllData();
+      else {
+        if (STORE?.clearFingerprints) await STORE.clearFingerprints();
+        if (STORE?.deleteCatalog) await STORE.deleteCatalog('getinline');
+      }
+      toast('Alle lokalen Nutzerdaten wurden gelöscht. Die App wird neu geladen.', 4500);
+      setTimeout(() => window.location.reload(), 700);
+    } catch (error) {
+      console.error(error);
+      toast(`Lokale Daten konnten nicht vollständig gelöscht werden: ${error.message || 'Unbekannter Fehler'}`, 6500);
+    }
+  }
+
   function renderDiagnostics(items) {
     $('#diagnosticsList').innerHTML = items.map((item) => `<div class="diagnostic-item ${escapeHtml(item.level || '')}"><span class="diagnostic-mark">${item.level === 'error' ? '×' : item.level === 'warn' ? '!' : '✓'}</span><div><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.text)}</small></div></div>`).join('');
   }
@@ -3001,6 +3077,7 @@
     $('#importBackupFile').addEventListener('change', async (event) => { try { if (event.target.files?.[0]) await importFullBackup(event.target.files[0]); } catch (error) { toast(error.message, 4500); } event.target.value = ''; });
     $('#exportCsvBtn').addEventListener('click', exportCsv);
     $('#resetAppDataBtn').addEventListener('click', resetOwnData);
+    $('#deleteAllLocalDataBtn')?.addEventListener('click', () => deleteAllLocalUserData());
     $('#runDiagnosticsBtn').addEventListener('click', () => runDiagnostics());
 
     $('#backFromResult').addEventListener('click', () => showView(state.previousView || 'home'));
@@ -3051,7 +3128,7 @@
     await checkOnlineService(false);
     runDiagnostics();
     handleInitialRoute();
-    $('#versionText').textContent = `CLDF v4.5.6 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${allFingerprintEntries().length} Audio-Referenzen · Liedzuordnung zuerst · BPM/Motion als Reserve`;
+    $('#versionText').textContent = `CLDF v4.7.1 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${allFingerprintEntries().length} Audio-Referenzen · Liedzuordnung zuerst · BPM/Motion als Reserve`;
     // Der Startbildschirm bleibt bei jedem neuen App-Start sichtbar,
     // bis der Benutzer bewusst auf „App öffnen“ tippt.
     $('#splash').classList.remove('hidden');

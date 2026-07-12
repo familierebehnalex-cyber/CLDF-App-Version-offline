@@ -10,10 +10,10 @@ const ROOT = path.resolve(__dirname, '..');
 const required = [
   'index.html', 'manifest.webmanifest', 'service-worker.js', 'server.js',
   'assets/app.js', 'assets/audio-engine.js', 'assets/local-store.js', 'assets/styles.css',
-  'assets/data.js', 'assets/getinline-data.js', 'assets/image-mappings.js', 'assets/song-metadata.js',
+  'assets/data.js', 'assets/getinline-data.js', 'assets/image-mappings.js', 'assets/song-metadata.js', 'assets/radio-api-data.js',
   'assets/video-motion.js', 'assets/step-sheet-patterns.js', 'assets/mediapipe/pose/pose.js',
   'assets/mediapipe/pose/pose_landmark_lite.tflite', 'assets/mediapipe/pose/pose_solution_simd_wasm_bin.wasm',
-  'data/cldf-data.json', 'data/getinline-dances.json', 'data/bild-lied-tanz-zuordnungen.json', 'data/song-metadata.json',
+  'data/cldf-data.json', 'data/getinline-dances.json', 'data/bild-lied-tanz-zuordnungen.json', 'data/song-metadata.json', 'data/radio-api-catalog.json',
   'docs/DATENSCHUTZ.html', 'docs/URHEBERRECHT.html', 'docs/DESIGNSCHUTZ.html', 'docs/IMPRESSUM.html', 'docs/LIZENZEN.html',
 ];
 const missing = required.filter((relative) => !fs.existsSync(path.join(ROOT, relative)));
@@ -31,6 +31,7 @@ const getinline = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/getinline-dan
 const image = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/bild-lied-tanz-zuordnungen.json'), 'utf8'));
 const songs = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/song-metadata.json'), 'utf8'));
 const fingerprints = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/audio-fingerprints.json'), 'utf8'));
+const radio = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/radio-api-catalog.json'), 'utf8'));
 const normalize = (value = '') => String(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 const merged = new Set((cldf.dances || []).map((dance) => normalize(dance.title)));
 for (const mapping of image.mappings || []) merged.add(normalize(mapping.dance));
@@ -66,6 +67,15 @@ const essentialDomIds = [
   'getinlineCatalogStatus', 'appDialog', 'fingerprintProgress', 'liveDanceVideoBtn'
 ];
 const missingDomIds = essentialDomIds.filter((id) => !new RegExp(`id=[\"']${id}[\"']`).test(html));
+const forbiddenVisibleRadioUi = ['radioApiSection', 'radioStationSelect', 'radioCurrentSongBtn'].filter((id) => new RegExp(`id=[\"']${id}[\"']`).test(html));
+if (forbiddenVisibleRadioUi.length) {
+  console.error(`Nicht gewünschte Radio-Oberfläche noch vorhanden: ${forbiddenVisibleRadioUi.join(', ')}`);
+  process.exit(1);
+}
+if (sourceFiles.includes('fetchCurrentRadioSong')) {
+  console.error('Live-Radio-Abruf ist noch im aktiven App-Code enthalten.');
+  process.exit(1);
+}
 if (missingDomIds.length) {
   console.error(`Fehlende wichtige HTML-Elemente: ${missingDomIds.join(', ')}`);
   process.exit(1);
@@ -73,8 +83,9 @@ if (missingDomIds.length) {
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-getinline-parser.js')], { stdio: 'pipe' });
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-audio-fingerprint.js')], { stdio: 'pipe' });
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-video-step-matcher.js')], { stdio: 'pipe' });
+execFileSync(process.execPath, [path.join(ROOT, 'tools/test-radio-api.js')], { stdio: 'pipe' });
 const report = {
-  appVersion: '4.6.2',
+  appVersion: '4.7.1',
   generatedAt: new Date().toISOString(),
   requiredFilesPresent: true,
   javascriptSyntaxValid: true,
@@ -82,6 +93,7 @@ const report = {
   getInLineParserTestsPassed: true,
   audioFingerprintSelfTestPassed: true,
   videoStepMatcherSelfTestPassed: true,
+  radioApiSelfTestPassed: true,
   mediaPipePoseBundled: true,
   mediaPipePoseModel: 'BlazePose GHUM Lite / MediaPipe Pose 0.5.1675469404',
   builtInSheetPatterns: 8,
@@ -106,6 +118,12 @@ const report = {
   getInLineEmbeddedCount: (getinline.dances || []).length,
   mergedDanceNamesIncludingGetInLine: merged.size,
   songMetadataEntries: (songs.entries || []).length,
+  radioApiStations: radio.stationCount,
+  radioApiSourceRecords: radio.sourceRecordCount,
+  radioApiUniqueEntries: radio.count,
+  radioApiPlayableSongs: radio.playableSongCount,
+  radioApiDanceSuggestions: radio.entriesWithDanceSuggestion,
+  radioApiExactDanceMatches: radio.entriesWithExactDanceMatch,
   songsWithArtist: (songs.entries || []).filter((entry) => entry.artist).length,
   songsWithBpm: (songs.entries || []).filter((entry) => Array.isArray(entry.bpm) && entry.bpm.length).length,
   microphoneSeconds: 12,
@@ -113,6 +131,9 @@ const report = {
   embeddedAudioFingerprints: (fingerprints.entries || []).length,
   indexedDbAudioLibrary: true,
   indexedDbGetInLineImport: true,
+  staticRadioApiCatalog: true,
+  radioCatalogUiVisible: false,
+  activeLiveRadioApi: false,
   githubCatalogUpdater: fs.existsSync(path.join(ROOT, '.github/workflows/update-getinline.yml')),
   githubPagesWorkflow: fs.existsSync(path.join(ROOT, '.github/workflows/deploy-pages.yml')),
   serverApiRemoved: forbidden.length === 0,

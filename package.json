@@ -1,8 +1,8 @@
 {
   "name": "cldf-offline-app",
-  "version": "4.6.2",
+  "version": "4.7.1",
   "private": true,
-  "description": "CLDF Offline Line Dance App mit lokaler Audio-Fingerprint- und MediaPipe-Schritterkennung",
+  "description": "CLDF Offline Line Dance App mit lokaler Audio-, Video- und Radio-API-Metadatensuche",
   "scripts": {
     "start": "node server.js",
     "sync:getinline": "node tools/sync-getinline.js",
@@ -10,7 +10,8 @@
     "test:getinline": "node tools/test-getinline-parser.js",
     "validate": "node tools/validate-build.js",
     "test:fingerprint": "node tools/test-audio-fingerprint.js",
-    "test:video-steps": "node tools/test-video-step-matcher.js"
+    "test:video-steps": "node tools/test-video-step-matcher.js",
+    "test:radio": "node tools/test-radio-api.js"
   },
   "engines": {
     "node": ">=18.17"

@@ -1,35 +1,17 @@
-# Fertigstellungsbericht – CLDF Offline-App v4.6.2
+# Fertigstellungsbericht – CLDF Offline-App v4.7.1
 
-## Schwerpunkt dieser Version
+## Änderung
 
-Die Fassung v4.6.2 erweitert die bestehende Offline-Line-Dance-App um einen technisch abgeglichenen Rechtsbereich. Das ursprüngliche CLDF-Design, die Hero-Grafiken und die zentralen App-Symbole wurden nicht verändert.
+Die sichtbare Box „Lokaler Senderkatalog / Radio-API-Sammlung“ wurde aus dem Bereich **Mehr** entfernt. Ebenso entfernt wurden sichtbare Radio-Hinweise in manueller Liedauswahl, Diagnose und Versionsanzeige.
 
-## Neu und überarbeitet
+## Weiterhin enthalten
 
-- ausführliche Datenschutzhinweise für Hosting, Mikrofon, Kamera, Dateien, lokale Speicherung, Offline-Cache, externe Links und Betroffenenrechte
-- Datenschutzhinweise direkt vor Mikrofon- und Kameranutzung
-- eigenes App-Impressum
-- überarbeitete Urheberrechts- und Nutzungsregeln
-- Designschutz-Seite mit neutralem Status und ohne Behauptung einer Registrierung
-- Drittanbieter-Lizenzseite für MediaPipe / BlazePose
-- zentrale Schaltfläche zum Löschen lokaler Nutzerdaten
-- IndexedDB-Gesamtlöschung für Audio-Fingerprints und Katalogimporte
-- Aktualisierung des Service-Worker-Caches und der Offline-Dateiliste
-- vereinheitlichte aktuelle App-Version 4.6.2 in Programm- und Datendateien
-- rechtliche Prüfliste für Betreiber-, Hosting-, Rechte- und Schutzrechtsfragen
+Die importierten Lied- und Tanzzuordnungsdaten bleiben als rein lokaler Hintergrundkatalog eingebunden. Sie erweitern die Liedsuche und feste Tanzzuordnungen, ohne eine eigene Senderoberfläche anzuzeigen. Jingles und Promos bleiben ausgeschlossen.
 
-## Technischer Datenschutzstand
+## Onlineverhalten
 
-Audio, Kamera und Video werden innerhalb der App lokal verarbeitet. Die aktiven App-Dateien enthalten keinen bekannten Tracking-Code und keinen externen Musikerkennungs-Endpunkt. Beim Laden der online veröffentlichten App entstehen weiterhin technisch notwendige Verbindungsdaten beim jeweiligen Hosting-Anbieter. Dessen konkrete Angaben müssen vor Veröffentlichung in die Datenschutzhinweise übernommen werden.
-
-## Zentrale Datenlöschung
-
-Die neue Löschfunktion entfernt Favoriten, Übungslisten, Verlauf, eigene Tänze, Einstellungen, Bewegungsreferenzen, Audio-Fingerprints und importierte Katalogdaten. Der technische Offline-Cache und Browserberechtigungen bleiben bestehen und werden in der Oberfläche ausdrücklich getrennt erklärt.
+Der frühere Live-Titelabruf, seine Bedienelemente und die zugehörige Fetch-Funktion wurden aus dem aktiven App-Code entfernt. Die Fassung v4.7.1 stellt daher im normalen App-Betrieb keine Verbindung zur laut.fm-API her.
 
 ## Prüfstatus
 
-Alle eingebauten automatischen Tests, Syntaxprüfungen, Dateiprüfungen, Linkprüfungen, Audio-/Video-Selbsttests und Originaldesign-Prüfungen wurden bestanden. Details stehen in `TESTBERICHT-v4.6.2.md` und `VALIDIERUNG.json`.
-
-## Noch offen
-
-Vor einer öffentlichen Veröffentlichung müssen insbesondere der tatsächliche Hosting-Anbieter, die aktuellen Vereins-/Vertretungsangaben, die Rechtekette aller Grafiken und das Datum einer ersten Designveröffentlichung bestätigt werden. Die Texte sind keine anwaltliche Einzelfallprüfung.
+JavaScript-Syntax, Build-Validierung, Radio-Datentest, Audio-Fingerprint-Test, Get-in-Line-Parser, Video-Schrittmuster, Originalgrafiken und ursprüngliche CSS-Basis wurden erfolgreich geprüft. Die Mehr-Ansicht wurde bei 390 Pixel Breite kontrolliert; es besteht kein horizontales Überlaufen und kein Senderkatalog ist sichtbar.

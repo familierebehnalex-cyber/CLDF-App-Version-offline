@@ -1,0 +1,12 @@
+CLDF PATCH-UPDATE v4.7.0 -> v4.7.1
+==================================
+
+1. ZIP-Datei entpacken.
+2. Alle enthaltenen Dateien und Ordner in den Stamm des bestehenden
+   GitHub-Repositorys kopieren.
+3. Vorhandene Dateien ersetzen.
+4. Commit-Nachricht: CLDF v4.7.1
+5. Nach dem GitHub-Pages-Deployment die App vollständig neu laden.
+
+Dieses Paket enthält nur neue oder gegenüber v4.7.0 geänderte Dateien.
+Es ist nicht als eigenständige vollständige App gedacht.

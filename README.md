@@ -1,4 +1,4 @@
-# CLDF Offline-App v4.6.2
+# CLDF Offline-App v4.7.1
 
 Installierbare Line-Dance-PWA im ursprünglichen CLDF-Design. Die Kernfunktionen laufen lokal: Tanzsuche, Lied–Tanz-Zuordnung, Favoriten, Übungslisten, Audio-Fingerprints, BPM-/Motion-/Rhythmusregeln sowie eine neue MediaPipe-Videoanalyse.
 
@@ -35,6 +35,19 @@ Vergleichsreihenfolge bei Video:
 Eingebaut sind zunächst acht vorbereitete Startermuster: Electric Slide, Tush Push, Black Coffee, God Blessed Texas, Canadian Stomp, Copperhead Road, Stroll Along Cha Cha und 16-Step. Weitere Tänze können später als symbolische Sheet-Muster oder durch eigene Referenzvideos ergänzt werden.
 
 Die Videoerkennung ist bewusst als **Beta-Vorschlag** gekennzeichnet. Ohne sicheren Liedtreffer behauptet die App nicht, einen Tanz zweifelsfrei erkannt zu haben.
+
+
+## Erweiterte lokale Lieddaten
+
+Die bereitgestellte Sammlung wurde als lokaler Metadatenkatalog im Hintergrund eingebaut:
+
+- 1.265 Quelldatensätze aus fünf laut.fm-Sendern
+- 1.254 eindeutige Lied-/Interpret-Einträge
+- 1.239 abspielbare Liedmetadatensätze
+- 263 Tanzvorschläge, davon 63 exakt mit bekannten Tänzen verknüpft
+- keine API-Schlüssel oder Zugangsdaten erforderlich
+
+Die Daten erweitern intern die lokale Lied- und Tanzzuordnung. Eine eigene Senderkatalog-Box, eine Senderauswahl und ein Live-Titelabruf werden in v4.7.1 nicht angezeigt oder ausgeführt. Jingles, Promos, Musikdateien und Radiostreams sind nicht Bestandteil des Liedkatalogs.
 
 ## Offline-Betrieb
 
@@ -104,6 +117,6 @@ npm start
 
 ## Datenschutz, Rechte und Impressum
 
-Die App enthält in v4.6.2 eigene Seiten für Datenschutz, Urheberrecht/Quellen, Designschutz, Impressum und Drittanbieter-Lizenzen. Unter **Mehr → Datenschutz, Rechte & Impressum** können außerdem alle lokal gespeicherten Nutzerdaten gemeinsam gelöscht werden.
+Die App enthält in v4.7.1 eigene Seiten für Datenschutz, Urheberrecht/Quellen, Designschutz, Impressum und Drittanbieter-Lizenzen. Unter **Mehr → Datenschutz, Rechte & Impressum** können außerdem alle lokal gespeicherten Nutzerdaten gemeinsam gelöscht werden.
 
 Die Rechtstexte bilden den technischen Stand des Pakets ab. Vor einer öffentlichen Veröffentlichung müssen insbesondere der tatsächlich eingesetzte Hosting-Anbieter, Protokollfristen, aktuelle Vertretungsangaben und die Rechtekette für Logo/Grafiken abschließend geprüft werden. Siehe `docs/RECHTLICHE-PRUEFLISTE.md`.

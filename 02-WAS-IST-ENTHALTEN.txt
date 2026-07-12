@@ -1,4 +1,4 @@
-CLDF Offline-App v4.6.2 – Inhalt
+CLDF Offline-App v4.7.1 – Inhalt
 ================================
 
 - ursprüngliches CLDF-Design und Seitenaufbau

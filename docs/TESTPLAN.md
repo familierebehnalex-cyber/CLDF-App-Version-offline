@@ -1,9 +1,9 @@
-# Testplan CLDF Offline-App v4.6.2
+# Testplan CLDF Offline-App v4.7.1
 
 ## Start, Version und Offline
 
 1. `STARTEN-AM-PC.bat` starten.
-2. Startseite, ursprüngliche Grafik, Navigation und sichtbare Version 4.6.2 prüfen.
+2. Startseite, ursprüngliche Grafik, Navigation und sichtbare Version 4.7.1 prüfen.
 3. Browser-Entwicklerwerkzeuge öffnen und auf JavaScript-Fehler prüfen.
 4. Seite einmal vollständig laden, Netzwerk auf „Offline“ stellen und neu laden.
 5. Suche, Favoriten, Übungslisten, Tanzdetails und Liedlisten prüfen.
