@@ -1,9 +1,68 @@
 <!doctype html>
-<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Datenschutz – CLDF Offline-App</title><style>body{font-family:system-ui,sans-serif;max-width:760px;margin:auto;padding:24px;line-height:1.55}h1,h2{line-height:1.2}a{color:inherit}</style></head>
-<body><h1>Datenschutz – CLDF Offline-App</h1>
-<p>Die App ist für lokale Verarbeitung ausgelegt und verwendet keinen externen Musikerkennungsdienst.</p>
-<h2>Mikrofon</h2><p>Das Mikrofon wird nur nach einem bewussten Tipp auf die Erkennungsfunktion verwendet. Die offizielle Freigabe erfolgt über das Betriebssystem beziehungsweise den Browser. Die ungefähr zwölf Sekunden lange Aufnahme wird im Gerät analysiert, nicht hochgeladen und nicht dauerhaft gespeichert.</p>
-<h2>Eigene Musikbibliothek</h2><p>Beim Einlesen eigener Musik werden nur technische Audio-Fingerprints in der lokalen Browserdatenbank IndexedDB gespeichert. Die Musikdateien selbst werden nicht in der App gespeichert. Fingerprints können exportiert, importiert und vollständig gelöscht werden.</p>
-<h2>App-Daten</h2><p>Favoriten, Übungslisten, Verlauf, eigene Tanzdaten und importierte Kataloge werden lokal auf dem Gerät gespeichert. Die App enthält Funktionen zum Exportieren, Importieren und Zurücksetzen dieser Daten.</p>
-<h2>Externe Links</h2><p>Beim Öffnen eines Get-in-Line-Tanzsheet-Links wird eine externe Webseite aufgerufen. Erst dann wird eine Internetverbindung zu diesem Anbieter hergestellt.</p>
-<p><a href="../index.html">Zurück zur App</a></p></body></html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Datenschutz – CLDF Offline-App</title>
+  <style>
+    :root { color-scheme: light; }
+    body { font-family: system-ui, sans-serif; max-width: 860px; margin: auto; padding: 24px; line-height: 1.6; color:#2c180c; background:#fffaf2; }
+    h1,h2 { line-height:1.2; }
+    h1 { margin-bottom: 8px; }
+    .lead { color:#70482a; margin-top:0; }
+    .card { background:#fff; border:1px solid #e3c796; border-radius:18px; padding:18px; margin:14px 0; box-shadow:0 8px 18px rgba(67,33,12,.06); }
+    ul { padding-left: 1.2rem; }
+    a { color: inherit; }
+    .back { display:inline-block; margin-top:16px; }
+  </style>
+</head>
+<body>
+  <h1>Datenschutz – CLDF Offline-App</h1>
+  <p class="lead">Diese App ist für eine möglichst lokale und datensparsame Nutzung ausgelegt. Musik-Erkennung, Favoriten und viele weitere Funktionen laufen direkt auf deinem Gerät.</p>
+
+  <section class="card">
+    <h2>1. Grundprinzip</h2>
+    <p>Die App verwendet keinen externen Musikerkennungsdienst. Aufnahmen und Auswertungen sollen möglichst direkt auf dem Handy oder im Browser des Nutzers stattfinden.</p>
+  </section>
+
+  <section class="card">
+    <h2>2. Mikrofon</h2>
+    <p>Das Mikrofon wird erst verwendet, nachdem du die Funktion bewusst startest und die Freigabe im Betriebssystem oder Browser erteilst. Die kurze Musikaufnahme wird lokal analysiert, nicht dauerhaft gespeichert und nicht automatisch an fremde Server gesendet.</p>
+  </section>
+
+  <section class="card">
+    <h2>3. Kamera / Video-Erkennung</h2>
+    <p>Wenn du die Live-Kamera oder ein Video zur Tanzerkennung verwendest, erfolgt die Schritt- und Bewegungsanalyse lokal im Gerät. Die App speichert keine Videos automatisch auf einem externen Server.</p>
+  </section>
+
+  <section class="card">
+    <h2>4. Eigene Musikbibliothek</h2>
+    <p>Beim Einlesen eigener Musik werden nur technische Audio-Fingerprints in der lokalen Browserdatenbank gespeichert. Die Musikdatei selbst wird nicht als Titeldatei in der App-Datenbank abgelegt.</p>
+  </section>
+
+  <section class="card">
+    <h2>5. Lokal gespeicherte App-Daten</h2>
+    <ul>
+      <li>Favoriten</li>
+      <li>Übungslisten</li>
+      <li>Verlauf</li>
+      <li>eigene Tanzdaten</li>
+      <li>importierte Fingerprints und Kataloge</li>
+      <li>Bewegungs- und Schrittmuster für die Video-Auswertung</li>
+    </ul>
+    <p>Diese Daten bleiben grundsätzlich lokal auf dem Gerät und können innerhalb der App exportiert, importiert oder gelöscht werden.</p>
+  </section>
+
+  <section class="card">
+    <h2>6. Externe Links</h2>
+    <p>Erst wenn du bewusst einen externen Link antippst – zum Beispiel zu einem Tanzsheet, zu YouTube oder zur Vereinsseite – wird eine Verbindung zu dieser externen Seite aufgebaut. Ab dann gelten die Datenschutz- und Nutzungsbedingungen des jeweiligen Anbieters.</p>
+  </section>
+
+  <section class="card">
+    <h2>7. Hinweis</h2>
+    <p>Diese Seite beschreibt die Funktionsweise der App verständlich und kompakt. Sie ersetzt keine individuelle rechtliche Beratung im Einzelfall.</p>
+  </section>
+
+  <p><a class="back" href="../index.html">Zurück zur App</a></p>
+</body>
+</html>

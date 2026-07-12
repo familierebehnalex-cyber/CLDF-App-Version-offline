@@ -817,3 +817,43 @@ body.app-open {
     line-height: 1.45;
   }
 }
+
+
+/* CLDF v4.6.1 – Datenschutz & Urheberrecht */
+.legal-card {
+  border-color: #d8b67a;
+}
+.legal-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.legal-info-card {
+  min-height: 126px;
+  background: linear-gradient(180deg, #fffdf8, #fff5e9);
+}
+.legal-info-card strong {
+  font-size: 1rem;
+}
+.legal-info-card small {
+  display: block;
+  font-size: .91rem;
+  line-height: 1.55;
+}
+.legal-link-grid {
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 10px;
+}
+.legal-note {
+  margin: 14px 2px 0;
+  color: var(--muted);
+  font-size: .9rem;
+  line-height: 1.5;
+}
+@media (max-width: 680px) {
+  .legal-grid, .legal-link-grid {
+    grid-template-columns: 1fr;
+  }
+  .legal-info-card {
+    min-height: 0;
+  }
+}
