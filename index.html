@@ -11,7 +11,7 @@
   <link rel="icon" href="./assets/icon-64.png" sizes="64x64" type="image/png">
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./assets/styles.css?v=4.5.6">
+  <link rel="stylesheet" href="./assets/styles.css?v=4.5.7">
   <title>CLDF – Line Dance App</title>
 </head>
 <body>
@@ -25,7 +25,7 @@
       <h1>Line Dance only!</h1>
       <p>Musik erkennen. Passende Tänze finden. Gemeinsam tanzen.</p>
       <button id="enterApp" class="primary-btn splash-button" type="button">App öffnen</button>
-      <small>Offline-Erkennung · Lied zuerst · BPM als Reserve</small>
+      
     </div>
   </section>
 
@@ -98,7 +98,7 @@
         <div class="status-grid">
           <article class="status-card good">
             <span class="status-icon">📱</span>
-            <div><strong>Offline-Erkennung</strong><small>Analyse direkt auf dem Handy</small></div>
+            <div><strong>Musik-Erkennung</strong><small>Automatische Analyse direkt auf dem Handy</small></div>
           </article>
           <article class="status-card">
             <span class="status-icon">★</span>
@@ -113,12 +113,6 @@
             <div><strong id="qualityCount">0 geprüft</strong><small>BPM nur als Reserve</small></div>
           </article>
         </div>
-
-        <article class="notice-card">
-          <strong>So funktioniert die Offline-Erkennung</strong>
-          <p>Die kurze Aufnahme bleibt auf dem Gerät. Die App gleicht sie mit lokalen Lied-Fingerprints und den gespeicherten Lied–Tanz-Zuordnungen ab. Ohne eindeutigen Treffer werden BPM, Motion und Rhythmus als Reserve verwendet.</p>
-          <button id="checkOnlineServiceBtn" class="text-button" type="button">Offline-Status prüfen</button>
-        </article>
 
         <article class="video-recognition-card" aria-labelledby="videoRecognitionTitle">
           <div class="section-heading compact">
@@ -228,7 +222,7 @@
 
           <article id="onlineServiceSection" class="settings-card">
             <div class="section-heading compact">
-              <div><p class="eyebrow">Lokale Erkennung</p><h2>Offline-Analyse</h2></div>
+              <div><p class="eyebrow">Lokale Erkennung</p><h2>Musik-Erkennung</h2></div>
               <span class="count-badge">LOKAL</span>
             </div>
             <div id="onlineServiceStatus" class="catalog-status warning">
@@ -317,19 +311,36 @@
             <p class="help-text"><strong>Hinweis:</strong> „Nicht motionspezifisch / Mixed“ und „Zu prüfen“ sind Datenbankzustände, keine zusätzlichen Motions.</p>
           </article>
 
-          <article class="settings-card">
-            <h2>Datenschutz & Verein</h2>
-            <p>Audioausschnitte, Favoriten, eigene Tanzdaten und Bewegungssignaturen bleiben auf dem Gerät. Nur externe Tanzsheet-Links benötigen Internet.</p>
-            <div class="inline-links">
-              <a href="./docs/DATENSCHUTZ.html" target="_blank" rel="noopener">Datenschutzhinweise</a>
-              <a href="https://country-hochrhein.de/" target="_blank" rel="noopener">Vereinswebsite</a>
-              <a href="https://www.youtube.com/@CLDF2013" target="_blank" rel="noopener">CLDF YouTube</a>
+          <article class="settings-card privacy-club-card">
+            <div class="section-heading compact">
+              <div><p class="eyebrow">Wichtige Infos</p><h2>Datenschutz & Verein</h2></div>
+              <span class="count-badge">CLDF</span>
+            </div>
+            <p class="help-text">Alle wichtigen Hinweise kompakt an einem Ort – klar getrennt nach App-Daten, Vereinslinks und weiteren Informationen.</p>
+            <div class="privacy-club-grid">
+              <article class="mini-info-card">
+                <strong>Datenschutz</strong>
+                <small>Audioausschnitte, Favoriten, eigene Tanzdaten und Bewegungssignaturen bleiben auf dem Gerät. Nur externe Tanzsheet-Links benötigen Internet.</small>
+              </article>
+              <article class="mini-info-card">
+                <strong>Verein</strong>
+                <small>Hier findest du die wichtigsten CLDF-Links für Website, Videos und weitere Vereinsinformationen.</small>
+              </article>
+              <article class="mini-info-card">
+                <strong>Hinweis</strong>
+                <small>Die App arbeitet lokal auf dem Handy. Externe Seiten öffnen sich nur dann, wenn du einen Link bewusst antippst.</small>
+              </article>
+            </div>
+            <div class="button-grid privacy-link-grid">
+              <a class="secondary-btn link-btn" href="./docs/DATENSCHUTZ.html" target="_blank" rel="noopener">Datenschutzhinweise</a>
+              <a class="secondary-btn link-btn" href="https://country-hochrhein.de/" target="_blank" rel="noopener">Vereinswebsite</a>
+              <a class="secondary-btn link-btn" href="https://www.youtube.com/@CLDF2013" target="_blank" rel="noopener">CLDF YouTube</a>
             </div>
           </article>
 
           <article class="settings-card version-card">
             <img src="./assets/icon-128.png" alt="">
-            <div><h2>CLDF v4.5.1 Offline</h2><p id="versionText">CLDF-Tänze + Get-in-Line-Metadaten · direkter Tanzsheet-Link · Lied zuerst · BPM als Reserve</p></div>
+            <div><h2>CLDF v4.5.7 Offline</h2><p id="versionText">CLDF-Tänze + Get-in-Line-Metadaten · direkter Tanzsheet-Link · Lied zuerst · BPM als Reserve</p></div>
           </article>
         </div>
       </section>
@@ -337,7 +348,7 @@
       <section id="view-result" class="view" aria-labelledby="resultTitle">
         <button id="backFromResult" class="back-button" type="button">← Zurück</button>
         <article class="result-hero">
-          <p id="resultModeLabel" class="eyebrow">Offline-Analyse</p>
+          <p id="resultModeLabel" class="eyebrow">Musik-Erkennung</p>
           <h1 id="resultTitle">Ergebnis</h1>
           <div id="songResult" class="song-result hidden"></div>
           <div id="videoMotionResult" class="video-motion-result hidden"></div>
@@ -395,10 +406,10 @@
   <script src="./assets/local-store.js"></script>
   <script src="./assets/audio-engine.js"></script>
   <script src="./assets/offline-bootstrap.js"></script>
-  <script src="./assets/mediapipe/pose/pose.js?v=4.5.6"></script>
-  <script src="./assets/step-sheet-patterns.js?v=4.5.6"></script>
-  <script src="./assets/video-motion.js?v=4.5.6"></script>
-  <script src="./assets/app.js?v=4.5.6"></script>
-  <script>if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.5.6').catch(console.warn));</script>
+  <script src="./assets/mediapipe/pose/pose.js?v=4.5.7"></script>
+  <script src="./assets/step-sheet-patterns.js?v=4.5.7"></script>
+  <script src="./assets/video-motion.js?v=4.5.7"></script>
+  <script src="./assets/app.js?v=4.5.7"></script>
+  <script>if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.5.7').catch(console.warn));</script>
 </body>
 </html>

@@ -1312,13 +1312,13 @@
     const fingerprintCount = allFingerprintEntries().length;
     state.onlineServiceReady = true;
     state.onlineServiceMessage = fingerprintCount
-      ? `Offline-Analyse bereit · ${fingerprintCount} Audio-Fingerprint${fingerprintCount === 1 ? '' : 's'} geladen.`
-      : 'Offline-Analyse bereit · BPM, Motion, Rhythmus und Liedliste lokal; für die exakte Titelerkennung bitte einmal eigene Musikdateien einlesen.';
+      ? `Musik-Erkennung bereit · ${fingerprintCount} Audio-Fingerprint${fingerprintCount === 1 ? '' : 's'} geladen.`
+      : 'Musik-Erkennung bereit · Liedliste, BPM, Motion und Rhythmus sind lokal verfügbar; für die exakte Titelerkennung bitte einmal eigene Musikdateien einlesen.';
     const card = $('#onlineServiceStatus');
     const title = $('#onlineServiceStatusTitle');
     const text = $('#onlineServiceStatusText');
     card?.classList.add('good'); card?.classList.remove('warning');
-    if (title) title.textContent = 'Offline-Analyse bereit';
+    if (title) title.textContent = 'Musik-Erkennung bereit';
     if (text) text.textContent = state.onlineServiceMessage;
     if (showMessage) toast(state.onlineServiceMessage, 4500);
     return true;

@@ -65,7 +65,7 @@ img { display: block; max-width: 100%; }
   background: var(--wood-950);
   transition: opacity .35s ease, visibility .35s ease;
 }
-.splash-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%; }
+.splash-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
 .splash-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10, 4, 1, .05) 0%, rgba(10, 4, 1, .3) 44%, rgba(10, 4, 1, .92) 100%); }
 .splash-content {
   position: relative;
@@ -90,6 +90,7 @@ img { display: block; max-width: 100%; }
 .splash h1 { margin: 16px 0 6px; font: 900 clamp(2rem, 8vw, 3.6rem)/1 Georgia, serif; }
 .splash p { margin: 0 auto 20px; max-width: 32rem; color: #f9dfb5; font-weight: 650; }
 .splash small { display: block; margin-top: 12px; color: #e8c99a; }
+.splash-content > *:last-child { margin-bottom: 0; }
 .splash-button { width: min(100%, 330px); }
 
 .app { min-height: 100dvh; padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom)); }
@@ -423,7 +424,9 @@ p { margin: .6rem 0; }
   .button-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 480px) {
-  .splash-image { object-position: 50% 28%; }
+  .splash { place-items: center; }
+  .splash-image { object-position: 50% 50%; }
+  .splash-content { width: min(90vw, 420px); padding: 24px 18px calc(24px + env(safe-area-inset-bottom)); }
   .app-header { padding-inline: 10px; }
   .brand small { display: none; }
   .connection-pill { display: none; }
@@ -744,4 +747,16 @@ body.app-open {
   .app {
     padding-bottom: calc(var(--actual-nav-height) + 22px);
   }
+}
+
+
+/* Grafik-Feinschliff v4.5.7 */
+.privacy-club-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+.mini-info-card { padding: 14px; border: 1px solid #dec69d; border-radius: 14px; background: linear-gradient(145deg, #fffdf7, #fff5e6); box-shadow: 0 6px 14px rgba(67, 33, 12, .06); }
+.mini-info-card strong { display: block; margin-bottom: 6px; color: var(--wood-900); }
+.mini-info-card small { color: var(--muted); line-height: 1.45; }
+.privacy-link-grid { margin-top: 14px; }
+.link-btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+@media (max-width: 680px) {
+  .privacy-club-grid { grid-template-columns: 1fr; }
 }
