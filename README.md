@@ -1,5 +1,11 @@
-# CLDF Offline-App v4.7.2
+# CLDF Offline-App v4.7.3
 
+
+## Neu in v4.7.3: API direkt am jeweiligen Song
+
+Die vom Nutzer gelieferte API-Sammlung ist jetzt als eigener Song-API-Index eingebunden. 1.254 Songs besitzen mindestens eine API-Song-ID und werden nach der lokalen Erkennung oder manuellen Auswahl direkt mit Quelle, ID und vorhandenen Metadaten verbunden. Im Ergebnis erscheint die Kennzeichnung **„API-Daten vorhanden“**. Die große Senderkatalog-Box bleibt entfernt.
+
+Details stehen in `API-ZUORDNUNG-v4.7.3.md`.
 Installierbare Line-Dance-PWA im ursprünglichen CLDF-Design. Die Kernfunktionen laufen lokal: Tanzsuche, Lied–Tanz-Zuordnung, Favoriten, Übungslisten, Audio-Fingerprints, BPM-/Motion-/Rhythmusregeln sowie eine neue MediaPipe-Videoanalyse.
 
 ## Lied erkennen
@@ -118,6 +124,6 @@ npm start
 
 ## Datenschutz, Rechte und Impressum
 
-Die App enthält in v4.7.2 eigene Seiten für Datenschutz, Urheberrecht/Quellen, Designschutz, Impressum und Drittanbieter-Lizenzen. Unter **Mehr → Datenschutz, Rechte & Impressum** können außerdem alle lokal gespeicherten Nutzerdaten gemeinsam gelöscht werden.
+Die App enthält in v4.7.3 eigene Seiten für Datenschutz, Urheberrecht/Quellen, Designschutz, Impressum und Drittanbieter-Lizenzen. Unter **Mehr → Datenschutz, Rechte & Impressum** können außerdem alle lokal gespeicherten Nutzerdaten gemeinsam gelöscht werden.
 
 Die Rechtstexte bilden den technischen Stand des Pakets ab. Vor einer öffentlichen Veröffentlichung müssen insbesondere der tatsächlich eingesetzte Hosting-Anbieter, Protokollfristen, aktuelle Vertretungsangaben und die Rechtekette für Logo/Grafiken abschließend geprüft werden. Siehe `docs/RECHTLICHE-PRUEFLISTE.md`.

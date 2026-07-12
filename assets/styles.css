@@ -819,7 +819,7 @@ body.app-open {
 }
 
 
-/* CLDF v4.6.1 – Datenschutz & Urheberrecht */
+/* CLDF v4.7.0 – Datenschutz & Urheberrecht */
 .legal-card {
   border-color: #d8b67a;
 }
@@ -856,4 +856,110 @@ body.app-open {
   .legal-info-card {
     min-height: 0;
   }
+}
+
+/* CLDF v4.7.0 – Rechteseiten und zentrale lokale Datenlöschung */
+.legal-delete-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid rgba(144, 46, 26, .28);
+  border-radius: 16px;
+  background: rgba(255, 245, 238, .88);
+}
+.legal-delete-panel div { display: grid; gap: 4px; }
+.legal-delete-panel small { line-height: 1.45; color: var(--muted, #70482a); }
+.legal-delete-panel .danger-btn { white-space: normal; min-width: 190px; }
+@media (max-width: 720px) {
+  .legal-delete-panel { grid-template-columns: 1fr; }
+  .legal-delete-panel .danger-btn { width: 100%; }
+}
+
+/* CLDF v4.7.0 – Datenschutzhinweis vor Mikrofon- und Kameranutzung */
+.permission-privacy-note {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(106, 78, 48, .2);
+  border-radius: 12px;
+  background: rgba(255, 251, 243, .76);
+  color: var(--muted, #70482a);
+  font-size: .88rem;
+  line-height: 1.5;
+}
+.permission-privacy-note strong { color: var(--ink, #3c2415); }
+.permission-privacy-note a { font-weight: 700; }
+
+
+/* CLDF v4.7.0 – Radio-API-Sammlung */
+.radio-api-card { border-color: #c9a26a; }
+.radio-api-controls {
+  display: grid;
+  grid-template-columns: minmax(180px, .8fr) minmax(240px, 1.4fr);
+  gap: 12px;
+  margin: 14px 0;
+}
+.radio-api-controls label { display: grid; gap: 6px; }
+.radio-api-controls label > span { font-weight: 700; font-size: .9rem; }
+.radio-api-controls input, .radio-api-controls select { width: 100%; }
+.radio-api-actions { margin-bottom: 12px; }
+.radio-catalog-list { max-height: 560px; overflow: auto; padding-right: 3px; }
+.radio-catalog-item { align-items: center; }
+.radio-catalog-item > div { display: grid; gap: 3px; min-width: 0; }
+.radio-catalog-item small { display: block; line-height: 1.4; overflow-wrap: anywhere; }
+.radio-current-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+  margin: 12px 0;
+  padding: 14px;
+  border: 1px solid rgba(155, 91, 28, .28);
+  border-radius: 15px;
+  background: linear-gradient(180deg, #fffdf8, #fff4e4);
+}
+.radio-current-card > div { display: grid; gap: 4px; }
+.radio-current-card strong { font-size: 1.05rem; }
+.radio-current-card small { color: var(--muted); line-height: 1.45; }
+.radio-live-label { font-size: .78rem; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: #8b511b; }
+@media (max-width: 720px) {
+  .radio-api-controls { grid-template-columns: 1fr; }
+  .radio-current-card { align-items: stretch; flex-direction: column; }
+  .radio-current-card .secondary-btn { width: 100%; }
+}
+
+/* CLDF v4.7.3 – liedbezogene API-Zuordnung */
+.song-api-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 7px 9px;
+  margin-top: 11px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, .2);
+}
+.song-api-inline small {
+  width: 100%;
+  margin: 0;
+  color: #f8e8ca;
+  font-size: .76rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.song-api-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 25px;
+  padding: 4px 9px;
+  border: 1px solid rgba(255, 255, 255, .38);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .14);
+  color: #fff8e9;
+  font-size: .7rem;
+  font-weight: 900;
+  letter-spacing: .03em;
+  text-transform: uppercase;
 }

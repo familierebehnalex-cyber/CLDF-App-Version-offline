@@ -77,7 +77,7 @@ function writeCatalog(dances, errors = []) {
   const payload = {
     format: 'CLDF-GETINLINE-CATALOG',
     formatVersion: 1,
-    appVersion: '4.7.2',
+    appVersion: '4.7.3',
     source: 'Get-in-Line',
     sourceHomepage: 'https://www.get-in-line.de/',
     generatedAt: new Date().toISOString(),

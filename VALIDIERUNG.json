@@ -1,6 +1,6 @@
 {
-  "appVersion": "4.7.2",
-  "generatedAt": "2026-07-12T11:58:20.944Z",
+  "appVersion": "4.7.3",
+  "generatedAt": "2026-07-12T12:24:33.064Z",
   "requiredFilesPresent": true,
   "javascriptSyntaxValid": true,
   "essentialDomIdsPresent": true,
@@ -9,6 +9,7 @@
   "videoStepMatcherSelfTestPassed": true,
   "radioApiSelfTestPassed": true,
   "radioLiveApiSelfTestPassed": true,
+  "songApiIndexSelfTestPassed": true,
   "mediaPipePoseBundled": true,
   "mediaPipePoseModel": "BlazePose GHUM Lite / MediaPipe Pose 0.5.1675469404",
   "builtInSheetPatterns": 8,
@@ -19,7 +20,7 @@
   "originalCssBasePreserved": true,
   "originalCssBaseLines": 596,
   "originalCssBaseSha256": "89cc732bfecdfc0022e627aba4d0c4718056e198af3a17f45cb050a10af56768",
-  "addedCssLinesForLiveCamera": 335,
+  "addedCssLinesForLiveCamera": 369,
   "originalGraphicsUnchanged": true,
   "originalGraphicHashes": {
     "assets/cldf-hero.webp": {
@@ -43,7 +44,7 @@
       "unchanged": true
     }
   },
-  "completeStylesSha256": "9c77987c0da47fc859f18bbbd885ac5d66e641a2178d286577a1229a874e928f",
+  "completeStylesSha256": "dc3452cbea2b3b88a9965cf216d29c58d0cdbc102f9d02b1bc1483c5042b7032",
   "cldfBaseDances": 135,
   "imageMappings": 659,
   "imageUniqueDances": 182,
@@ -57,6 +58,12 @@
   "radioApiPlayableSongs": 1239,
   "radioApiDanceSuggestions": 263,
   "radioApiExactDanceMatches": 63,
+  "songApiEntries": 1254,
+  "songApiStations": 5,
+  "songApiEndpoints": 35,
+  "songApiEntriesWithIds": 1254,
+  "songApiDanceCandidates": 261,
+  "songApiExactDanceCandidates": 63,
   "songsWithArtist": 307,
   "songsWithBpm": 237,
   "microphoneSeconds": 12,
@@ -69,6 +76,8 @@
   "activeLiveRadioApi": true,
   "liveRadioApiHiddenInBackground": true,
   "liveRadioApiRefreshMinutes": 10,
+  "perSongApiMatching": true,
+  "perSongApiBadgeVisible": true,
   "githubCatalogUpdater": true,
   "githubPagesWorkflow": true,
   "serverApiRemoved": true,

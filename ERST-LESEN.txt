@@ -1,60 +1,20 @@
-CLDF Offline-App v4.7.2
+CLDF Offline-App v4.7.3
 =======================
 
-Diese Version behält das ursprüngliche CLDF-Design bei und ergänzt die Bereiche
-Datenschutz, Impressum, Urheberrecht, Designschutz und Drittanbieter-Lizenzen.
-Audio- und Videoerkennung bleiben lokal im Browser.
+Diese Version integriert die vom Nutzer gelieferte API-Sammlung direkt pro Song.
 
-SCHNELLSTART AM PC
-------------------
-1. ZIP vollständig entpacken.
-2. Node.js 18 oder neuer installieren.
-3. STARTEN-AM-PC.bat doppelt anklicken.
-4. http://localhost:4173 öffnen.
+Wichtigste Änderung:
+- 1.254 Song-API-Zuordnungen
+- API-Song-ID und Quelle direkt am Lied
+- 261 Tanzvorschläge
+- 63 exakte Tanzzuordnungen
+- keine sichtbare Senderkatalog-Box
 
-DATENSCHUTZ UND LOKALE DATEN
-----------------------------
-- Mikrofon, Kamera und ausgewählte Dateien werden lokal ausgewertet.
-- Die App lädt diese Inhalte nicht zu einem Musikerkennungs- oder Analyseserver hoch.
-- Vor Mikrofon- und Kameranutzung steht ein sichtbarer Datenschutzhinweis.
-- Unter „Mehr → Datenschutz, Rechte & Impressum“ sind alle Rechteseiten verlinkt.
-- Dort löscht „Alle lokalen Nutzerdaten löschen“ Favoriten, Verlauf, eigene Tänze,
-  Einstellungen, Audio-Fingerprints, Katalogimporte und Bewegungsreferenzen.
-- Der technische Offline-Cache bleibt erhalten; er enthält App-Dateien, keine
-  persönlichen Musik- oder Videoaufnahmen.
+Start:
+- über GitHub Pages veröffentlichen oder
+- lokal STARTEN-AM-PC.bat ausführen und die angezeigte Adresse öffnen.
 
-VIDEOERKENNUNG TESTEN
----------------------
-1. Auf der Startseite zu „Tanz per Video erkennen“ gehen.
-2. „Live-Kamera starten“, „Video aufnehmen“ oder „Video auswählen“ verwenden.
-3. Beim Filmen müssen Oberkörper, Hüfte, Knie und Füße vollständig sichtbar sein.
-4. Das Handy möglichst ruhig aufstellen und nur eine Person filmen.
-5. Nach mindestens 30 Sekunden zeigt die App bei ausreichender Sicherheit den besten
-   Beta-Treffer und weitere Möglichkeiten.
-
-Die App prüft zuerst den Ton. Ein sicher erkannter Liedtreffer und die feste
-Lied–Tanz-Zuordnung haben immer Vorrang. Ohne Liedtreffer vergleicht sie eigene
-MediaPipe-Referenzen, eingebaute Sheet-Schrittmuster und zuletzt BPM.
-
-EINGEBAUTE STARTERMUSTER
-------------------------
-Electric Slide, Tush Push, Black Coffee, God Blessed Texas, Canadian Stomp,
-Copperhead Road, Stroll Along Cha Cha und 16-Step.
-
-HANDY / OFFLINE
----------------
-Die App einmal über HTTPS oder localhost öffnen. Beim ersten Kamera- oder
-Mikrofonstart die Gerätefreigabe bestätigen. JavaScript, WASM, Rechteseiten und
-das MediaPipe-Lite-Modell werden für den Offline-Betrieb gecacht. Externe Links
-benötigen Internet und öffnen erst nach einer bewussten Aktion.
-
-WICHTIGE DATEIEN
-----------------
-STARTEN-AM-PC.bat                    App lokal starten
-docs/DATENSCHUTZ.html               Datenschutzhinweise
-docs/IMPRESSUM.html                 Anbieterkennzeichnung
-docs/URHEBERRECHT.html              Urheber- und Nutzungsregeln
-docs/DESIGNSCHUTZ.html              Hinweise zur Schutzstrategie
-docs/RECHTLICHE-PRUEFLISTE.md       offene Betreiberprüfungen
-VALIDIERUNG.json                     technischer Prüfbericht
-TESTBERICHT-v4.7.2.md               Teststand dieser Version
+Weitere Informationen:
+- RELEASE-NOTES.md
+- API-ZUORDNUNG-v4.7.3.md
+- TESTBERICHT-v4.7.3.md

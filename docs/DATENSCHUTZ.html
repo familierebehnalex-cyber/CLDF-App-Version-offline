@@ -29,7 +29,7 @@
 <body>
   <h1>Datenschutzhinweise zur CLDF Offline-App</h1>
   <p class="lead">Die App ist datensparsam aufgebaut: Audio-, Kamera- und Videodaten werden für die Erkennung direkt im Browser verarbeitet. Es gibt keine Benutzerkonten, keine Werbung und kein eingebautes Tracking.</p>
-  <div class="meta"><span>App-Version 4.7.2</span><span>Stand: 12. Juli 2026</span><span>Geltungsbereich: Web-App/PWA</span></div>
+  <div class="meta"><span>App-Version 4.7.3</span><span>Stand: 12. Juli 2026</span><span>Geltungsbereich: Web-App/PWA</span></div>
 
   <section class="card">
     <h2>1. Verantwortlicher</h2>
@@ -117,8 +117,8 @@
 
   <section class="card">
     <h2>10. Radio-Metadaten und laut.fm-API</h2>
-    <p>Die mitgelieferte Sammlung enthält lokal gespeicherte Sender-, Interpret-, Lied- und Tanzvorschlagsmetadaten. Musikdateien, Radiostreams und Senderlogos sind nicht Bestandteil der App.</p>
-    <p>Wenn das Gerät online ist, ruft App-Version 4.7.2 im Hintergrund beim Start und danach frühestens etwa alle zehn Minuten die Endpunkte <code>current_song</code> und <code>last_songs</code> der fünf hinterlegten laut.fm-Sender ab. Es gibt weiterhin keine sichtbare Senderbox und keinen Radioplayer. Die abgerufenen Metadaten erweitern ausschließlich den Liedkatalog und werden als Offline-Fallback lokal gespeichert.</p>
+    <p>Die mitgelieferte Sammlung enthält lokal gespeicherte Sender-, Interpret-, Lied- und Tanzvorschlagsmetadaten. In Version 4.7.3 sind 1.254 Lieddatensätze zusätzlich über die in der Sammlung enthaltenen API-Song-IDs mit ihren Senderquellen verbunden. Musikdateien, Radiostreams und Senderlogos sind nicht Bestandteil der App.</p>
+    <p>Die liedbezogene Zuordnung wird lokal aus <code>song-api-index.json</code> gelesen. Wenn das Gerät online ist, ruft die App im Hintergrund beim Start und danach frühestens etwa alle zehn Minuten die Endpunkte <code>current_song</code> und <code>last_songs</code> der fünf hinterlegten laut.fm-Sender ab. Es gibt weiterhin keine sichtbare Senderbox und keinen Radioplayer. Die abgerufenen Metadaten erweitern ausschließlich den Liedkatalog und werden als Offline-Fallback lokal gespeichert.</p>
     <table>
       <tr><th>Zweck</th><td>Aktualisierung von Liedtitel, Interpret und möglichen Tanzhinweisen für die lokale Lied–Tanz-Zuordnung.</td></tr>
       <tr><th>Übertragene Daten</th><td>Technisch notwendige Verbindungsdaten wie IP-Adresse, Zeitpunkt, Browser-/Geräteangaben und die angefragte API-Adresse. Mikrofon-, Kamera-, Audio- oder Videodaten werden nicht an laut.fm übertragen.</td></tr>

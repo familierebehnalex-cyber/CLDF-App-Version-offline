@@ -1,0 +1,11 @@
+CLDF UPDATE v4.7.2 auf v4.7.3
+================================
+
+1. Dieses ZIP entpacken.
+2. Alle enthaltenen Dateien und Ordner direkt in den Stamm des bestehenden GitHub-Repositorys kopieren.
+3. Vorhandene Dateien ersetzen und neue Dateien hinzufügen.
+4. Mit einer Nachricht wie "CLDF v4.7.3 Song-API" committen.
+5. Nach dem Deployment die App vollständig schließen und erneut öffnen, damit der neue Service-Worker-Cache aktiv wird.
+
+Dieses Update setzt eine vorhandene CLDF-Version v4.7.2 voraus.
+Die sichtbare Senderkatalog-Box bleibt entfernt. API-Daten erscheinen direkt am jeweiligen Lied.

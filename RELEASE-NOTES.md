@@ -1,100 +1,52 @@
-# CLDF Offline-App v4.7.2 – echte Live-API im Hintergrund
+# CLDF Offline-App v4.7.3 – API-Zuordnung pro Song
 
-- echte Online-Abfragen der öffentlichen laut.fm-API eingebaut
-- beim Online-Start und danach frühestens etwa alle zehn Minuten werden `current_song` und `last_songs` für fünf Sender abgerufen
-- neue Titel werden unsichtbar in den vorhandenen Liedkatalog übernommen
-- Linedance-Nahetal-Titel im Muster `Lied – Tanz` liefern weiterhin konservative Tanzvorschläge
-- bis zu 500 Live-Metadatensätze werden lokal als Offline-Fallback gespeichert
-- keine sichtbare Senderbox, keine Senderauswahl und kein Radioplayer
-- keine API-Schlüssel, Musikdateien oder Radiostreams erforderlich
-- Datenschutz- und Lizenzhinweise an den aktiven Live-Abruf angepasst
-- App-, Cache- und Paketversion auf 4.7.2 aktualisiert
+## Wichtigste Korrektur
 
----
+Die vom Nutzer gelieferte `data.zip` wird jetzt nicht mehr nur als allgemeiner Radio-Katalog behandelt. Aus den enthaltenen Senderkatalogen, Verlaufsdateien und `station-info.json`-Dateien wurde ein eigener **Song-API-Index** erzeugt.
 
-# CLDF Offline-App v4.7.1 – Radio-Daten im Hintergrund
+Für jedes passende Lied stehen nun direkt zur Verfügung:
 
-- die sichtbare Box „Lokaler Senderkatalog / Radio-API-Sammlung“ wurde vollständig aus „Mehr“ entfernt
-- sichtbare Radio-API- und Senderhinweise wurden aus Liedauswahl, Diagnose und Versionsanzeige entfernt
-- die importierten Lied- und Tanzzuordnungsdaten bleiben intern in der lokalen Suche verfügbar
-- ohne sichtbare Schaltfläche wird kein Live-Senderabruf durch den Nutzer ausgelöst
-- Offline-Cache und App-Version auf 4.7.1 aktualisiert
+- laut.fm-API-Song-ID beziehungsweise mehrere Song-IDs
+- Senderquelle
+- die zum Sender gehörenden API-Endpunkte
+- Album, Genre und Veröffentlichungsjahr, soweit in der Sammlung vorhanden
+- Spielhäufigkeit und letzter bekannter Sendezeitpunkt
+- Tanzvorschläge und exakte Tanzzuordnungen
 
----
+## Verhalten in der App
 
-# CLDF Offline-App v4.7.0 – Radio-API-Integration
+- Der Liedabgleich prüft zuerst eine exakte Song-API-Zuordnung aus der gelieferten Sammlung.
+- Bei einem Treffer erscheint direkt am Lied die Kennzeichnung **„API-Daten vorhanden“**.
+- Song-ID, Quelle und vorhandene Metadaten werden direkt im Lied-Ergebnis angezeigt.
+- In der manuellen Liedliste sind API-verknüpfte Titel mit **„API“** markiert.
+- Die unerwünschte Box „Lokaler Senderkatalog“ bleibt entfernt.
+- Es gibt weiterhin keinen Radioplayer und keine sichtbare Senderauswahl.
+- Neue Live-Titel werden im Hintergrund über `current_song` und `last_songs` ergänzt.
+- Ohne Internet bleibt der vollständige lokale Song-API-Index verfügbar.
 
-## Neu
+## Datenstand
 
-- 1.265 gesammelte Radio-API-Datensätze aus fünf laut.fm-Sendern eingelesen
-- 1.254 eindeutige Lied-/Interpret-Einträge zusammengeführt
-- 1.239 abspielbare Liedmetadatensätze lokal und offline durchsuchbar
-- 263 Tanzvorschläge aus Senderdaten, davon 63 exakt mit vorhandenen Tänzen verknüpft
-- Linedance-Nahetal-Muster `Lied – Tanz` konservativ ausgewertet
-- Radio-Lieder erweitern Liedsuche, Dateinamensuche und Fingerprint-Zuordnung
-- optionaler aktueller Titel über die laut.fm-API, ausschließlich nach bewusstem Klick
-- Datenschutz- und Urheberrechtstexte um die Radio-API ergänzt
-- Jingles und Promos bleiben im Quellarchiv, werden aber nicht als Lieder angeboten
+- 1.254 eindeutige Song-API-Zuordnungen
+- 1.254 Einträge mit mindestens einer API-Song-ID
+- 5 Senderquellen
+- 35 in der Sammlung enthaltene Sender-Endpunkte
+- 261 Songs mit Tanzvorschlägen
+- 63 Songs mit exakter Tanzzuordnung
 
-## Unverändert
+## Technische Dateien
 
-- keine Musikdateien oder Radiostreams im Offline-Katalog
-- keine API-Schlüssel erforderlich
-- Mikrofon-, Audio- und Videoanalyse bleiben lokal
-- ursprüngliche Grafiken und CSS-Basis bleiben unverändert
+Neu:
 
+- `assets/song-api-index.js`
+- `data/song-api-index.json`
+- `tools/test-song-api-index.js`
+- `API-ZUORDNUNG-v4.7.3.md`
 
-## Vorheriger Stand
+Geändert:
 
-# CLDF-App v4.7.0 – Datenschutz, Urheberrecht und Designschutz
-
-- vollständige, technisch abgeglichene Datenschutzhinweise ergänzt
-- Impressum innerhalb der App ergänzt
-- Urheberrechts- und Quellenhinweise erweitert
-- vorsichtige Designschutz-Seite ohne Behauptung einer bestehenden Registrierung ergänzt
-- Drittanbieter-Lizenzseite für MediaPipe ergänzt
-- zentrale Funktion zum Löschen aller lokalen Nutzerdaten ergänzt
-- Hosting-/externe-Link-Hinweise präzisiert
-- interne Versionsangaben auf v4.7.0 vereinheitlicht
-- Service-Worker-Cache und Offline-Dateiliste aktualisiert
-
-# CLDF-App v4.5.5
-
-- Live-Kamera-Aufnahme auf mindestens 30 Sekunden verlängert.
-- Schrittmerkmale werden während der laufenden Kameraaufnahme ausgewertet.
-- Vorläufige Tanzvorschläge werden live aus Sheet-Mustern und eigenen Bewegungsreferenzen berechnet.
-- Hochkant-Aufnahme und Originaldesign bleiben erhalten.
-
-# Release Notes – CLDF Offline-App v4.5
-
-## Neu
-
-- MediaPipe Pose vollständig lokal eingebaut
-- 33 Körperpunkte für Oberkörper, Hüfte, Knie, Knöchel, Fersen und Fußspitzen
-- Live-Kameraanalyse mit automatischem 18-Sekunden-Ablauf
-- Skelettanzeige während der Liveaufnahme
-- Schrittmerkmale wie Side, Forward, Back, Cross, Touch, Kick, Hitch und Turn
-- Vergleich eigener Referenzvideos über Pose- und Schritt-Signaturen
-- maschinenlesbarer Sheet-Schrittvergleich
-- acht vorbereitete Startermuster
-- kombinierter Treffer, wenn Referenzvideo und Sheet-Muster denselben Tanz stützen
-- klare Beta-Kennzeichnung ohne falsche „sicher erkannt“-Aussage
-
-## Beibehalten
-
-- ursprüngliche CLDF-Grafiken, Farben und Grundaufbau
-- Lied–Tanz-Zuordnung hat Vorrang
-- lokale Audio-Fingerprints
-- BPM, Motion und Rhythmus nur als Reserve
-- Offline-PWA und GitHub-Pages-Unterstützung
-- Get-in-Line-Metadaten und externe Tanzsheet-Links
-
-## Grenzen
-
-- Noch keine vollständigen Sheet-Muster für alle Tänze
-- keine Garantie bei verdeckten Füßen, Kamerabewegung oder mehreren Personen
-- eigene Referenzvideos verbessern die Erkennung deutlich
-
-## v4.5.6
-- Startbildschirm bleibt bis zum bewussten Öffnen sichtbar.
-- Untere Navigation für mobile Viewports und Safe-Areas stabilisiert.
+- `assets/app.js`
+- `assets/styles.css`
+- `index.html`
+- `404.html`
+- `service-worker.js`
+- Versions-, Test- und Begleitdateien

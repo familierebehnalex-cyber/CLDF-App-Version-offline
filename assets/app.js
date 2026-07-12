@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const DATA = window.CLDF_DATA || { dances: [], motionCatalog: [], specialRhythms: [], appVersion: '4.7.2', databaseVersion: 'unbekannt' };
+  const DATA = window.CLDF_DATA || { dances: [], motionCatalog: [], specialRhythms: [], appVersion: '4.7.3', databaseVersion: 'unbekannt' };
   const GETINLINE_DATA = window.GETINLINE_DATA || { dances: [], count: 0, generatedAt: null };
   const VM = window.CLDFVideoMotion;
   const STEP_PATTERN_DB = window.CLDF_STEP_SHEET_PATTERNS || { patterns: [] };
@@ -13,7 +13,9 @@
   const RADIO_API_DATA = window.CLDF_RADIO_API_DATA || { stations: [], entries: [], count: 0, stationCount: 0 };
   const RADIO_ENTRIES = Array.isArray(RADIO_API_DATA.entries) ? RADIO_API_DATA.entries : [];
   const RADIO_LIVE_API = window.CLDFRadioLiveAPI || null;
-  const APP_VERSION = '4.7.2';
+  const SONG_API_INDEX = window.CLDF_SONG_API_INDEX || { entries: [], stations: [], entryCount: 0, apiEndpointCount: 0 };
+  const SONG_API_ENTRIES = Array.isArray(SONG_API_INDEX.entries) ? SONG_API_INDEX.entries : [];
+  const APP_VERSION = '4.7.3';
   const DATABASE_VERSION = DATA.databaseVersion || 'unbekannt';
   const CLDF_DANCES = Array.isArray(DATA.dances) ? DATA.dances : [];
   let GETINLINE_DANCES = Array.isArray(GETINLINE_DATA.dances) ? GETINLINE_DATA.dances : [];
@@ -857,6 +859,95 @@
     downloadBlob(new Blob([csv], { type: 'text/csv;charset=utf-8' }), 'CLDF-Tanzdatenbank.csv');
   }
 
+  let songApiLookupCache = null;
+
+  function getSongApiLookup() {
+    if (songApiLookupCache) return songApiLookupCache;
+    const exact = new Map();
+    const byTitle = new Map();
+    const byApiId = new Map();
+    for (const entry of SONG_API_ENTRIES) {
+      if (!entry?.title) continue;
+      const key = songIdentity(entry.title, entry.artist || '');
+      exact.set(key, entry);
+      const titleKey = compactKey(entry.title);
+      if (!byTitle.has(titleKey)) byTitle.set(titleKey, []);
+      byTitle.get(titleKey).push(entry);
+      for (const apiId of entry.apiSongIds || []) {
+        const id = String(apiId || '').trim();
+        if (id) byApiId.set(id, entry);
+      }
+    }
+    songApiLookupCache = { exact, byTitle, byApiId };
+    return songApiLookupCache;
+  }
+
+  function findSongApiEntry(title = '', artist = '') {
+    if (!title) return null;
+    const lookup = getSongApiLookup();
+    const exact = lookup.exact.get(songIdentity(title, artist));
+    if (exact) return exact;
+    const titleMatches = lookup.byTitle.get(compactKey(title)) || [];
+    if (titleMatches.length === 1) return titleMatches[0];
+    if (!titleMatches.length) return null;
+    const ranked = titleMatches.map((entry) => ({
+      entry,
+      score: artist && entry.artist ? tokenScore(artist, entry.artist) : 0,
+    })).sort((left, right) => right.score - left.score);
+    return ranked[0]?.score >= 70 ? ranked[0].entry : null;
+  }
+
+  function mergeSongApiEntry(song, apiEntry, danceIdsByTitle) {
+    if (!song || !apiEntry) return song;
+    song.apiDataAvailable = true;
+    song.apiSongIds = [...new Set([...(song.apiSongIds || []), ...(apiEntry.apiSongIds || []).map(String)])];
+    song.apiStations = [...new Set([...(song.apiStations || []), ...(apiEntry.stations || []).map((station) => station.displayName || station.name).filter(Boolean)])];
+    song.apiStationKeys = [...new Set([...(song.apiStationKeys || []), ...(apiEntry.stations || []).map((station) => station.name).filter(Boolean)])];
+    song.apiEndpointCount = [...new Set((apiEntry.stations || []).flatMap((station) => Object.values(station.apiUrls || {})).filter(Boolean))].length;
+    song.apiAlbums = [...new Set([...(song.apiAlbums || []), ...(apiEntry.albums || [])])];
+    song.apiGenres = [...new Set([...(song.apiGenres || []), ...(apiEntry.genres || [])])];
+    song.apiReleaseYears = [...new Set([...(song.apiReleaseYears || []), ...(apiEntry.releaseYears || [])])];
+    song.apiCandidateDances = [...new Set([...(song.apiCandidateDances || []), ...(apiEntry.candidateDances || []), ...(apiEntry.radioDances || [])])];
+    song.apiExactDanceCandidates = [...new Set([...(song.apiExactDanceCandidates || []), ...(apiEntry.exactDanceCandidates || [])])];
+    song.apiPlayCount = Number(song.apiPlayCount || 0) + Number(apiEntry.playCount || 0);
+    song.apiLastPlayedAt = [song.apiLastPlayedAt, apiEntry.lastPlayedAt].filter(Boolean).sort().at(-1) || '';
+    song.apiSources = [...(song.apiSources || []), ...(apiEntry.stations || []).map((station) => ({
+      name: station.name || '',
+      displayName: station.displayName || station.name || '',
+      apiSongIds: (station.apiSongIds || []).map(String),
+      sourceEndpoints: station.sourceEndpoints || [],
+      apiUrls: station.apiUrls || {},
+    }))];
+    const exactCandidates = [...new Set([...(apiEntry.exactDanceCandidates || []), ...(apiEntry.candidateDances || []).filter((danceTitle) => danceIdsByTitle.has(compactKey(danceTitle)))])];
+    for (const danceTitle of exactCandidates) {
+      for (const danceId of danceIdsByTitle.get(compactKey(danceTitle)) || []) {
+        if (!song.danceIds.includes(danceId)) song.danceIds.push(danceId);
+      }
+    }
+    if (!song.sources.includes('Song-API-Sammlung')) song.sources.push('Song-API-Sammlung');
+    return song;
+  }
+
+  function songApiInlineHtml(song) {
+    const ids = [...new Set((song?.apiSongIds || []).map(String).filter(Boolean))];
+    const stations = [...new Set((song?.apiStations || []).filter(Boolean))];
+    if (!song?.apiDataAvailable && !ids.length) return '';
+    const details = [];
+    if (stations.length) details.push(stations.slice(0, 3).join(', '));
+    if (ids.length) details.push(`Song-ID${ids.length === 1 ? '' : 's'} ${ids.slice(0, 3).join(', ')}${ids.length > 3 ? ' …' : ''}`);
+    const metadata = [
+      ...(song.apiAlbums || []).slice(0, 1),
+      ...(song.apiGenres || []).slice(0, 1),
+      ...(song.apiReleaseYears || []).slice(0, 1),
+    ].filter(Boolean);
+    if (metadata.length) details.push(metadata.join(' · '));
+    return `<div class="song-api-inline"><span class="song-api-badge">API-Daten vorhanden</span><small>${escapeHtml(details.join(' · ') || 'Liedbezogene API-Zuordnung geladen')}</small></div>`;
+  }
+
+  function songResultHtml(song, confidenceLabel) {
+    return `<strong>${escapeHtml(song?.title || '')}</strong><small>${escapeHtml(song?.artist || 'Interpret nicht angegeben')}</small><span class="song-confidence">${escapeHtml(confidenceLabel)}</span>${songApiInlineHtml(song)}`;
+  }
+
   function getSongCatalog() {
     const songs = new Map();
     const danceIdsByTitle = new Map();
@@ -899,6 +990,11 @@
         songsByTitle.get(titleKey).push(song);
       }
       song.radioStations = [...new Set([...(song.radioStations || []), ...(entry.stations || [])])];
+      song.apiDataAvailable = true;
+      song.apiSongIds = [...new Set([...(song.apiSongIds || []), ...(entry.apiSongIds || []).map(String)])];
+      song.apiStations = [...new Set([...(song.apiStations || []), ...(entry.stations || []).map((stationKey) => RADIO_API_DATA.stations?.find((station) => station.name === stationKey)?.displayName || stationKey).filter(Boolean)])];
+      song.apiGenres = [...new Set([...(song.apiGenres || []), ...(entry.genres || [])])];
+      song.apiReleaseYears = [...new Set([...(song.apiReleaseYears || []), ...(entry.releaseYears || [])])];
       song.radioCandidateDances = [...new Set([...(song.radioCandidateDances || []), ...(entry.candidateDances || [])])];
       const exactFromLiveSuggestions = (entry.candidateDances || []).filter((danceTitle) => danceIdsByTitle.has(compactKey(danceTitle)));
       song.radioExactDanceCandidates = [...new Set([...(song.radioExactDanceCandidates || []), ...(entry.exactDanceCandidates || []), ...exactFromLiveSuggestions])];
@@ -910,6 +1006,22 @@
           if (!song.danceIds.includes(danceId)) song.danceIds.push(danceId);
         }
       }
+    }
+
+    for (const apiEntry of SONG_API_ENTRIES) {
+      if (!apiEntry?.title) continue;
+      const exactKey = songIdentity(apiEntry.title, apiEntry.artist || '');
+      const titleMatches = songsByTitle.get(compactKey(apiEntry.title)) || [];
+      let song = songs.get(exactKey);
+      if (!song && titleMatches.length === 1 && (!titleMatches[0].artist || !apiEntry.artist || tokenScore(titleMatches[0].artist, apiEntry.artist) >= 70)) song = titleMatches[0];
+      if (!song) {
+        song = { songKey: exactKey, title: apiEntry.title, artist: apiEntry.artist || '', danceIds: [], sources: [] };
+        songs.set(exactKey, song);
+        const titleKey = compactKey(apiEntry.title);
+        if (!songsByTitle.has(titleKey)) songsByTitle.set(titleKey, []);
+        songsByTitle.get(titleKey).push(song);
+      }
+      mergeSongApiEntry(song, apiEntry, danceIdsByTitle);
     }
     return songs;
   }
@@ -945,7 +1057,15 @@
 
   function matchOnlineSongToCatalog(recognition) {
     if (!recognition?.title) return null;
-    const catalog = [...getSongCatalog().values()];
+    const catalogMap = getSongCatalog();
+    const apiEntry = findSongApiEntry(recognition.title, recognition.artist || '');
+    if (apiEntry) {
+      const exactSong = catalogMap.get(songIdentity(apiEntry.title, apiEntry.artist || ''));
+      if (exactSong) return { song: exactSong, titleScore: 100, artistScore: 100, score: 100, apiMatched: true, apiEntry };
+      const titleOnly = [...catalogMap.values()].filter((song) => compactKey(song.title) === compactKey(apiEntry.title));
+      if (titleOnly.length === 1) return { song: titleOnly[0], titleScore: 100, artistScore: 100, score: 100, apiMatched: true, apiEntry };
+    }
+    const catalog = [...catalogMap.values()];
     const ranked = catalog.map((song) => {
       const titleScore = tokenScore(recognition.title, song.title);
       const artistScore = recognition.artist && song.artist ? tokenScore(recognition.artist, song.artist) : 60;
@@ -1360,8 +1480,8 @@
     const fingerprintCount = allFingerprintEntries().length;
     state.onlineServiceReady = true;
     state.onlineServiceMessage = fingerprintCount
-      ? `Musik-Erkennung bereit · ${fingerprintCount} Audio-Fingerprint${fingerprintCount === 1 ? '' : 's'} geladen.`
-      : 'Musik-Erkennung bereit · Liedliste, BPM, Motion und Rhythmus sind lokal verfügbar; für die exakte Titelerkennung bitte einmal eigene Musikdateien einlesen.';
+      ? `Musik-Erkennung bereit · ${fingerprintCount} Audio-Fingerprint${fingerprintCount === 1 ? '' : 's'} · ${SONG_API_ENTRIES.length} Song-API-Zuordnungen geladen.`
+      : `Musik-Erkennung bereit · ${SONG_API_ENTRIES.length} Song-API-Zuordnungen, Liedliste, BPM, Motion und Rhythmus sind lokal verfügbar; für die exakte Audio-Titelerkennung bitte einmal eigene Musikdateien einlesen.`;
     const card = $('#onlineServiceStatus');
     const title = $('#onlineServiceStatusTitle');
     const text = $('#onlineServiceStatusText');
@@ -1383,7 +1503,7 @@
     const render = () => {
       const query = normalize($('#songPickerSearch').value);
       const filtered = songs.filter((song) => !query || normalize(`${song.title} ${song.artist}`).includes(query)).slice(0, 120);
-      $('#songPickerList').innerHTML = filtered.map((song) => `<button class="song-choice" type="button" data-song-key="${escapeHtml(song.songKey)}"><strong>${escapeHtml(song.title)}</strong><small>${escapeHtml(song.artist || 'Interpret nicht angegeben')} · ${song.danceIds.length ? `${song.danceIds.length} Tanz${song.danceIds.length === 1 ? '' : 'e'}` : 'Noch kein fester Tanz'}</small></button>`).join('') || '<div class="empty-state">Kein Lied gefunden.</div>';
+      $('#songPickerList').innerHTML = filtered.map((song) => `<button class="song-choice" type="button" data-song-key="${escapeHtml(song.songKey)}"><strong>${escapeHtml(song.title)}</strong><small>${escapeHtml(song.artist || 'Interpret nicht angegeben')} · ${song.danceIds.length ? `${song.danceIds.length} Tanz${song.danceIds.length === 1 ? '' : 'e'}` : 'Noch kein fester Tanz'}${song.apiDataAvailable ? ' · API' : ''}</small></button>`).join('') || '<div class="empty-state">Kein Lied gefunden.</div>';
       $$('[data-song-key]', $('#songPickerList')).forEach((button) => button.addEventListener('click', () => {
         closeDialog();
         const song = getSongCatalog().get(button.dataset.songKey);
@@ -1637,7 +1757,7 @@
     $('#resultModeLabel').textContent = source;
     $('#resultTitle').textContent = 'Lied erkannt';
     $('#songResult').classList.remove('hidden');
-    $('#songResult').innerHTML = `<strong>${escapeHtml(song.title)}</strong><small>${escapeHtml(song.artist)}</small><span class="song-confidence">${Math.round(confidence)} % Übereinstimmung</span>`;
+    $('#songResult').innerHTML = songResultHtml(song, `${Math.round(confidence)} % Übereinstimmung`);
     $('#tempoResult').classList.toggle('hidden', !Number.isFinite(tempo.bpm));
     $('#bpmValue').textContent = Number.isFinite(tempo.bpm) ? Math.round(tempo.bpm) : '–';
     $('#analysisSummary').textContent = Number.isFinite(tempo.bpm)
@@ -1673,7 +1793,7 @@
     const recognizedSong = options.recognizedSong || null;
     $('#resultTitle').textContent = recognizedSong ? 'Lied erkannt – kein fest zugeordneter Tanz' : 'Kein eindeutiger Liedtreffer';
     $('#songResult').classList.toggle('hidden', !recognizedSong);
-    if (recognizedSong) $('#songResult').innerHTML = `<strong>${escapeHtml(recognizedSong.title)}</strong><small>${escapeHtml(recognizedSong.artist || 'Interpret nicht angegeben')}</small><span class="song-confidence">Lokal erkannt</span>`;
+    if (recognizedSong) $('#songResult').innerHTML = songResultHtml(recognizedSong, recognizedSong.apiDataAvailable ? 'Lokal erkannt · API zugeordnet' : 'Lokal erkannt');
     $('#tempoResult').classList.remove('hidden');
     $('#bpmValue').textContent = Number.isFinite(bpm) ? bpm : '–';
     $('#alternateBpmRow').classList.toggle('hidden', possibleBpms.length < 2);
@@ -2149,11 +2269,20 @@
           return {
             song: catalogMatch.song,
             confidence: catalogMatch.score,
-            source: recognition.source || 'Offline-Liederkennung',
+            source: catalogMatch.apiMatched ? `${recognition.source || 'Offline-Liederkennung'} · Song-API` : (recognition.source || 'Offline-Liederkennung'),
             tempo,
             recognizedSong: recognition,
             catalogMatch,
           };
+        }
+        const apiEntry = findSongApiEntry(recognition.title, recognition.artist || '');
+        if (apiEntry) {
+          recognition.apiDataAvailable = true;
+          recognition.apiSongIds = apiEntry.apiSongIds || [];
+          recognition.apiStations = (apiEntry.stations || []).map((station) => station.displayName || station.name).filter(Boolean);
+          recognition.apiAlbums = apiEntry.albums || [];
+          recognition.apiGenres = apiEntry.genres || [];
+          recognition.apiReleaseYears = apiEntry.releaseYears || [];
         }
         return { song: null, confidence: 0, source: recognition.source || 'Offline-Liederkennung', tempo, recognizedSong: recognition };
       }
@@ -3139,7 +3268,7 @@
     RADIO_LIVE_API?.start?.();
     runDiagnostics();
     handleInitialRoute();
-    $('#versionText').textContent = `CLDF v4.7.2 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${allFingerprintEntries().length} Audio-Referenzen · Liedzuordnung zuerst · BPM/Motion als Reserve`;
+    $('#versionText').textContent = `CLDF v4.7.3 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${SONG_API_ENTRIES.length} Song-API-Zuordnungen · ${allFingerprintEntries().length} Audio-Referenzen · Liedzuordnung zuerst`;
     // Der Startbildschirm bleibt bei jedem neuen App-Start sichtbar,
     // bis der Benutzer bewusst auf „App öffnen“ tippt.
     $('#splash').classList.remove('hidden');

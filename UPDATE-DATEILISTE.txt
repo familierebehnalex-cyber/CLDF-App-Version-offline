@@ -1,6 +1,8 @@
-00-UPDATE-ANLEITUNG.txt
+CLDF v4.7.2 auf v4.7.3 – geänderte/neue Dateien
+
 02-WAS-IST-ENTHALTEN.txt
 404.html
+API-ZUORDNUNG-v4.7.3.md
 DATEILISTE-SHA256.txt
 ERST-LESEN.txt
 FERTIGSTELLUNGSBERICHT.md
@@ -9,16 +11,17 @@ LIVE-API-PRUEFEN.txt
 README.md
 RELEASE-NOTES.md
 STARTEN-AM-PC.bat
-TESTBERICHT-v4.7.2.md
+TESTBERICHT-v4.7.3.md
 TESTBERICHT.md
 THIRD-PARTY-NOTICES.md
-UPDATE-DATEILISTE.txt
 VALIDIERUNG.json
 assets/app.js
 assets/data.js
 assets/offline-bootstrap.js
-assets/radio-live-api.js
+assets/song-api-index.js
+assets/styles.css
 data/cldf-data.json
+data/song-api-index.json
 docs/DATENSCHUTZ.html
 docs/DESIGNSCHUTZ.html
 docs/LIZENZEN.html
@@ -30,5 +33,5 @@ package-lock.json
 package.json
 service-worker.js
 tools/sync-getinline.js
-tools/test-radio-live-api.js
+tools/test-song-api-index.js
 tools/validate-build.js

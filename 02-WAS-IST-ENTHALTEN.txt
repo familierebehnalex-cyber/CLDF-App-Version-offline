@@ -1,27 +1,17 @@
-CLDF Offline-App v4.7.2 – Inhalt
+CLDF Offline-App v4.7.3 – Inhalt
 ================================
 
-- ursprüngliches CLDF-Design und Seitenaufbau
-- ursprüngliche Hero-Grafiken und App-Symbole unverändert
-- installierbare Offline-PWA
-- lokale Musikerkennung mit ungefähr 12 Sekunden Mikrofonaufnahme
-- lokale Audio-Fingerprint-Engine ohne externen Erkennungsdienst
-- MediaPipe Pose / BlazePose GHUM Lite lokal eingebaut
-- Live-Kamera mit mindestens 30 Sekunden Körper- und Schritterkennung
-- Skelett-Overlay und laufende Schrittvorschau
-- Videoaufnahme und Auswahl vorhandener Videos
-- eigene Bewegungsreferenzen; gespeichert wird nur die Signatur, nicht das Video
-- 8 eingebaute symbolische Sheet-Schrittmuster
-- 135 CLDF-Grundtänze
-- 659 vollständige Bild-Zuordnungen
-- 196 lokale Tanznamen vor Get-in-Line
-- 582 Lieddatensätze, 237 davon mit BPM
-- Favoriten, Übungslisten, Suche, Verlauf, Datenexport und Sicherung
-- Get-in-Line-Importer und GitHub-Aktualisierung
-- Datenschutzhinweise, Impressum, Urheberrecht, Designschutz und Lizenzen
-- zentrale Funktion „Alle lokalen Nutzerdaten löschen“
-- keine AudD-Abhängigkeit, kein API-Schlüssel und kein kostenpflichtiger Erkennungsserver
-
-Wichtig: Die Videoerkennung ist eine Beta-Hilfe. Für die Namensbestimmung aller
-Tänze müssen weitere zulässige Schrittfolgen und/oder eigene Referenzvideos
-ergänzt werden.
+- vollständige Offline-Web-App/PWA
+- CLDF-Tanzdaten
+- Lied-/Tanzzuordnungen
+- lokale Audio-Fingerprints
+- BPM-, Motion- und Rhythmusanalyse
+- MediaPipe-Video- und Schritterkennung
+- 1.254 liedbezogene API-Zuordnungen
+- API-Song-IDs, Senderquellen und Metadaten
+- 35 bereitgestellte Sender-Endpunkte
+- Live-Aktualisierung über current_song und last_songs
+- Offline-Fallback
+- Datenschutz-, Urheberrechts-, Designschutz- und Impressumsseiten
+- GitHub-Pages-Workflows
+- vollständige Test- und Prüfdokumentation

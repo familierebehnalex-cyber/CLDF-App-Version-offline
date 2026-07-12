@@ -1,24 +1,18 @@
-CLDF v4.7.2 – LIVE-API PRÜFEN
-================================
+CLDF v4.7.3 – SONG- UND LIVE-API PRÜFEN
+========================================
 
-Die API arbeitet absichtlich unsichtbar im Hintergrund. Es gibt keine Senderbox.
+Songbezogene Prüfung:
+1. App öffnen.
+2. "Lied aus Liste wählen" anklicken.
+3. Nach "Lonely Drum" suchen.
+4. Den Eintrag "Aaron Goodvin – Lonely Drum" öffnen.
+5. Im Ergebnis muss "API-Daten vorhanden" erscheinen.
+6. Die Song-ID 19470677 muss angezeigt werden.
 
-Einfache Prüfung im Browser:
+Live-Prüfung nach GitHub-Deployment:
+1. Browser-Entwicklerwerkzeuge öffnen.
+2. Unter Netzwerk nach "api.laut.fm" filtern.
+3. Die App online neu laden.
+4. Es sollten Anfragen an current_song und last_songs erscheinen.
 
-1. App über HTTPS oder localhost öffnen.
-2. Browser-Entwicklertools öffnen (F12).
-3. Im Reiter "Network/Netzwerk" nach "api.laut.fm" filtern.
-4. Nach dem App-Start sollten für die fünf Sender Anfragen an
-   /current_song und /last_songs erscheinen.
-5. Im Reiter "Application/Anwendung" unter Local Storage stehen danach:
-   cldf.v2.radioLiveApiEntries
-   cldf.v2.radioLiveApiStatus
-
-Manueller Konsolentest:
-
-CLDFRadioLiveAPI.getStatus()
-CLDFRadioLiveAPI.getEntries().slice(0, 10)
-CLDFRadioLiveAPI.refresh()
-
-Hinweis:
-Ein Browser, Werbeblocker, DNS-Filter oder Firmen-/Schulnetz kann externe API-Anfragen blockieren. Die App verwendet dann automatisch den lokalen Offline-Katalog.
+Die große Senderkatalog-Box bleibt absichtlich ausgeblendet.
