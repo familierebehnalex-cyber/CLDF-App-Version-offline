@@ -1,0 +1,10 @@
+CLDF v4.5.4 – Hochkant-Aufnahme-Fix
+
+Geändert:
+- Die Live-Vorschau füllt den 9:16-Bereich jetzt vollständig aus.
+- Die eigentliche MediaRecorder-Aufnahme wird, sofern der Browser Canvas-Aufnahmen unterstützt, in 540 x 960 Pixeln (9:16) erzeugt.
+- Das Kamerabild wird mittig auf Hochformat zugeschnitten; der Ton wird in den Hochkant-Aufnahmestrom übernommen.
+- Falls ein Browser Canvas-Aufnahmen nicht unterstützt, läuft die Körperanalyse weiter und die App fällt auf den originalen Kamerastrom zurück.
+- Neuer Service-Worker-Cache v4.5.4 verhindert die Verwendung alter Kamera-Dateien.
+
+Die Körperanalyse verwendet weiterhin den unveränderten Live-Kamerastrom. Das Video wird nur vor der temporären Tonanalyse auf 9:16 gebracht und nicht dauerhaft gespeichert.

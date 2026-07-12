@@ -1,29 +1,32 @@
-# Release Notes – CLDF Offline-App v4.5
-
-## Neu
-
-- MediaPipe Pose vollständig lokal eingebaut
-- 33 Körperpunkte für Oberkörper, Hüfte, Knie, Knöchel, Fersen und Fußspitzen
-- Live-Kameraanalyse mit automatischem 18-Sekunden-Ablauf
-- Skelettanzeige während der Liveaufnahme
-- Schrittmerkmale wie Side, Forward, Back, Cross, Touch, Kick, Hitch und Turn
-- Vergleich eigener Referenzvideos über Pose- und Schritt-Signaturen
-- maschinenlesbarer Sheet-Schrittvergleich
-- acht vorbereitete Startermuster
-- kombinierter Treffer, wenn Referenzvideo und Sheet-Muster denselben Tanz stützen
-- klare Beta-Kennzeichnung ohne falsche „sicher erkannt“-Aussage
-
-## Beibehalten
-
-- ursprüngliche CLDF-Grafiken, Farben und Grundaufbau
-- Lied–Tanz-Zuordnung hat Vorrang
-- lokale Audio-Fingerprints
-- BPM, Motion und Rhythmus nur als Reserve
-- Offline-PWA und GitHub-Pages-Unterstützung
-- Get-in-Line-Metadaten und externe Tanzsheet-Links
-
-## Grenzen
-
-- Noch keine vollständigen Sheet-Muster für alle Tänze
-- keine Garantie bei verdeckten Füßen, Kamerabewegung oder mehreren Personen
-- eigene Referenzvideos verbessern die Erkennung deutlich
+{
+  "version": "4.5.0",
+  "generatedAt": "2026-07-11T10:40:31.770Z",
+  "originalCssBasePreserved": true,
+  "originalCssBaseLines": 596,
+  "originalCssBaseSha256": "4aec6ede441e7e071a86f89e595f3ba3fe9c831ce11488e379b6413d6f76ba6a",
+  "addedCssLinesForLiveCamera": 26,
+  "originalGraphicsUnchanged": true,
+  "originalGraphicHashes": {
+    "assets/cldf-hero.webp": {
+      "expected": "7e9fc962990d8954692884f3b8eadaa0da84a84140e2314643189c3d1fcd4eda",
+      "actual": "7e9fc962990d8954692884f3b8eadaa0da84a84140e2314643189c3d1fcd4eda",
+      "unchanged": true
+    },
+    "assets/cldf-hero-1200.webp": {
+      "expected": "cc73c553d5c7dfa9ec48ab4d0fc5f7d9058ccbc2ce63ec5387af316f3bdf2512",
+      "actual": "cc73c553d5c7dfa9ec48ab4d0fc5f7d9058ccbc2ce63ec5387af316f3bdf2512",
+      "unchanged": true
+    },
+    "assets/icon-192.png": {
+      "expected": "0330a00d7d33ed350067b1414f441721f85eb657972c54f06af60de2aa4d30f6",
+      "actual": "0330a00d7d33ed350067b1414f441721f85eb657972c54f06af60de2aa4d30f6",
+      "unchanged": true
+    },
+    "assets/icon-512.png": {
+      "expected": "5f758f26af0e28555947a65d6e74d9685fe8639efe8561b71a672718505470cf",
+      "actual": "5f758f26af0e28555947a65d6e74d9685fe8639efe8561b71a672718505470cf",
+      "unchanged": true
+    }
+  },
+  "note": "Die vorhandenen CSS-Regeln, Hero-Grafiken und Hauptsymbole der hochgeladenen Originaldesign-Version sind unverändert. Ergänzt wurden nur neue CSS-Regeln für das Live-Kamera-Fenster."
+}

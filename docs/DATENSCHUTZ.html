@@ -3,66 +3,138 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Datenschutz – CLDF Offline-App</title>
   <style>
     :root { color-scheme: light; }
-    body { font-family: system-ui, sans-serif; max-width: 860px; margin: auto; padding: 24px; line-height: 1.6; color:#2c180c; background:#fffaf2; }
-    h1,h2 { line-height:1.2; }
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; max-width: 900px; margin: auto; padding: 24px; line-height: 1.65; color:#2c180c; background:#fffaf2; }
+    h1,h2,h3 { line-height:1.22; }
     h1 { margin-bottom: 8px; }
-    .lead { color:#70482a; margin-top:0; }
+    .lead { color:#70482a; margin-top:0; font-size:1.05rem; }
+    .meta { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 20px; }
+    .meta span { background:#f4ead8; border:1px solid #e3c796; border-radius:999px; padding:5px 10px; font-size:.9rem; }
     .card { background:#fff; border:1px solid #e3c796; border-radius:18px; padding:18px; margin:14px 0; box-shadow:0 8px 18px rgba(67,33,12,.06); }
-    ul { padding-left: 1.2rem; }
-    a { color: inherit; }
-    .back { display:inline-block; margin-top:16px; }
+    .notice { border-left:5px solid #9b5b1c; }
+    ul { padding-left: 1.25rem; }
+    a { color:#713b12; }
+    .back { display:inline-block; margin-top:16px; font-weight:700; }
+    code { background:#f4ead8; padding:.1rem .3rem; border-radius:6px; }
+    table { width:100%; border-collapse:collapse; margin-top:10px; }
+    th,td { text-align:left; vertical-align:top; padding:10px; border-bottom:1px solid #ead7b6; }
+    th { width:31%; }
+    @media (max-width:640px) { body { padding:16px; } table,tbody,tr,th,td { display:block; } th { width:auto; padding-bottom:2px; } td { padding-top:2px; } }
   </style>
 </head>
 <body>
-  <h1>Datenschutz – CLDF Offline-App</h1>
-  <p class="lead">Diese App ist für eine möglichst lokale und datensparsame Nutzung ausgelegt. Musik-Erkennung, Favoriten und viele weitere Funktionen laufen direkt auf deinem Gerät.</p>
+  <h1>Datenschutzhinweise zur CLDF Offline-App</h1>
+  <p class="lead">Die App ist datensparsam aufgebaut: Audio-, Kamera- und Videodaten werden für die Erkennung direkt im Browser verarbeitet. Es gibt keine Benutzerkonten, keine Werbung und kein eingebautes Tracking.</p>
+  <div class="meta"><span>App-Version 4.6.2</span><span>Stand: 12. Juli 2026</span><span>Geltungsbereich: Web-App/PWA</span></div>
 
   <section class="card">
-    <h2>1. Grundprinzip</h2>
-    <p>Die App verwendet keinen externen Musikerkennungsdienst. Aufnahmen und Auswertungen sollen möglichst direkt auf dem Handy oder im Browser des Nutzers stattfinden.</p>
+    <h2>1. Verantwortlicher</h2>
+    <p><strong>Country- &amp; Line Dance-Friends Hochrhein e.V.</strong><br>
+      Hauptstraße 23<br>
+      79793 Wutöschingen<br>
+      E-Mail: <a href="mailto:info@country-hochrhein.de">info@country-hochrhein.de</a><br>
+      Telefon: <a href="tel:+4917639742461">+49 176 3974 2461</a>
+    </p>
+    <p>Weitere Angaben stehen im <a href="./IMPRESSUM.html">Impressum der App</a>.</p>
+  </section>
+
+  <section class="card notice">
+    <h2>2. Wichtigster Grundsatz</h2>
+    <p>Die CLDF-App übermittelt Mikrofonaufnahmen, ausgewählte Musikdateien, Kameraaufnahmen und ausgewählte Videos nicht an einen Musikerkennungs-, KI- oder Analyseserver. Die Erkennung läuft lokal mit JavaScript, Web Audio, IndexedDB und dem mitgelieferten MediaPipe-Modell.</p>
+    <p>Eine Internetverbindung entsteht trotzdem beim erstmaligen oder erneuten Laden der App vom Webserver sowie beim bewussten Öffnen externer Links.</p>
   </section>
 
   <section class="card">
-    <h2>2. Mikrofon</h2>
-    <p>Das Mikrofon wird erst verwendet, nachdem du die Funktion bewusst startest und die Freigabe im Betriebssystem oder Browser erteilst. Die kurze Musikaufnahme wird lokal analysiert, nicht dauerhaft gespeichert und nicht automatisch an fremde Server gesendet.</p>
+    <h2>3. Daten beim Online-Abruf der App</h2>
+    <p>Beim Aufruf der App über eine Internetadresse verarbeitet der eingesetzte Hosting-Anbieter technisch notwendige Verbindungsdaten. Dazu können IP-Adresse, Datum und Uhrzeit, aufgerufene Datei, Browser-/Geräteangaben, Referrer, Statuscode und übertragene Datenmenge gehören.</p>
+    <table>
+      <tr><th>Zweck</th><td>Auslieferung der App, IT-Sicherheit, Fehleranalyse und Schutz vor Missbrauch.</td></tr>
+      <tr><th>Rechtsgrundlage</th><td>Art. 6 Abs. 1 lit. f DSGVO; berechtigtes Interesse an einem sicheren und funktionsfähigen Angebot.</td></tr>
+      <tr><th>Empfänger</th><td>Der für die veröffentlichte App-Adresse tatsächlich eingesetzte Hosting-Anbieter. Das Projekt ist technisch für GitHub Pages, Render oder einen eigenen Node-Host vorbereitet.</td></tr>
+      <tr><th>Speicherdauer</th><td>Nach den Lösch- und Protokollfristen des tatsächlich eingesetzten Hosting-Anbieters. Der mitgelieferte CLDF-Node-Server legt selbst keine eigenen Nutzerkonten oder Analyseprofile an.</td></tr>
+    </table>
   </section>
 
   <section class="card">
-    <h2>3. Kamera / Video-Erkennung</h2>
-    <p>Wenn du die Live-Kamera oder ein Video zur Tanzerkennung verwendest, erfolgt die Schritt- und Bewegungsanalyse lokal im Gerät. Die App speichert keine Videos automatisch auf einem externen Server.</p>
-  </section>
-
-  <section class="card">
-    <h2>4. Eigene Musikbibliothek</h2>
-    <p>Beim Einlesen eigener Musik werden nur technische Audio-Fingerprints in der lokalen Browserdatenbank gespeichert. Die Musikdatei selbst wird nicht als Titeldatei in der App-Datenbank abgelegt.</p>
-  </section>
-
-  <section class="card">
-    <h2>5. Lokal gespeicherte App-Daten</h2>
+    <h2>4. Mikrofon und Musikerkennung</h2>
     <ul>
-      <li>Favoriten</li>
-      <li>Übungslisten</li>
-      <li>Verlauf</li>
-      <li>eigene Tanzdaten</li>
-      <li>importierte Fingerprints und Kataloge</li>
-      <li>Bewegungs- und Schrittmuster für die Video-Auswertung</li>
+      <li>Das Mikrofon startet erst nach einer bewussten Aktion und der Freigabe durch Browser oder Betriebssystem.</li>
+      <li>Die App verarbeitet normalerweise einen kurzen Audioabschnitt von ungefähr zwölf Sekunden.</li>
+      <li>Die Aufnahme wird im Arbeitsspeicher ausgewertet und nicht dauerhaft als Audiodatei gespeichert.</li>
+      <li>Es erfolgt kein Upload an AudD, Shazam oder einen vergleichbaren Dienst.</li>
     </ul>
-    <p>Diese Daten bleiben grundsätzlich lokal auf dem Gerät und können innerhalb der App exportiert, importiert oder gelöscht werden.</p>
+    <p><strong>Zweck:</strong> lokale Lied-, BPM-, Rhythmus- und Tanzzuordnung. <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. a DSGVO aufgrund der aktiven Freigabe. Die Freigabe kann in den Browser- oder Geräteeinstellungen jederzeit entzogen werden.</p>
   </section>
 
   <section class="card">
-    <h2>6. Externe Links</h2>
-    <p>Erst wenn du bewusst einen externen Link antippst – zum Beispiel zu einem Tanzsheet, zu YouTube oder zur Vereinsseite – wird eine Verbindung zu dieser externen Seite aufgebaut. Ab dann gelten die Datenschutz- und Nutzungsbedingungen des jeweiligen Anbieters.</p>
+    <h2>5. Kamera, Video und Bewegungsanalyse</h2>
+    <ul>
+      <li>Live-Kamera und Videoton werden nur nach bewusster Auswahl und Gerätefreigabe verarbeitet.</li>
+      <li>Das lokale MediaPipe-Modell ermittelt Körperpunkte und daraus Schrittmerkmale.</li>
+      <li>Bei einer normalen Erkennung wird das Video nach Abschluss nicht als App-Datensatz gespeichert.</li>
+      <li>Bei „Referenzvideo hinzufügen“ wird nur eine verkleinerte Bewegungs-/Schrittsignatur einschließlich Dateiname, Tanzzuordnung und Erstellungszeit lokal gespeichert; nicht das vollständige Video.</li>
+      <li>Die Merkmale werden nicht zur Identifizierung einer Person verwendet.</li>
+    </ul>
+    <p><strong>Zweck:</strong> lokale Tanz- und Schrittvorschläge. <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. a DSGVO aufgrund der aktiven Freigabe.</p>
   </section>
 
   <section class="card">
-    <h2>7. Hinweis</h2>
-    <p>Diese Seite beschreibt die Funktionsweise der App verständlich und kompakt. Sie ersetzt keine individuelle rechtliche Beratung im Einzelfall.</p>
+    <h2>6. Eigene Dateien und Audio-Fingerprints</h2>
+    <p>Aus bewusst ausgewählten Musikdateien erzeugt die App technische Audio-Fingerprints. Gespeichert werden unter anderem Liedzuordnung, technische Hashwerte und Zeitpositionen. Die Musikdatei selbst wird nicht in der App-Datenbank abgelegt und nicht an den Betreiber übertragen.</p>
+    <p>Ausgewählte Tanzvideos werden nur für die lokale Analyse gelesen. Temporäre Objekt-URLs werden nach der Verarbeitung wieder freigegeben.</p>
   </section>
 
-  <p><a class="back" href="../index.html">Zurück zur App</a></p>
+  <section class="card">
+    <h2>7. Lokal gespeicherte App-Daten</h2>
+    <p>Je nach Nutzung speichert die App im Browser mittels <code>localStorage</code>, <code>IndexedDB</code> und Offline-Cache:</p>
+    <ul>
+      <li>Favoriten, Übungslisten und Erkennungsverlauf,</li>
+      <li>eigene Tänze und Korrekturen,</li>
+      <li>App-Einstellungen und Einrichtungsstatus,</li>
+      <li>Bewegungsreferenzen,</li>
+      <li>Audio-Fingerprints und importierte Get-in-Line-Katalogdaten,</li>
+      <li>technisch notwendige App-Dateien für den Offline-Betrieb.</li>
+    </ul>
+    <p>Die Speicherung dient den ausdrücklich ausgewählten App-Funktionen. Für technisch notwendige Zugriffe auf die Endeinrichtung gilt § 25 Abs. 2 Nr. 2 TDDDG. Es werden keine Werbe-, Analyse- oder Profiling-Cookies gesetzt.</p>
+  </section>
+
+  <section class="card">
+    <h2>8. Speicherdauer und Löschen</h2>
+    <p>Lokale Nutzerdaten bleiben gespeichert, bis sie in der App gelöscht, durch ein Backup ersetzt, über die Browser-/Betriebssystemfunktion „Website-Daten löschen“ entfernt oder die App deinstalliert wird.</p>
+    <p>Unter <strong>Mehr → Datenschutz, Rechte &amp; Impressum → Alle lokalen Nutzerdaten löschen</strong> können Favoriten, Verlauf, eigene Tänze, Einstellungen, Fingerprints, Katalogimporte und Bewegungsreferenzen gemeinsam entfernt werden. Browserberechtigungen und technisch zwischengespeicherte Offline-App-Dateien müssen bei Bedarf zusätzlich in den Browser- oder Geräteeinstellungen gelöscht werden.</p>
+  </section>
+
+  <section class="card">
+    <h2>9. Externe Links</h2>
+    <p>Erst beim bewussten Öffnen eines externen Links wird die jeweilige Zielseite aufgerufen. Dazu gehören insbesondere Get-in-Line, YouTube und die Vereinswebsite. Der Zielanbieter erhält dabei übliche Verbindungsdaten und verarbeitet sie nach seiner eigenen Datenschutzerklärung. Die CLDF-App bettet keine YouTube-Videos oder fremden Tracker automatisch ein.</p>
+  </section>
+
+  <section class="card">
+    <h2>10. Automatisierte Entscheidungen</h2>
+    <p>Die App erzeugt technische Lied-, Tanz- und Schrittvorschläge. Diese dienen nur als Hilfestellung. Es findet keine automatisierte Entscheidung mit rechtlicher oder vergleichbar erheblicher Wirkung und kein personenbezogenes Profiling statt.</p>
+  </section>
+
+  <section class="card">
+    <h2>11. Deine Rechte</h2>
+    <p>Im Rahmen der gesetzlichen Voraussetzungen bestehen insbesondere Rechte auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch. Eine erteilte Einwilligung kann mit Wirkung für die Zukunft widerrufen werden.</p>
+    <p>Da die meisten App-Daten ausschließlich auf dem eigenen Gerät liegen und dem Verein nicht zugänglich sind, können sie am schnellsten direkt in der App oder über die Browser-/Geräteeinstellungen verwaltet werden.</p>
+    <p>Außerdem besteht ein Beschwerderecht bei einer Datenschutzaufsichtsbehörde. Für den Verein in Baden-Württemberg ist grundsätzlich der Landesbeauftragte für den Datenschutz und die Informationsfreiheit Baden-Württemberg zuständig.</p>
+  </section>
+
+  <section class="card">
+    <h2>12. Änderungen</h2>
+    <p>Diese Hinweise werden angepasst, wenn Funktionen, Hosting, Empfänger oder Rechtslage geändert werden. Die aktuelle Fassung ist in der App verlinkt.</p>
+  </section>
+
+  <section class="card notice">
+    <h2>Betreiberhinweis vor Veröffentlichung</h2>
+    <p>Der konkrete App-Betreiber muss vor dem öffentlichen Einsatz den tatsächlich verwendeten Hosting-Anbieter, dessen Auftragsverarbeitung, Serverstandort und Protokollfristen prüfen und diese Angaben bei Bedarf präzisieren. Eine technische und rechtliche Prüfliste liegt dem Paket unter <code>docs/RECHTLICHE-PRUEFLISTE.md</code> bei.</p>
+  </section>
+
+  <p><a class="back" href="../index.html">← Zurück zur App</a></p>
 </body>
 </html>

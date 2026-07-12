@@ -1,0 +1,26 @@
+CLDF Offline-App auf GitHub / Render
+====================================
+
+GITHUB PAGES
+------------
+1. Den vollständigen App-Ordner in ein GitHub-Repository laden.
+2. Im Repository unter Settings → Pages als Source „GitHub Actions“ auswählen.
+3. Die enthaltene Aktion „CLDF Offline-App veröffentlichen“ ausführen.
+4. Die erzeugte HTTPS-Adresse am Handy öffnen und die App installieren.
+
+GET-IN-LINE AUTOMATISCH AKTUALISIEREN
+-------------------------------------
+Unter Actions die Aktion „Get-in-Line-Katalog aktualisieren“ manuell starten.
+Sie läuft zusätzlich einmal pro Woche. Der große Erstabruf kann längere Zeit dauern.
+
+RENDER
+------
+Das Repository als Web Service veröffentlichen.
+Startbefehl: node server.js
+Es ist kein API-Schlüssel und keine geheime Umgebungsvariable erforderlich.
+
+WICHTIG
+-------
+Für die exakte Offline-Titelerkennung werden eigene, rechtmäßig vorhandene
+Musikdateien einmalig direkt in der App eingelesen. Die Musikdateien selbst
+werden nicht hochgeladen oder gespeichert; nur lokale Audio-Fingerprints.

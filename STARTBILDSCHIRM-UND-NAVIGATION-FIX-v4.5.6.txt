@@ -1,0 +1,11 @@
+CLDF v4.5.6 – Startbildschirm und untere Navigation
+
+Änderungen:
+- Der Startbildschirm bleibt bei jedem neuen App-Start sichtbar.
+- Die App öffnet sich erst nach einem Tipp auf „App öffnen“.
+- Die untere Navigationsleiste ist auf Handybildschirmen dauerhaft fixiert.
+- Android-/iPhone-Sicherheitsabstände und wechselnde Browserleisten werden berücksichtigt.
+- Bei Bildschirmdrehung, Rückkehr aus dem Hintergrund und Größenänderungen wird die Leiste neu ausgerichtet.
+- Das bestehende CLDF-Design wurde nicht verändert.
+
+Nach dem GitHub-Upload bitte auf den grünen Haken unter „Actions“ warten und die App mit ?v=456 öffnen.

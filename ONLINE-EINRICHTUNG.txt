@@ -1,0 +1,20 @@
+CLDF Offline-App einmalig über HTTPS bereitstellen
+==================================================
+
+Die App braucht keinen Online-Erkennungsdienst. HTTPS wird nur benötigt, damit
+Handy-Browser die App installieren und den Mikrofonzugriff sicher freigeben.
+Nach der Installation funktionieren die lokalen Funktionen offline.
+
+Möglichkeit 1: GitHub Pages
+---------------------------
+1. App-Ordner in ein GitHub-Repository laden.
+2. Settings → Pages → Source: GitHub Actions.
+3. Workflow „CLDF Offline-App veröffentlichen“ starten.
+
+Möglichkeit 2: Render oder anderer Node-Host
+--------------------------------------------
+Startbefehl: node server.js
+Erforderliche Umgebungsvariablen: keine.
+
+Der direkte Link zu einem Get-in-Line-Tanzsheet öffnet eine externe Webseite
+und benötigt deshalb Internet.

@@ -1,47 +1,63 @@
-# Testplan CLDF Offline-App v4.0
+# Testplan CLDF Offline-App v4.6.2
 
-## Start und Offline
+## Start, Version und Offline
 
 1. `STARTEN-AM-PC.bat` starten.
-2. Startseite, Navigation und Version 4.0 prüfen.
+2. Startseite, ursprüngliche Grafik, Navigation und sichtbare Version 4.6.2 prüfen.
 3. Browser-Entwicklerwerkzeuge öffnen und auf JavaScript-Fehler prüfen.
 4. Seite einmal vollständig laden, Netzwerk auf „Offline“ stellen und neu laden.
 5. Suche, Favoriten, Übungslisten, Tanzdetails und Liedlisten prüfen.
+6. Datenschutz, Impressum, Urheberrecht, Designschutz und Lizenzen auch offline öffnen.
 
-## Mikrofon
+## Mikrofon und Datenschutzhinweis
 
-1. „Lied erkennen“ antippen.
-2. Systemabfrage einmal erlauben.
+1. Prüfen, dass vor der Bedienung ein Hinweis auf lokale Verarbeitung sichtbar ist.
+2. „Lied erkennen“ antippen und die Systemabfrage erlauben.
 3. Prüfen, dass die Aufnahme automatisch nach ungefähr zwölf Sekunden endet.
-4. Ohne Fingerprint muss eine BPM-/Motion-/Rhythmus-Empfehlung erscheinen.
-5. Mit eingelesener Referenz muss ein ausreichend sauberer Ausschnitt des gleichen Liedes als Titel erkannt werden.
+4. Ohne Fingerprint darf nur eine klar unsichere BPM-/Rhythmus-Empfehlung erscheinen.
+5. Mit eigener Referenz muss ein sauberer Ausschnitt desselben Liedes erkannt werden.
+6. In den Netzwerkwerkzeugen prüfen, dass die Aufnahme nicht hochgeladen wird.
 
-## Eigene Musikbibliothek
+## Live-Kamera und MediaPipe
 
-1. Eine eigene Audiodatei einlesen.
-2. Zuordnung kontrollieren.
-3. Fingerprint-Liste, Export, Import und Löschen testen.
-4. Prüfen, dass keine Audiodatei in der App gespeichert wird.
+1. Prüfen, dass vor der Kameranutzung ein Hinweis auf lokale Verarbeitung sichtbar ist.
+2. „Live-Kamera starten“ antippen.
+3. Kamera erlauben; bei abgelehntem Mikrofon muss die Körperanalyse weiter möglich sein.
+4. Eine Person vollständig einschließlich Füßen aufnehmen.
+5. Skelett-Overlay, Fortschritt und automatisches Ende nach mindestens 30 Sekunden prüfen.
+6. Prüfen, dass ohne sicheren Liedtreffer nur „Beta-Vorschlag“ angezeigt wird.
+7. Electric Slide oder einen anderen eingebauten Startertanz testen.
+8. Mit bewegter Kamera, verdeckten Füßen und schlechtem Licht wiederholen; die Bewertung soll vorsichtiger werden.
 
-## Get-in-Line
+## Video und eigene Referenzen
 
-1. `GETINLINE-KATALOG-AKTUALISIEREN.bat` zunächst mit kleinem Testlimit im Terminal prüfen:
-   `node tools/sync-getinline.js --limit=10`
-2. `data/getinline-dances.json` in der App einspielen.
-3. Anzahl, Suchergebnis, Metadaten und direkten Tanzsheet-Link prüfen.
-4. Offline prüfen: Metadaten bleiben sichtbar; externer Link benötigt Internet.
+1. Ein vorhandenes Video auswählen und Körper-/Schrittauswertung prüfen.
+2. Ein eigenes Referenzvideo einlesen.
+3. Kontrollieren, dass nur die Bewegungssignatur gespeichert wird.
+4. Ein zweites Video desselben Tanzes vergleichen.
+5. Referenz wieder löschen und prüfen, dass das Sheet-Muster separat weiter funktioniert.
 
-## Datenqualität
+## Zentrale Datenlöschung
 
-- abgeschnittene Bildtexte dürfen nicht enthalten sein
-- Liedtitel/Interpret nicht raten
-- Original-, Live- und Remix-Versionen getrennt behandeln
-- direkte Liedzuordnung vor BPM-Vorschlag anzeigen
-- mehrere passende Tänze vollständig anzeigen
+1. Testdaten anlegen: Favorit, Übungstanz, Verlauf, Einstellung, Audio-Fingerprint, Katalog und Bewegungsreferenz.
+2. Unter „Mehr → Datenschutz, Rechte & Impressum“ die zentrale Löschfunktion öffnen.
+3. Abbrechen testen: Daten müssen erhalten bleiben.
+4. Löschung bestätigen: App muss neu laden.
+5. Danach `localStorage` und beide IndexedDB-Speicher kontrollieren; Nutzerdaten müssen leer sein.
+6. Prüfen, dass die App selbst und die Rechteseiten weiterhin offline starten.
+
+## Get-in-Line und externe Links
+
+1. `node tools/sync-getinline.js --limit=10` als kleinen Testlauf ausführen.
+2. Katalog einspielen und Anzahl, Suche, Metadaten und Tanzsheet-Link prüfen.
+3. Offline prüfen: lokale Metadaten bleiben sichtbar; der externe Link benötigt Internet.
+4. Externe Website-/YouTube-Links dürfen erst nach dem Anklicken laden.
 
 ## Technische Prüfung
 
 ```bash
+npm run test:video-steps
+npm run test:fingerprint
 npm run validate
 ```
 

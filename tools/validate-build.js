@@ -11,7 +11,10 @@ const required = [
   'index.html', 'manifest.webmanifest', 'service-worker.js', 'server.js',
   'assets/app.js', 'assets/audio-engine.js', 'assets/local-store.js', 'assets/styles.css',
   'assets/data.js', 'assets/getinline-data.js', 'assets/image-mappings.js', 'assets/song-metadata.js',
+  'assets/video-motion.js', 'assets/step-sheet-patterns.js', 'assets/mediapipe/pose/pose.js',
+  'assets/mediapipe/pose/pose_landmark_lite.tflite', 'assets/mediapipe/pose/pose_solution_simd_wasm_bin.wasm',
   'data/cldf-data.json', 'data/getinline-dances.json', 'data/bild-lied-tanz-zuordnungen.json', 'data/song-metadata.json',
+  'docs/DATENSCHUTZ.html', 'docs/URHEBERRECHT.html', 'docs/DESIGNSCHUTZ.html', 'docs/IMPRESSUM.html', 'docs/LIZENZEN.html',
 ];
 const missing = required.filter((relative) => !fs.existsSync(path.join(ROOT, relative)));
 if (missing.length) {
@@ -19,7 +22,7 @@ if (missing.length) {
   process.exit(1);
 }
 
-for (const relative of ['server.js', 'assets/app.js', 'assets/audio-engine.js', 'assets/local-store.js', 'assets/offline-bootstrap.js', 'service-worker.js', 'tools/sync-getinline.js']) {
+for (const relative of ['server.js', 'assets/app.js', 'assets/audio-engine.js', 'assets/local-store.js', 'assets/offline-bootstrap.js', 'assets/video-motion.js', 'assets/step-sheet-patterns.js', 'service-worker.js', 'tools/sync-getinline.js', 'tools/test-video-step-matcher.js']) {
   execFileSync(process.execPath, ['--check', path.join(ROOT, relative)], { stdio: 'pipe' });
 }
 
@@ -35,12 +38,32 @@ for (const dance of getinline.dances || []) merged.add(normalize(dance.title));
 const sourceFiles = ['server.js', 'assets/app.js', 'index.html'].map((relative) => fs.readFileSync(path.join(ROOT, relative), 'utf8')).join('\n');
 const forbidden = ['AUDD_API_TOKEN', '/api/recognize', 'api.audd.io'].filter((needle) => sourceFiles.includes(needle));
 const styles = fs.readFileSync(path.join(ROOT, 'assets/styles.css'));
+const stylesText = styles.toString('utf8');
+const originalCssBase = Buffer.from(stylesText.split(/(?<=\n)/).slice(0, 596).join(''), 'utf8');
+const expectedOriginalCssBaseSha256 = '89cc732bfecdfc0022e627aba4d0c4718056e198af3a17f45cb050a10af56768';
+const originalCssBaseSha256 = crypto.createHash('sha256').update(originalCssBase).digest('hex');
+const expectedGraphicHashes = {
+  'assets/cldf-hero.webp': '7e9fc962990d8954692884f3b8eadaa0da84a84140e2314643189c3d1fcd4eda',
+  'assets/cldf-hero-1200.webp': 'cc73c553d5c7dfa9ec48ab4d0fc5f7d9058ccbc2ce63ec5387af316f3bdf2512',
+  'assets/icon-192.png': '0330a00d7d33ed350067b1414f441721f85eb657972c54f06af60de2aa4d30f6',
+  'assets/icon-512.png': '5f758f26af0e28555947a65d6e74d9685fe8639efe8561b71a672718505470cf',
+};
+const graphicHashes = Object.fromEntries(Object.entries(expectedGraphicHashes).map(([relative, expected]) => {
+  const actual = crypto.createHash('sha256').update(fs.readFileSync(path.join(ROOT, relative))).digest('hex');
+  return [relative, { expected, actual, unchanged: actual === expected }];
+}));
+const originalGraphicsUnchanged = Object.values(graphicHashes).every((entry) => entry.unchanged);
+const originalCssBasePreserved = originalCssBaseSha256 === expectedOriginalCssBaseSha256;
+if (!originalCssBasePreserved || !originalGraphicsUnchanged) {
+  console.error('Originaldesign-Prüfung fehlgeschlagen.');
+  process.exit(1);
+}
 const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 const essentialDomIds = [
   'app', 'recordBtn', 'audioFile', 'searchInput', 'versionText',
   'audioFingerprintFiles', 'audioFingerprintCount', 'audioFingerprintList',
   'importGetInLineBtn', 'importGetInLineFile', 'getinlineCatalogCount',
-  'getinlineCatalogStatus', 'appDialog', 'fingerprintProgress'
+  'getinlineCatalogStatus', 'appDialog', 'fingerprintProgress', 'liveDanceVideoBtn'
 ];
 const missingDomIds = essentialDomIds.filter((id) => !new RegExp(`id=[\"']${id}[\"']`).test(html));
 if (missingDomIds.length) {
@@ -49,17 +72,30 @@ if (missingDomIds.length) {
 }
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-getinline-parser.js')], { stdio: 'pipe' });
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-audio-fingerprint.js')], { stdio: 'pipe' });
+execFileSync(process.execPath, [path.join(ROOT, 'tools/test-video-step-matcher.js')], { stdio: 'pipe' });
 const report = {
-  appVersion: '4.1.0',
+  appVersion: '4.6.2',
   generatedAt: new Date().toISOString(),
   requiredFilesPresent: true,
   javascriptSyntaxValid: true,
   essentialDomIdsPresent: true,
   getInLineParserTestsPassed: true,
   audioFingerprintSelfTestPassed: true,
+  videoStepMatcherSelfTestPassed: true,
+  mediaPipePoseBundled: true,
+  mediaPipePoseModel: 'BlazePose GHUM Lite / MediaPipe Pose 0.5.1675469404',
+  builtInSheetPatterns: 8,
+  liveVideoMinimumSeconds: 30,
+  liveStepEvaluationDuringRecording: true,
   staticOfflineServer: true,
   serviceWorkerPresent: true,
-  originalDesignStylesSha256: crypto.createHash('sha256').update(styles).digest('hex'),
+  originalCssBasePreserved,
+  originalCssBaseLines: 596,
+  originalCssBaseSha256,
+  addedCssLinesForLiveCamera: Math.max(0, stylesText.split('\n').length - 1 - 596),
+  originalGraphicsUnchanged,
+  originalGraphicHashes: graphicHashes,
+  completeStylesSha256: crypto.createHash('sha256').update(styles).digest('hex'),
   cldfBaseDances: (cldf.dances || []).length,
   imageMappings: image.metadata?.record_count || (image.mappings || []).length,
   imageUniqueDances: image.metadata?.unique_dances || (image.dances || []).length,

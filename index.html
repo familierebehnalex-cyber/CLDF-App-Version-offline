@@ -11,7 +11,7 @@
   <link rel="icon" href="./assets/icon-64.png" sizes="64x64" type="image/png">
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./assets/styles.css?v=4.6.1">
+  <link rel="stylesheet" href="./assets/styles.css?v=4.6.2">
   <title>CLDF – Line Dance App</title>
 </head>
 <body>
@@ -91,6 +91,7 @@
             </label>
             <button id="manualSongBtn" class="secondary-btn" type="button">Lied aus Liste wählen</button>
           </div>
+          <p class="permission-privacy-note"><strong>Datenschutz:</strong> Mikrofonaufnahmen und ausgewählte Dateien werden direkt auf diesem Gerät ausgewertet und nicht zur Erkennung hochgeladen. <a href="docs/DATENSCHUTZ.html">Details zur Verarbeitung</a></p>
         </article>
 
         <div class="status-grid">
@@ -127,6 +128,7 @@
               <input id="danceVideoFile" type="file" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.m4v,.mov">
             </label>
           </div>
+          <p class="permission-privacy-note"><strong>Datenschutz:</strong> Kamera und Videos werden lokal ausgewertet. Bei gespeicherten Referenzen bleibt nur eine technische Bewegungssignatur, nicht das vollständige Video. <a href="docs/DATENSCHUTZ.html">Details zur Verarbeitung</a></p>
           <div id="videoRecognitionStatus" class="video-recognition-status" role="status" aria-live="polite">
             <strong>Bereit für ein Tanzvideo</strong>
             <small id="videoRecognitionStatusText">Der Videoton nutzt dieselbe lokale Lied-zuerst-Regel. Ohne Tanzsheet-Zuordnung werden Video-Referenzen geprüft; BPM bleibt die letzte Reserve.</small>
@@ -311,40 +313,47 @@
 
           <article class="settings-card privacy-club-card legal-card">
             <div class="section-heading compact">
-              <div><p class="eyebrow">Wichtige Infos</p><h2>Datenschutz & Urheberrecht</h2></div>
+              <div><p class="eyebrow">Wichtige Infos</p><h2>Datenschutz, Rechte & Impressum</h2></div>
               <span class="count-badge">CLDF</span>
             </div>
-            <p class="help-text">Hier stehen die wichtigsten Punkte zu lokalen App-Daten, Rechten an Inhalten, externen Quellen und den Vereinslinks – kurz, verständlich und direkt in der App.</p>
+            <p class="help-text">Die App verarbeitet Mikrofon-, Kamera-, Musik- und Videodaten lokal. Beim Online-Abruf entstehen jedoch technisch notwendige Verbindungsdaten beim Hosting-Anbieter; externe Seiten werden erst nach einem bewussten Klick geöffnet.</p>
             <div class="privacy-club-grid legal-grid">
               <article class="mini-info-card legal-info-card">
-                <strong>Datenschutz</strong>
-                <small>Mikrofon, Kamera, Favoriten, eigene Tanzdaten und Bewegungssignaturen bleiben auf dem Gerät. Eine Übertragung erfolgt nur dann, wenn du bewusst einen externen Link öffnest.</small>
+                <strong>Lokale Verarbeitung</strong>
+                <small>Audio- und Videoanalyse laufen im Browser. Musik- und Videodateien werden nicht an einen Erkennungs- oder KI-Server hochgeladen.</small>
               </article>
               <article class="mini-info-card legal-info-card">
-                <strong>Urheberrecht</strong>
-                <small>Die App speichert keine kompletten Tanzbeschreibungen, keine Musikdateien und keine kopierten Fremdinhalte. Gespeichert werden nur Metadaten, eigene Daten und Verweise auf Originalquellen.</small>
+                <strong>Lokale Speicherung</strong>
+                <small>Favoriten, Verlauf, eigene Tänze, Fingerprints, Katalogimporte und Bewegungsreferenzen bleiben auf diesem Gerät, bis du sie löschst.</small>
               </article>
               <article class="mini-info-card legal-info-card">
-                <strong>Externe Inhalte</strong>
-                <small>Get-in-Line, Videos, Webseiten und andere Quellen haben ihre eigenen Rechte und Bedingungen. Beim Öffnen solcher Seiten gelten immer die Regeln des jeweiligen Anbieters.</small>
+                <strong>Urheber- & Designrechte</strong>
+                <small>Fremde Musik, Videos, Fotos, Sheets und Choreografien behalten ihre Rechte. Für die App wird derzeit keine eingetragene Designregistrierung behauptet.</small>
               </article>
               <article class="mini-info-card legal-info-card">
-                <strong>Verein & Kontakt</strong>
-                <small>Hier findest du die offiziellen CLDF-Links für Vereinswebsite, YouTube und weitere Informationen. So bleiben App und Vereinsinfos sauber voneinander getrennt.</small>
+                <strong>Hosting & externe Links</strong>
+                <small>Das Laden der App verbindet zum Webhost. Get-in-Line, YouTube und Vereinsseiten werden nur nach deinem Klick geöffnet.</small>
               </article>
             </div>
             <div class="button-grid privacy-link-grid legal-link-grid">
               <a class="secondary-btn link-btn" href="./docs/DATENSCHUTZ.html" target="_blank" rel="noopener">Datenschutzhinweise</a>
               <a class="secondary-btn link-btn" href="./docs/URHEBERRECHT.html" target="_blank" rel="noopener">Urheberrecht & Quellen</a>
-              <a class="secondary-btn link-btn" href="https://country-hochrhein.de/" target="_blank" rel="noopener">Vereinswebsite</a>
-              <a class="secondary-btn link-btn" href="https://www.youtube.com/@CLDF2013" target="_blank" rel="noopener">CLDF YouTube</a>
+              <a class="secondary-btn link-btn" href="./docs/DESIGNSCHUTZ.html" target="_blank" rel="noopener">Designschutz</a>
+              <a class="secondary-btn link-btn" href="./docs/IMPRESSUM.html" target="_blank" rel="noopener">Impressum</a>
+              <a class="secondary-btn link-btn" href="./docs/LIZENZEN.html" target="_blank" rel="noopener">Drittanbieter-Lizenzen</a>
+              <a class="secondary-btn link-btn" href="https://country-hochrhein.de/" target="_blank" rel="noopener noreferrer">Vereinswebsite</a>
+              <a class="secondary-btn link-btn" href="https://www.youtube.com/@CLDF2013" target="_blank" rel="noopener noreferrer">CLDF YouTube</a>
             </div>
-            <p class="legal-note">Hinweis: Diese Hinweise dienen der transparenten Erklärung innerhalb der App und ersetzen keine individuelle Rechtsberatung.</p>
+            <div class="legal-delete-panel">
+              <div><strong>Lokale Nutzerdaten entfernen</strong><small>Löscht Favoriten, Verlauf, eigene Tänze, Einstellungen, Audio-Fingerprints, Katalogimporte und Bewegungsreferenzen. Browserberechtigungen und Offline-App-Dateien bleiben erhalten.</small></div>
+              <button id="deleteAllLocalDataBtn" class="danger-btn" type="button">Alle lokalen Nutzerdaten löschen</button>
+            </div>
+            <p class="legal-note">Hinweis: Die Texte bilden den technischen Stand der App ab und sind keine individuelle Rechtsberatung. Hosting- und Betreiberangaben müssen vor Veröffentlichung abschließend geprüft werden.</p>
           </article>
 
           <article class="settings-card version-card">
             <img src="./assets/icon-128.png" alt="">
-            <div><h2>CLDF v4.6.1 Offline</h2><p id="versionText">CLDF-Tänze + Get-in-Line-Metadaten · direkter Tanzsheet-Link · Lied zuerst · BPM als Reserve</p></div>
+            <div><h2>CLDF v4.6.2 Offline</h2><p id="versionText">CLDF-Tänze + Get-in-Line-Metadaten · direkter Tanzsheet-Link · Lied zuerst · BPM als Reserve</p></div>
           </article>
         </div>
       </section>
@@ -410,10 +419,10 @@
   <script src="./assets/local-store.js"></script>
   <script src="./assets/audio-engine.js"></script>
   <script src="./assets/offline-bootstrap.js"></script>
-  <script src="./assets/mediapipe/pose/pose.js?v=4.6.1"></script>
-  <script src="./assets/step-sheet-patterns.js?v=4.6.1"></script>
-  <script src="./assets/video-motion.js?v=4.6.1"></script>
-  <script src="./assets/app.js?v=4.6.1"></script>
-  <script>if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.6.1').catch(console.warn));</script>
+  <script src="./assets/mediapipe/pose/pose.js?v=4.6.2"></script>
+  <script src="./assets/step-sheet-patterns.js?v=4.6.2"></script>
+  <script src="./assets/video-motion.js?v=4.6.2"></script>
+  <script src="./assets/app.js?v=4.6.2"></script>
+  <script>if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.6.2').catch(console.warn));</script>
 </body>
 </html>

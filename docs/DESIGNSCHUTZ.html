@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Designschutz & Dokumentation – CLDF Offline-App</title>
+  <style>
+    :root { color-scheme:light; }
+    * { box-sizing:border-box; }
+    body { font-family:system-ui,sans-serif; max-width:900px; margin:auto; padding:24px; line-height:1.65; color:#2c180c; background:#fffaf2; }
+    h1,h2 { line-height:1.22; }
+    h1 { margin-bottom:8px; }
+    .lead { color:#70482a; margin-top:0; font-size:1.05rem; }
+    .meta { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 20px; }
+    .meta span { background:#f4ead8; border:1px solid #e3c796; border-radius:999px; padding:5px 10px; font-size:.9rem; }
+    .card { background:#fff; border:1px solid #e3c796; border-radius:18px; padding:18px; margin:14px 0; box-shadow:0 8px 18px rgba(67,33,12,.06); }
+    .status { border-left:5px solid #9b5b1c; }
+    ul,ol { padding-left:1.25rem; }
+    a { color:#713b12; }
+    code { background:#f4ead8; padding:.1rem .3rem; border-radius:6px; }
+    .back { display:inline-block; margin-top:16px; font-weight:700; }
+  </style>
+</head>
+<body>
+  <h1>Designschutz und Beweisdokumentation</h1>
+  <p class="lead">Diese Seite beschreibt, welche sichtbaren Elemente der CLDF-App möglicherweise als Design geschützt werden können und wie der Entwicklungsstand dokumentiert werden sollte.</p>
+  <div class="meta"><span>App-Version 4.6.2</span><span>Stand: 12. Juli 2026</span></div>
+
+  <section class="card status">
+    <h2>Aktueller Status</h2>
+    <p><strong>Für diese App wird derzeit keine eingetragene Designregistrierung behauptet.</strong> Die Bezeichnung „geschützt“, „registered“ oder ein Hinweis auf ein Registerrecht soll erst verwendet werden, wenn eine tatsächliche Anmeldung beziehungsweise Eintragung nachgewiesen ist.</p>
+  </section>
+
+  <section class="card">
+    <h2>1. Was grundsätzlich in Betracht kommt</h2>
+    <ul>
+      <li>grafische Benutzeroberflächen und charakteristische Bildschirmansichten,</li>
+      <li>Startbildschirm, Karten, Ergebnisansicht und Navigation,</li>
+      <li>App-Icon und eigenständige grafische Symbole,</li>
+      <li>Farb-, Form-, Rahmen-, Typografie- und Anordnungskombinationen,</li>
+      <li>unter dem modernisierten EU-Designrecht auch geeignete Animationen, Bewegungen und Übergänge.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>2. Was Designschutz nicht schützt</h2>
+    <p>Nicht geschützt wird die abstrakte Idee einer Line-Dance-App, die Funktion „Lied erkennen“, ein Algorithmus, eine Datenstruktur, ein Arbeitsablauf oder eine bloße technische Wirkung. Designschutz betrifft die sichtbare Erscheinungsform, nicht das dahinterliegende Konzept.</p>
+  </section>
+
+  <section class="card">
+    <h2>3. Voraussetzungen</h2>
+    <p>Ein Design muss bei der Anmeldung <strong>neu</strong> sein und <strong>Eigenart</strong> besitzen. Das DPMA prüft diese materiellen Voraussetzungen bei der Eintragung grundsätzlich nicht vollständig; sie können später in einem Streit- oder Nichtigkeitsverfahren entscheidend werden.</p>
+    <p>Eine eigene Veröffentlichung kann innerhalb einer gesetzlichen Neuheitsschonfrist von bis zu zwölf Monaten unschädlich sein. Trotzdem sollte eine Anmeldung möglichst früh geplant werden, weil Veröffentlichungsdatum, Urheberschaft und ältere ähnliche Gestaltungen später bewiesen werden müssen.</p>
+  </section>
+
+  <section class="card">
+    <h2>4. Empfohlene Schutzstrategie für CLDF</h2>
+    <ol>
+      <li>Festlegen, wer Entwerfer und wer späterer Rechtsinhaber sein soll.</li>
+      <li>Vorbekannte ähnliche Apps, Western-UI-Designs, Icons und Marken recherchieren.</li>
+      <li>Die wichtigsten Ansichten als saubere, konsistente Abbildungen festlegen.</li>
+      <li>Entscheiden, ob ein deutsches Design beim DPMA oder ein EU-Design beim EUIPO sinnvoller ist.</li>
+      <li>App-Name und Icon getrennt auf möglichen Markenschutz prüfen.</li>
+      <li>Vor Anmeldung eine fachkundige Schutzrechtsberatung einholen, besonders bei mehreren Mitwirkenden.</li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <h2>5. Beweisdokumentation im Projekt</h2>
+    <p>Für jede veröffentlichte Fassung sollten aufbewahrt werden:</p>
+    <ul>
+      <li>vollständiges ZIP-Archiv mit Versionsnummer und Datum,</li>
+      <li>unveränderte Screenshots der zentralen Bildschirmansichten,</li>
+      <li>Originaldateien von Logo, Icon und Grafiken,</li>
+      <li>Git-Verlauf oder andere datierte Änderungsnachweise,</li>
+      <li>SHA-256-Prüfsummen der veröffentlichten Dateien,</li>
+      <li>Vereinbarungen über Urheber-, Nutzungs- und Übertragungsrechte aller Mitwirkenden,</li>
+      <li>Datum und Ort der ersten öffentlichen Veröffentlichung.</li>
+    </ul>
+    <p>Das Projekt enthält bereits Prüfdateien und Hashlisten. Diese sind technische Beweishilfen, ersetzen aber keine Rechteübertragung oder Registeranmeldung.</p>
+  </section>
+
+  <section class="card">
+    <h2>6. Geeignete Ansichten für eine spätere Anmeldung</h2>
+    <ul>
+      <li>CLDF-Start-/Splashscreen,</li>
+      <li>Startseite mit zentraler Musikerkennung,</li>
+      <li>Tanzsuche mit Kartenansicht,</li>
+      <li>Ergebnisansicht mit BPM-Ring und Zuordnungen,</li>
+      <li>Video-/Liveanalyse mit Schrittvorschau,</li>
+      <li>App-Icon als eigenständige Gestaltung.</li>
+    </ul>
+    <p>Die Darstellungen sollten nur die beanspruchte Gestaltung zeigen und keine unnötigen wechselnden Daten, personenbezogenen Inhalte oder fremden Logos enthalten.</p>
+  </section>
+
+  <section class="card">
+    <h2>7. Offizielle Informationsquellen</h2>
+    <ul>
+      <li><a href="https://www.dpma.de/designs/schutz/schutzvoraussetzungen/index.html" target="_blank" rel="noopener noreferrer">DPMA: Schutzvoraussetzungen</a></li>
+      <li><a href="https://www.dpma.de/designs/faq/index.html" target="_blank" rel="noopener noreferrer">DPMA: Fragen rund um Designs und Neuheitsschonfrist</a></li>
+      <li><a href="https://www.euipo.europa.eu/en/designs/design-reform-hub" target="_blank" rel="noopener noreferrer">EUIPO: modernisiertes EU-Designrecht</a></li>
+    </ul>
+  </section>
+
+  <section class="card status">
+    <h2>Rechtlicher Hinweis</h2>
+    <p>Diese interne Orientierung ersetzt keine Prüfung der konkreten Neuheit, Eigenart, Inhaberschaft, Klassifikation oder Anmeldestrategie durch eine Patentanwältin, einen Patentanwalt oder eine entsprechend spezialisierte Rechtsberatung.</p>
+  </section>
+
+  <p><a class="back" href="../index.html">← Zurück zur App</a></p>
+</body>
+</html>

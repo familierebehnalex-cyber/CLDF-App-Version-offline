@@ -1,6 +1,6 @@
 {
-  "appVersion": "4.0.0",
-  "databaseVersion": "2026.07.10-offline-images-audio-meta-v4",
+  "appVersion": "4.6.2",
+  "databaseVersion": "2026.07.10-offline-images-audio-meta-v4-mediapipe-step-beta",
   "generatedAt": "2026-07-04T14:30:00+02:00",
   "motionCatalog": [
     {

@@ -1,52 +1,27 @@
-# Testplan CLDF Offline-App v4.5
+CLDF Offline-App v4.6.2 – Inhalt
+================================
 
-## Start und Offline
+- ursprüngliches CLDF-Design und Seitenaufbau
+- ursprüngliche Hero-Grafiken und App-Symbole unverändert
+- installierbare Offline-PWA
+- lokale Musikerkennung mit ungefähr 12 Sekunden Mikrofonaufnahme
+- lokale Audio-Fingerprint-Engine ohne externen Erkennungsdienst
+- MediaPipe Pose / BlazePose GHUM Lite lokal eingebaut
+- Live-Kamera mit mindestens 30 Sekunden Körper- und Schritterkennung
+- Skelett-Overlay und laufende Schrittvorschau
+- Videoaufnahme und Auswahl vorhandener Videos
+- eigene Bewegungsreferenzen; gespeichert wird nur die Signatur, nicht das Video
+- 8 eingebaute symbolische Sheet-Schrittmuster
+- 135 CLDF-Grundtänze
+- 659 vollständige Bild-Zuordnungen
+- 196 lokale Tanznamen vor Get-in-Line
+- 582 Lieddatensätze, 237 davon mit BPM
+- Favoriten, Übungslisten, Suche, Verlauf, Datenexport und Sicherung
+- Get-in-Line-Importer und GitHub-Aktualisierung
+- Datenschutzhinweise, Impressum, Urheberrecht, Designschutz und Lizenzen
+- zentrale Funktion „Alle lokalen Nutzerdaten löschen“
+- keine AudD-Abhängigkeit, kein API-Schlüssel und kein kostenpflichtiger Erkennungsserver
 
-1. `STARTEN-AM-PC.bat` starten.
-2. Startseite, ursprüngliche Grafik, Navigation und Version 4.5 prüfen.
-3. Browser-Entwicklerwerkzeuge öffnen und auf JavaScript-Fehler prüfen.
-4. Seite einmal vollständig laden, Netzwerk auf „Offline“ stellen und neu laden.
-5. Suche, Favoriten, Übungslisten, Tanzdetails und Liedlisten prüfen.
-
-## Mikrofon
-
-1. „Lied erkennen“ antippen.
-2. Systemabfrage einmal erlauben.
-3. Prüfen, dass die Aufnahme automatisch nach ungefähr zwölf Sekunden endet.
-4. Ohne Fingerprint darf nur eine klar als unsicher gekennzeichnete BPM-/Rhythmus-Empfehlung erscheinen.
-5. Mit eigener Referenz muss ein sauberer Ausschnitt des gleichen Liedes erkannt werden.
-
-## Live-Kamera und MediaPipe
-
-1. „Live-Kamera starten“ antippen.
-2. Kamera erlauben; Mikrofon darf bei Bedarf abgelehnt werden, die Körperanalyse muss trotzdem starten.
-3. Eine Person vollständig einschließlich Füßen aufnehmen.
-4. Skelett-Overlay, Fortschritt und automatisches Ende nach ungefähr 18 Sekunden prüfen.
-5. Prüfen, dass ohne sicheren Liedtreffer nur „Beta-Vorschlag“ angezeigt wird.
-6. Electric Slide oder einen anderen eingebauten Startertanz testen.
-7. Aufnahme mit mitbewegter Kamera, verdeckten Füßen und schlechtem Licht wiederholen; die App soll dann vorsichtiger bewerten.
-
-## Video und eigene Referenzen
-
-1. Ein vorhandenes Video auswählen.
-2. Körper-/Schrittauswertung prüfen.
-3. Ein eigenes Referenzvideo für einen Tanz einlesen.
-4. Kontrollieren, dass nur die Signatur gespeichert wird.
-5. Ein zweites Video des gleichen Tanzes vergleichen.
-6. Referenz wieder löschen und prüfen, dass das zugehörige Sheet-Muster weiterhin separat funktioniert.
-
-## Get-in-Line
-
-1. `node tools/sync-getinline.js --limit=10` als kleinen Testlauf ausführen.
-2. `data/getinline-dances.json` in der App einspielen.
-3. Anzahl, Suchergebnis, Metadaten und Tanzsheet-Link prüfen.
-4. Offline prüfen: Metadaten bleiben sichtbar; externer Link benötigt Internet.
-
-## Technische Prüfung
-
-```bash
-npm run test:video-steps
-npm run validate
-```
-
-Der Bericht wird in `VALIDIERUNG.json` geschrieben.
+Wichtig: Die Videoerkennung ist eine Beta-Hilfe. Für die Namensbestimmung aller
+Tänze müssen weitere zulässige Schrittfolgen und/oder eigene Referenzvideos
+ergänzt werden.

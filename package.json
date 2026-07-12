@@ -1,63 +1,18 @@
-CLDF Offline-App v4.5
-=====================
-
-Diese Version behält das ursprüngliche CLDF-Design bei und ergänzt die lokale
-MediaPipe-Körper- und Schritterkennung.
-
-SCHNELLSTART AM PC
-------------------
-1. ZIP vollständig entpacken.
-2. Node.js 18 oder neuer installieren.
-3. STARTEN-AM-PC.bat doppelt anklicken.
-4. http://localhost:4173 öffnen.
-
-VIDEOERKENNUNG TESTEN
----------------------
-1. Auf der Startseite zu „Tanz per Video erkennen“ gehen.
-2. „Live-Kamera starten“, „Video aufnehmen“ oder „Video auswählen“ verwenden.
-3. Beim Filmen müssen Oberkörper, Hüfte, Knie und Füße vollständig sichtbar sein.
-4. Das Handy möglichst ruhig aufstellen und nur eine Person filmen.
-5. Nach 18 Sekunden zeigt die App bei ausreichender Sicherheit den besten
-   Beta-Treffer und weitere Möglichkeiten.
-
-Die App prüft zuerst den Ton. Ein sicher erkannter Liedtreffer und die feste
-Lied–Tanz-Zuordnung haben immer Vorrang. Ohne Liedtreffer vergleicht sie:
-- eigene MediaPipe-Referenzvideos,
-- eingebaute maschinenlesbare Sheet-Schrittmuster,
-- zuletzt BPM als vorsichtige Reserve.
-
-EINGEBAUTE STARTERMUSTER
-------------------------
-Electric Slide, Tush Push, Black Coffee, God Blessed Texas, Canadian Stomp,
-Copperhead Road, Stroll Along Cha Cha und 16-Step.
-
-EIGENE REFERENZVIDEOS
----------------------
-Unter „Mehr → Bewegungsreferenzen“ können gut sichtbare Demo-Videos ausgewählt
-und einem Tanz zugeordnet werden. Die App speichert nicht das Video, sondern nur
-die berechnete Körperbewegungs-Signatur. Mehrere Blickwinkel pro Tanz verbessern
-den späteren Vergleich.
-
-HANDY / OFFLINE
----------------
-Die App einmal über HTTPS oder localhost öffnen. Beim ersten Kamera- oder
-Mikrofonstart die normale Freigabe bestätigen. JavaScript, WASM und das
-MediaPipe-Lite-Modell sind im Projekt enthalten und werden offline gecacht.
-Nur externe Get-in-Line-Links benötigen Internet.
-
-WICHTIG
--------
-Die Videoerkennung ist eine Beta-Hilfe. Blickwinkel, verdeckte Füße, mehrere
-Personen, bewegte Kamera und sehr schnelle Schritte können das Ergebnis
-beeinflussen. Ohne sicheren Liedtreffer wird der Tanz als Vorschlag angezeigt,
-nicht als zweifelsfrei erkannt.
-
-WICHTIGE DATEIEN
-----------------
-STARTEN-AM-PC.bat                    App lokal starten
-assets/video-motion.js              MediaPipe-, Schritt- und Vergleichslogik
-assets/step-sheet-patterns.js        symbolische Starter-Schrittmuster
-assets/mediapipe/pose/               lokale Pose-Engine, WASM und Lite-Modell
-tools/test-video-step-matcher.js    automatischer Sheet-Matcher-Test
-VALIDIERUNG.json                     technischer Prüfbericht
-TESTBERICHT.md                       geprüfter Funktionsumfang
+{
+  "name": "cldf-offline-app",
+  "version": "4.6.2",
+  "private": true,
+  "description": "CLDF Offline Line Dance App mit lokaler Audio-Fingerprint- und MediaPipe-Schritterkennung",
+  "scripts": {
+    "start": "node server.js",
+    "sync:getinline": "node tools/sync-getinline.js",
+    "sync:getinline:full": "node tools/sync-getinline.js --full",
+    "test:getinline": "node tools/test-getinline-parser.js",
+    "validate": "node tools/validate-build.js",
+    "test:fingerprint": "node tools/test-audio-fingerprint.js",
+    "test:video-steps": "node tools/test-video-step-matcher.js"
+  },
+  "engines": {
+    "node": ">=18.17"
+  }
+}

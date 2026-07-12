@@ -1,103 +1,109 @@
-# CLDF Offline-App v4.1
+# CLDF Offline-App v4.6.2
 
-Installierbare Line-Dance-PWA auf Basis des gelieferten CLDF-Designs. Die Kernfunktionen laufen lokal: Tanzsuche, Lied–Tanz-Zuordnung, Favoriten, Übungslisten, BPM-Analyse, Motion-/Rhythmusregeln und – nach einmaligem Einlesen eigener Musik – Audio-Fingerprint-Erkennung.
+Installierbare Line-Dance-PWA im ursprünglichen CLDF-Design. Die Kernfunktionen laufen lokal: Tanzsuche, Lied–Tanz-Zuordnung, Favoriten, Übungslisten, Audio-Fingerprints, BPM-/Motion-/Rhythmusregeln sowie eine neue MediaPipe-Videoanalyse.
 
-## Bedienung
+## Lied erkennen
 
-Der Benutzer tippt auf **„Lied erkennen“**. Die App fordert beim ersten Mal die offizielle Mikrofonfreigabe des Handys/Browsers an, nimmt ungefähr zwölf Sekunden auf und beendet die Aufnahme automatisch. Danach gilt folgende Reihenfolge:
+Der Benutzer tippt auf **„Lied aufnehmen“**. Beim ersten Mal wird die normale Mikrofonfreigabe des Handys/Browsers angefragt. Die App nimmt ungefähr zwölf Sekunden auf und verarbeitet die Aufnahme lokal.
+
+Reihenfolge:
 
 1. lokaler Audio-Fingerprint-Treffer;
 2. feste Lied–Tanz-Zuordnung;
-3. BPM-, Taktart-, Motion- und Rhythmusbewertung als Reserve;
-4. Anzeige des besten Tanzes und weiterer sinnvoller Vorschläge.
+3. BPM, Taktart, Motion und Rhythmus als Reserve.
 
-Audioaufnahmen werden nicht hochgeladen und nicht dauerhaft gespeichert.
+Die Aufnahme wird nicht hochgeladen und nicht dauerhaft gespeichert.
+
+## Tanz per Video erkennen
+
+Die App enthält MediaPipe Pose mit lokal eingebautem Lite-Modell. Es werden 33 Körperpunkte verfolgt. Zur Verfügung stehen:
+
+- **Live-Kamera starten** – mindestens 30 Sekunden automatische Liveanalyse mit laufender Schritt- und Tanzvorschau;
+- **Video aufnehmen** – Aufnahme mit der Handykamera;
+- **Video auswählen** – vorhandene Datei lokal auswerten;
+- **Referenzvideo hinzufügen** – eigene Demo als Bewegungssignatur speichern.
+
+Die Videoanalyse erkennt unter anderem Fußbewegungen, Kreuzen, Vorwärts-/Rückwärtsbewegungen, Side Steps, Touch/Kick/Hitch sowie Viertel-/Halbdrehungen. Daraus wird eine lokale Pose- und Schritt-Signatur erstellt.
+
+Vergleichsreihenfolge bei Video:
+
+1. sicher erkannter Videoton und feste Lied–Tanz-Zuordnung;
+2. eigene MediaPipe-Referenzvideos;
+3. maschinenlesbare Sheet-Schrittmuster;
+4. BPM nur als letzte Reserve.
+
+Eingebaut sind zunächst acht vorbereitete Startermuster: Electric Slide, Tush Push, Black Coffee, God Blessed Texas, Canadian Stomp, Copperhead Road, Stroll Along Cha Cha und 16-Step. Weitere Tänze können später als symbolische Sheet-Muster oder durch eigene Referenzvideos ergänzt werden.
+
+Die Videoerkennung ist bewusst als **Beta-Vorschlag** gekennzeichnet. Ohne sicheren Liedtreffer behauptet die App nicht, einen Tanz zweifelsfrei erkannt zu haben.
+
+## Offline-Betrieb
+
+MediaPipe-JavaScript, WASM-Dateien und BlazePose-GHUM-Lite-Modell liegen im Projekt. Nach dem ersten Laden über HTTPS beziehungsweise localhost werden sie durch den Service Worker zwischengespeichert. Die Körperanalyse benötigt keinen externen KI-Dienst und verursacht keine laufenden API-Kosten.
 
 ## Eigene Musikbibliothek
 
-Unter **Mehr → Eigene Musikbibliothek** können rechtmäßig vorhandene Audiodateien einmalig eingelesen werden. Gespeichert werden nur akustische Merkmale in IndexedDB. Die Referenzen können als JSON gesichert, auf ein anderes Gerät übertragen oder gelöscht werden.
+Unter **Mehr → Eigene Musikbibliothek** können rechtmäßig vorhandene Audiodateien einmalig eingelesen werden. Gespeichert werden nur akustische Merkmale in IndexedDB. Für eine zentral vorbereitete Vereinsausgabe stehen `MUSIKREFERENZEN-ERSTELLEN.bat` und `FINGERPRINTS-EINBAUEN.bat` bereit.
 
-Für eine fertig vorbereitete Vereinsausgabe können Referenzen mit `MUSIKREFERENZEN-ERSTELLEN.bat` erzeugt und mit `FINGERPRINTS-EINBAUEN.bat` fest in `assets/audio-fingerprints.js` eingebaut werden. Dann müssen die späteren Benutzer nur noch auf **„Lied erkennen“** tippen.
-
-Ohne solche Referenzen kann eine rein lokale Web-App keinen beliebigen kommerziellen Titel zuverlässig benennen. In diesem Fall bleiben BPM-Analyse und Tanzempfehlungen verfügbar.
-
-## Lokale Tanz- und Lieddaten
+## Lokale Daten
 
 - 135 ursprüngliche CLDF-Tänze
-- 659 vollständige Lied–Tanz-Zuordnungen aus den Benutzerbildern
+- 659 vollständige Lied–Tanz-Zuordnungen aus den bereitgestellten Bildern
 - 196 eindeutige lokale Tanznamen vor Get-in-Line
 - 582 Lieddatensätze
-- 237 Einträge mit BPM
-- Taktart, Motion und Rhythmus, sofern eindeutig
-- keine abgeschnittenen oder mit „…“ verkürzten Bildangaben
-
-Ein Lied kann mehreren Tänzen und ein Tanz mehreren Liedern zugeordnet sein.
+- 237 Lieddatensätze mit BPM-Angaben
+- 8 eingebaute maschinenlesbare Sheet-Schrittmuster
+- abgeschnittene Bildtexte wurden nicht übernommen
 
 ## Get-in-Line
 
-Der Importer übernimmt ausschließlich die vereinbarten Metadaten:
+Der Importer übernimmt nur die vereinbarten Metadaten: Tanzname, Lied/Interpret, Choreograf/in, Level, Counts/Walls, Tags/Restarts/Bridges/Breaks/Ending und den direkten Tanzsheet-Link. Vollständige Schritttexte werden nicht kopiert.
 
-- Tanzname
-- Lied und Interpret
-- Choreograf/in
-- Schwierigkeitsgrad
-- Counts und Walls
-- Tags, Restarts, Bridges, Breaks und Ending
-- direkter Link zum jeweiligen Get-in-Line-Tanzsheet
-
-BPM, Taktart, Motion und Rhythmus werden anhand der lokalen Lieddaten ergänzt, sofern eine eindeutige Zuordnung möglich ist. Vollständige Schrittbeschreibungen werden nicht kopiert.
-
-### Lokal aktualisieren
+Lokale Aktualisierung:
 
 ```text
 GETINLINE-KATALOG-AKTUALISIEREN.bat
 ```
 
-oder im Terminal:
+oder:
 
 ```bash
 npm run sync:getinline
 ```
 
-Für einen kompletten Neuabruf:
-
-```bash
-npm run sync:getinline:full
-```
-
-Der Vorgang speichert Zwischenstände. Aufgrund der Größe des Archivs kann der erste Durchlauf lange dauern. Der in dieser ZIP enthaltene Katalog ist zunächst leer, weil der Abruf in der Erstellungsumgebung nicht ausgeführt werden konnte. Importer, Laufzeit-Import und automatische GitHub-Aktion sind vollständig enthalten.
-
 ## Installation
 
 ### Windows-Test
 
-1. Node.js 18+ installieren.
-2. ZIP entpacken.
-3. `STARTEN-AM-PC.bat` starten.
+1. ZIP vollständig entpacken.
+2. Node.js 18 oder neuer installieren.
+3. `STARTEN-AM-PC.bat` doppelt anklicken.
+4. `http://localhost:4173` öffnen.
 
-### Handy
+### GitHub Pages / Handy
 
-Die App einmal über HTTPS bereitstellen und installieren. Dafür sind zwei fertige Möglichkeiten enthalten:
-
-- `.github/workflows/deploy-pages.yml` für GitHub Pages
-- `render.yaml` und `server.js` für einen einfachen Node-Host
-
-Nach der Installation ist die Kern-App offline nutzbar. Externe Tanzsheet-Links benötigen weiterhin Internet.
+Den vollständigen Ordnerinhalt in das GitHub-Repository hochladen. GitHub Pages muss aus `main` und `/(root)` bereitstellen. Danach die HTTPS-Adresse am Handy öffnen und über das Browsermenü installieren.
 
 ## Datenschutz
 
-- kein AudD und kein externer Erkennungsdienst
-- keine API-Schlüssel
-- Mikrofon erst nach bewusster Benutzeraktion
-- Aufnahme wird nur lokal verarbeitet
-- Audio-Fingerprints und importierte Kataloge liegen im Browser-IndexedDB
-- Lösch-, Export- und Importfunktionen sind in der App vorhanden
+- keine kostenpflichtige Musikerkennungs-API
+- kein AudD-Schlüssel
+- Mikrofon und Kamera nur nach Benutzeraktion
+- Audio- und Videoanalyse lokal
+- ausgewählte Video- und Audiodateien werden nicht hochgeladen
+- nur berechnete Signaturen können lokal gespeichert werden
 
-## Entwicklung und Prüfung
+## Prüfung
 
 ```bash
+npm run test:video-steps
 npm run validate
 npm start
 ```
 
-`VALIDIERUNG.json` enthält die ermittelten Datenzahlen und technischen Prüfungen.
+`VALIDIERUNG.json` und `TESTBERICHT.md` dokumentieren den geprüften Stand.
+
+## Datenschutz, Rechte und Impressum
+
+Die App enthält in v4.6.2 eigene Seiten für Datenschutz, Urheberrecht/Quellen, Designschutz, Impressum und Drittanbieter-Lizenzen. Unter **Mehr → Datenschutz, Rechte & Impressum** können außerdem alle lokal gespeicherten Nutzerdaten gemeinsam gelöscht werden.
+
+Die Rechtstexte bilden den technischen Stand des Pakets ab. Vor einer öffentlichen Veröffentlichung müssen insbesondere der tatsächlich eingesetzte Hosting-Anbieter, Protokollfristen, aktuelle Vertretungsangaben und die Rechtekette für Logo/Grafiken abschließend geprüft werden. Siehe `docs/RECHTLICHE-PRUEFLISTE.md`.
