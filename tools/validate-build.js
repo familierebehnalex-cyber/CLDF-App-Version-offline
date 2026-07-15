@@ -83,8 +83,9 @@ execFileSync(process.execPath, [path.join(ROOT, 'tools/test-video-step-matcher.j
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-radio-api.js')], { stdio: 'pipe' });
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-radio-live-api.js')], { stdio: 'pipe' });
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-song-api-index.js')], { stdio: 'pipe' });
+execFileSync(process.execPath, [path.join(ROOT, 'tools/test-api-dedup.js')], { stdio: 'pipe' });
 const report = {
-  appVersion: '4.7.3',
+  appVersion: '4.7.4',
   generatedAt: new Date().toISOString(),
   requiredFilesPresent: true,
   javascriptSyntaxValid: true,
@@ -95,6 +96,7 @@ const report = {
   radioApiSelfTestPassed: true,
   radioLiveApiSelfTestPassed: true,
   songApiIndexSelfTestPassed: true,
+  apiDedupSelfTestPassed: true,
   mediaPipePoseBundled: true,
   mediaPipePoseModel: 'BlazePose GHUM Lite / MediaPipe Pose 0.5.1675469404',
   builtInSheetPatterns: 8,

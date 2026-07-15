@@ -930,7 +930,7 @@ body.app-open {
   .radio-current-card .secondary-btn { width: 100%; }
 }
 
-/* CLDF v4.7.3 – liedbezogene API-Zuordnung */
+/* CLDF v4.7.4 – liedbezogene API-Zuordnung */
 .song-api-inline {
   display: flex;
   flex-wrap: wrap;

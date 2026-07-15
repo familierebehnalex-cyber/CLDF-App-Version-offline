@@ -1,0 +1,89 @@
+{
+  "collectedAt": "2026-07-15T16:50:03.086Z",
+  "station": {
+    "name": "country-nonstop",
+    "display_name": "Country Nonstop",
+    "spoken_name": null,
+    "page_url": "https://laut.fm/country-nonstop",
+    "stream_url": "https://country-nonstop.stream.laut.fm/country-nonstop",
+    "api_urls": {
+      "station": "https://api.laut.fm/station/country-nonstop",
+      "current_song": "https://api.laut.fm/station/country-nonstop/current_song",
+      "last_songs": "https://api.laut.fm/station/country-nonstop/last_songs",
+      "next_artists": "https://api.laut.fm/station/country-nonstop/next_artists",
+      "playlists": "https://api.laut.fm/station/country-nonstop/playlists",
+      "schedule": "https://api.laut.fm/station/country-nonstop/schedule",
+      "listeners": "https://api.laut.fm/station/country-nonstop/listeners"
+    },
+    "format": "Country Nonstop.",
+    "description": "Das WebRadio in Ascheberg.NRW\n24 Stunden Deutsche und Englische Country Musik.",
+    "djs": "Petry01",
+    "location": "Ascheberg",
+    "lat": 54.1483,
+    "lng": 10.3423,
+    "color": "",
+    "updated_at": "2026-06-24 11:45:31 +0000",
+    "genres": [
+      "Deutsche und Englische Country Musik"
+    ],
+    "active": true,
+    "position": 5839,
+    "third_parties": {
+      "website": {
+        "url": "https://country-nonstop.radio-heavensplace.de/news.php"
+      },
+      "phonostar": {
+        "url": "https://www.phonostar.de/radio/lautfm/country-nonstop"
+      },
+      "radiode": {
+        "url": "https://www.radio.de/s/lautfm-country-nonstop"
+      }
+    },
+    "images": {
+      "station": "https://assets.laut.fm/84667b2e60b1af9460e9880244a08abf",
+      "station_80x80": "https://assets.laut.fm/84667b2e60b1af9460e9880244a08abf?t=_80x80",
+      "station_120x120": "https://assets.laut.fm/84667b2e60b1af9460e9880244a08abf?t=_120x120",
+      "station_640x640": "https://assets.laut.fm/84667b2e60b1af9460e9880244a08abf?t=_640x640"
+    },
+    "current_playlist": {
+      "id": 385378,
+      "name": "Select Mix.003",
+      "day": "wed",
+      "hour": 18,
+      "end_time": 19,
+      "description": null,
+      "color": "#3fc380",
+      "length": 3977,
+      "shuffled": false,
+      "starts_at": "2026-07-15 18:00:00 +0200",
+      "started_at": "2026-07-15 18:00:00 +0200",
+      "ends_at": "2026-07-15 19:00:00 +0200"
+    },
+    "next_playlist": {
+      "id": 527926,
+      "name": "Contry-Mix.068",
+      "day": "wed",
+      "hour": 19,
+      "end_time": 20,
+      "description": null,
+      "color": "#22a7f0",
+      "length": 200,
+      "shuffled": false,
+      "starts_at": "2026-07-15 19:00:00 +0200",
+      "started_at": "2026-07-15 19:00:00 +0200",
+      "ends_at": "2026-07-15 20:00:00 +0200"
+    },
+    "top_artists": [
+      "P.Petry",
+      "Keith Urban",
+      "Shania Twain",
+      "Randy Travis",
+      "Kenny Chesney",
+      "Blake Shelton",
+      "Jason Aldean",
+      "Sugarland",
+      "Dolly Parton",
+      "Ashley Monroe"
+    ]
+  }
+}

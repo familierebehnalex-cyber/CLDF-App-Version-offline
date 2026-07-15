@@ -1,129 +1,36 @@
-# CLDF Offline-App v4.7.3
+# CLDF Offline-App v4.7.4
 
+## Neu in v4.7.4: weitere API-Sammlungen dedupliziert eingebaut
 
-## Neu in v4.7.3: API direkt am jeweiligen Song
+Die neue `radio-api-sammlung.zip` wurde vor dem Import auf Mehrfachvorkommen geprüft. Aus 3.237 neuen Senderdatensätzen wurden 3.014 normalisierte Liedschlüssel ermittelt. 223 doppelte Zeilen innerhalb der neuen Sammlung und 255 bereits vorhandene Titel wurden zusammengeführt. Das Ergebnis umfasst jetzt **4.011 eindeutige Song-API-Zuordnungen** aus **10 Senderquellen** mit **70 API-Endpunkten**.
 
-Die vom Nutzer gelieferte API-Sammlung ist jetzt als eigener Song-API-Index eingebunden. 1.254 Songs besitzen mindestens eine API-Song-ID und werden nach der lokalen Erkennung oder manuellen Auswahl direkt mit Quelle, ID und vorhandenen Metadaten verbunden. Im Ergebnis erscheint die Kennzeichnung **„API-Daten vorhanden“**. Die große Senderkatalog-Box bleibt entfernt.
+Fünf widersprüchliche alte API-Song-IDs wurden nicht automatisch vereinigt, weil sie unterschiedlichen Künstlern oder Liedern zugeordnet waren. Details stehen in `DUBLETTENPRUEFUNG-v4.7.4.md`.
 
-Details stehen in `API-ZUORDNUNG-v4.7.3.md`.
-Installierbare Line-Dance-PWA im ursprünglichen CLDF-Design. Die Kernfunktionen laufen lokal: Tanzsuche, Lied–Tanz-Zuordnung, Favoriten, Übungslisten, Audio-Fingerprints, BPM-/Motion-/Rhythmusregeln sowie eine neue MediaPipe-Videoanalyse.
+Die App zeigt weiterhin keine Senderkatalog-Box und keinen Radioplayer. Beim jeweiligen Lied erscheint nur die vorhandene Kennzeichnung **„API-Daten vorhanden“**. Online werden im Hintergrund `current_song` und `last_songs` der hinterlegten Sender abgefragt; offline bleibt der vollständige lokale Katalog verfügbar.
 
-## Lied erkennen
+## Musikerkennung
 
-Der Benutzer tippt auf **„Lied aufnehmen“**. Beim ersten Mal wird die normale Mikrofonfreigabe des Handys/Browsers angefragt. Die App nimmt ungefähr zwölf Sekunden auf und verarbeitet die Aufnahme lokal.
+Die Audioaufnahme und die Fingerprint-Auswertung bleiben lokal. Die Radio-API-Metadaten erkennen nicht selbst die Aufnahme, sondern ergänzen ein bereits erkanntes oder manuell ausgewähltes Lied um Song-ID, Quelle, Album, Genre, Jahr und Tanzzuordnung.
 
-Reihenfolge:
+## Datenbestand
 
-1. lokaler Audio-Fingerprint-Treffer;
-2. feste Lied–Tanz-Zuordnung;
-3. BPM, Taktart, Motion und Rhythmus als Reserve.
+- 4.502 Quelldatensätze vor senderübergreifender Zusammenführung
+- 4.011 eindeutige Song-API-Einträge
+- 10 Senderquellen und 70 Endpunkte
+- 338 Einträge mit Tanzvorschlägen
+- 143 Einträge mit exakter lokaler Tanzzuordnung
+- 21 Jingles beziehungsweise Senderhinweise aus dem spielbaren Liedkatalog ausgeschlossen
+- keine API-Schlüssel und keine laufenden Kosten
 
-Die Aufnahme wird nicht hochgeladen und nicht dauerhaft gespeichert.
+## Installation auf GitHub Pages
 
-## Tanz per Video erkennen
+Den vollständigen Inhalt des ZIP-Archivs direkt in den Stamm des Repositorys kopieren und vorhandene Dateien ersetzen. GitHub Pages muss aus `main` und `/(root)` bereitstellen. Nach dem Deployment die Seite einmal vollständig neu laden; der Service Worker v4.7.4 ersetzt den alten Cache.
 
-Die App enthält MediaPipe Pose mit lokal eingebautem Lite-Modell. Es werden 33 Körperpunkte verfolgt. Zur Verfügung stehen:
-
-- **Live-Kamera starten** – mindestens 30 Sekunden automatische Liveanalyse mit laufender Schritt- und Tanzvorschau;
-- **Video aufnehmen** – Aufnahme mit der Handykamera;
-- **Video auswählen** – vorhandene Datei lokal auswerten;
-- **Referenzvideo hinzufügen** – eigene Demo als Bewegungssignatur speichern.
-
-Die Videoanalyse erkennt unter anderem Fußbewegungen, Kreuzen, Vorwärts-/Rückwärtsbewegungen, Side Steps, Touch/Kick/Hitch sowie Viertel-/Halbdrehungen. Daraus wird eine lokale Pose- und Schritt-Signatur erstellt.
-
-Vergleichsreihenfolge bei Video:
-
-1. sicher erkannter Videoton und feste Lied–Tanz-Zuordnung;
-2. eigene MediaPipe-Referenzvideos;
-3. maschinenlesbare Sheet-Schrittmuster;
-4. BPM nur als letzte Reserve.
-
-Eingebaut sind zunächst acht vorbereitete Startermuster: Electric Slide, Tush Push, Black Coffee, God Blessed Texas, Canadian Stomp, Copperhead Road, Stroll Along Cha Cha und 16-Step. Weitere Tänze können später als symbolische Sheet-Muster oder durch eigene Referenzvideos ergänzt werden.
-
-Die Videoerkennung ist bewusst als **Beta-Vorschlag** gekennzeichnet. Ohne sicheren Liedtreffer behauptet die App nicht, einen Tanz zweifelsfrei erkannt zu haben.
-
-
-## Erweiterte lokale Lieddaten
-
-Die bereitgestellte Sammlung wurde als lokaler Metadatenkatalog im Hintergrund eingebaut:
-
-- 1.265 Quelldatensätze aus fünf laut.fm-Sendern
-- 1.254 eindeutige Lied-/Interpret-Einträge
-- 1.239 abspielbare Liedmetadatensätze
-- 263 Tanzvorschläge, davon 63 exakt mit bekannten Tänzen verknüpft
-- keine API-Schlüssel oder Zugangsdaten erforderlich
-
-Die Daten erweitern intern die lokale Lied- und Tanzzuordnung. Zusätzlich ruft die App bei bestehender Internetverbindung im Hintergrund beim Start und danach frühestens etwa alle zehn Minuten die aktuellen und zuletzt gespielten Titel der fünf Sender über die öffentliche laut.fm-API ab. Eine Senderkatalog-Box, Senderauswahl und ein Radioplayer bleiben unsichtbar. Ohne Internet wird automatisch der lokale Katalog verwendet. Jingles, Promos, Musikdateien und Radiostreams sind nicht Bestandteil des Liedkatalogs.
-
-## Offline-Betrieb
-
-MediaPipe-JavaScript, WASM-Dateien und BlazePose-GHUM-Lite-Modell liegen im Projekt. Nach dem ersten Laden über HTTPS beziehungsweise localhost werden sie durch den Service Worker zwischengespeichert. Die Körperanalyse benötigt keinen externen KI-Dienst und verursacht keine laufenden API-Kosten.
-
-## Eigene Musikbibliothek
-
-Unter **Mehr → Eigene Musikbibliothek** können rechtmäßig vorhandene Audiodateien einmalig eingelesen werden. Gespeichert werden nur akustische Merkmale in IndexedDB. Für eine zentral vorbereitete Vereinsausgabe stehen `MUSIKREFERENZEN-ERSTELLEN.bat` und `FINGERPRINTS-EINBAUEN.bat` bereit.
-
-## Lokale Daten
-
-- 135 ursprüngliche CLDF-Tänze
-- 659 vollständige Lied–Tanz-Zuordnungen aus den bereitgestellten Bildern
-- 196 eindeutige lokale Tanznamen vor Get-in-Line
-- 582 Lieddatensätze
-- 237 Lieddatensätze mit BPM-Angaben
-- 8 eingebaute maschinenlesbare Sheet-Schrittmuster
-- abgeschnittene Bildtexte wurden nicht übernommen
-
-## Get-in-Line
-
-Der Importer übernimmt nur die vereinbarten Metadaten: Tanzname, Lied/Interpret, Choreograf/in, Level, Counts/Walls, Tags/Restarts/Bridges/Breaks/Ending und den direkten Tanzsheet-Link. Vollständige Schritttexte werden nicht kopiert.
-
-Lokale Aktualisierung:
-
-```text
-GETINLINE-KATALOG-AKTUALISIEREN.bat
-```
-
-oder:
+## Lokale Prüfung
 
 ```bash
-npm run sync:getinline
-```
-
-## Installation
-
-### Windows-Test
-
-1. ZIP vollständig entpacken.
-2. Node.js 18 oder neuer installieren.
-3. `STARTEN-AM-PC.bat` doppelt anklicken.
-4. `http://localhost:4173` öffnen.
-
-### GitHub Pages / Handy
-
-Den vollständigen Ordnerinhalt in das GitHub-Repository hochladen. GitHub Pages muss aus `main` und `/(root)` bereitstellen. Danach die HTTPS-Adresse am Handy öffnen und über das Browsermenü installieren.
-
-## Datenschutz
-
-- keine kostenpflichtige Musikerkennungs-API
-- kein AudD-Schlüssel
-- Mikrofon und Kamera nur nach Benutzeraktion
-- Audio- und Videoanalyse lokal
-- ausgewählte Video- und Audiodateien werden nicht hochgeladen
-- nur berechnete Signaturen können lokal gespeichert werden
-- bei Online-Verbindung werden ausschließlich Radio-Metadaten, niemals Mikrofon-, Audio-, Kamera- oder Videodaten, über die laut.fm-API abgerufen
-
-## Prüfung
-
-```bash
-npm run test:video-steps
 npm run validate
 npm start
 ```
 
-`VALIDIERUNG.json` und `TESTBERICHT.md` dokumentieren den geprüften Stand.
-
-## Datenschutz, Rechte und Impressum
-
-Die App enthält in v4.7.3 eigene Seiten für Datenschutz, Urheberrecht/Quellen, Designschutz, Impressum und Drittanbieter-Lizenzen. Unter **Mehr → Datenschutz, Rechte & Impressum** können außerdem alle lokal gespeicherten Nutzerdaten gemeinsam gelöscht werden.
-
-Die Rechtstexte bilden den technischen Stand des Pakets ab. Vor einer öffentlichen Veröffentlichung müssen insbesondere der tatsächlich eingesetzte Hosting-Anbieter, Protokollfristen, aktuelle Vertretungsangaben und die Rechtekette für Logo/Grafiken abschließend geprüft werden. Siehe `docs/RECHTLICHE-PRUEFLISTE.md`.
+Die App enthält weiterhin lokale Tanzsuche, Lied–Tanz-Zuordnung, Favoriten, Übungslisten, Audio-Fingerprints, MediaPipe-Videoanalyse, Get-in-Line-Import sowie Seiten für Datenschutz, Urheberrecht, Designschutz, Impressum und Lizenzen.

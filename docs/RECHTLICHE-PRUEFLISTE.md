@@ -1,6 +1,6 @@
 # Rechtliche Prüfliste vor öffentlicher Veröffentlichung
 
-Stand: 12. Juli 2026 · vorbereitet für CLDF Offline-App v4.7.3
+Stand: 15. Juli 2026 · vorbereitet für CLDF Offline-App v4.7.4
 
 Diese Liste ist eine Arbeitsunterlage und keine Rechtsberatung.
 

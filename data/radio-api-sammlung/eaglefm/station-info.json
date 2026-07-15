@@ -1,0 +1,97 @@
+{
+  "collectedAt": "2026-07-15T16:50:19.920Z",
+  "station": {
+    "name": "eaglefm",
+    "display_name": "Eagle FM",
+    "spoken_name": null,
+    "page_url": "https://laut.fm/eaglefm",
+    "stream_url": "https://eaglefm.stream.laut.fm/eaglefm",
+    "api_urls": {
+      "station": "https://api.laut.fm/station/eaglefm",
+      "current_song": "https://api.laut.fm/station/eaglefm/current_song",
+      "last_songs": "https://api.laut.fm/station/eaglefm/last_songs",
+      "next_artists": "https://api.laut.fm/station/eaglefm/next_artists",
+      "playlists": "https://api.laut.fm/station/eaglefm/playlists",
+      "schedule": "https://api.laut.fm/station/eaglefm/schedule",
+      "listeners": "https://api.laut.fm/station/eaglefm/listeners"
+    },
+    "format": "Amerika im Radio.",
+    "description": "Non-Stop ausgewählte Country Musik .",
+    "djs": "Vincent Adams, Lennart Bauer",
+    "location": "Deutschland",
+    "lat": 51.0834,
+    "lng": 10.4234,
+    "color": "",
+    "updated_at": "2026-06-17 13:52:33 +0000",
+    "genres": [
+      "Country",
+      "Rock",
+      "Country Rock",
+      "Bluegrass",
+      "Klassiker",
+      "Hits",
+      "Folk",
+      "Amerika",
+      "Southern Rock"
+    ],
+    "active": true,
+    "position": 3557,
+    "third_parties": {
+      "instagram": {
+        "name": "https://www.instagram.com/eaglefm_official"
+      },
+      "phonostar": {
+        "url": "https://www.phonostar.de/radio/lautfm/eaglefm"
+      },
+      "radiode": {
+        "url": "https://www.radio.de/s/lautfm-eaglefm"
+      }
+    },
+    "images": {
+      "station": "https://assets.laut.fm/e3725225b8b00c36f9bfe32b62404bdd",
+      "station_80x80": "https://assets.laut.fm/e3725225b8b00c36f9bfe32b62404bdd?t=_80x80",
+      "station_120x120": "https://assets.laut.fm/e3725225b8b00c36f9bfe32b62404bdd?t=_120x120",
+      "station_640x640": "https://assets.laut.fm/e3725225b8b00c36f9bfe32b62404bdd?t=_640x640"
+    },
+    "current_playlist": {
+      "id": 234700,
+      "name": "Country",
+      "day": "wed",
+      "hour": 17,
+      "end_time": 21,
+      "description": "",
+      "color": "#a97454",
+      "length": 45875,
+      "shuffled": true,
+      "starts_at": "2026-07-15 17:00:00 +0200",
+      "started_at": "2026-07-15 17:00:00 +0200",
+      "ends_at": "2026-07-15 21:00:00 +0200"
+    },
+    "next_playlist": {
+      "id": 234688,
+      "name": "Best of Country & Southern Rock ",
+      "day": "wed",
+      "hour": 21,
+      "end_time": 0,
+      "description": "",
+      "color": "#f62459",
+      "length": 8069,
+      "shuffled": true,
+      "starts_at": "2026-07-15 21:00:00 +0200",
+      "started_at": "2026-07-15 21:00:00 +0200",
+      "ends_at": "2026-07-16 00:00:00 +0200"
+    },
+    "top_artists": [
+      "Alan Jackson",
+      "Chris Stapleton",
+      "Johnny Cash",
+      "Luke Combs",
+      "Luke Bryan",
+      "Hank Williams, Jr.",
+      "Waylon Jennings",
+      "HARDY",
+      "Toby Keith",
+      "Jason Aldean"
+    ]
+  }
+}

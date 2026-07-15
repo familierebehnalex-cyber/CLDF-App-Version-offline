@@ -1,0 +1,104 @@
+{
+  "appVersion": "4.7.4",
+  "newStations": [
+    "1000countryhits",
+    "country-nonstop",
+    "country-station",
+    "countrymusic",
+    "eaglefm",
+    "freunde-des-nordens"
+  ],
+  "oldStationCount": 5,
+  "mergedStationCount": 10,
+  "newRawCatalogEntries": 3237,
+  "newUniqueKeysBeforeApiIdMerge": 3014,
+  "duplicateKeyGroupsWithinNew": 202,
+  "duplicateRowsCollapsedWithinNew": 223,
+  "overlapKeysWithExistingApp": 255,
+  "newKeysNotInExistingApp": 2759,
+  "repeatedApiIdsWithinNew": 89,
+  "apiIdConflictGroupsWithinNew": 2,
+  "finalUniqueSongApiEntries": 4011,
+  "finalEntriesWithIds": 4011,
+  "finalDanceCandidates": 338,
+  "finalExactDanceCandidates": 143,
+  "finalJinglesExcludedFromPlayableCatalog": 21,
+  "suspiciousApiIdConflictsNotMerged": 5,
+  "suspiciousApiIdConflictDetails": [
+    {
+      "apiSongId": "19470519",
+      "variants": [
+        {
+          "origin": "old",
+          "artist": "Casey James",
+          "title": "Drive"
+        },
+        {
+          "origin": "old",
+          "artist": "Jason Boland & The Stragglers",
+          "title": "Drive"
+        }
+      ]
+    },
+    {
+      "apiSongId": "19470509",
+      "variants": [
+        {
+          "origin": "old",
+          "artist": "Rhett Adkins",
+          "title": "Driving my life away"
+        },
+        {
+          "origin": "old",
+          "artist": "Rhett Akins",
+          "title": "Driving My Life Away"
+        }
+      ]
+    },
+    {
+      "apiSongId": "19470393",
+      "variants": [
+        {
+          "origin": "old",
+          "artist": "Garth Brooks",
+          "title": "If Tomorrow Never Comes"
+        },
+        {
+          "origin": "old",
+          "artist": "Ronan Keating",
+          "title": "If tomorrow never comes"
+        }
+      ]
+    },
+    {
+      "apiSongId": "19470562",
+      "variants": [
+        {
+          "origin": "old",
+          "artist": "Gary Barlow",
+          "title": "Let me go"
+        },
+        {
+          "origin": "old",
+          "artist": "Hailee Steinfeld & Alesso ft. Florida Georgia Line & Watt",
+          "title": "Let Me Go"
+        }
+      ]
+    },
+    {
+      "apiSongId": "19470862",
+      "variants": [
+        {
+          "origin": "old",
+          "artist": "Backstrom",
+          "title": "The Gambler"
+        },
+        {
+          "origin": "old",
+          "artist": "Kenny Rogers",
+          "title": "The Gambler"
+        }
+      ]
+    }
+  ]
+}

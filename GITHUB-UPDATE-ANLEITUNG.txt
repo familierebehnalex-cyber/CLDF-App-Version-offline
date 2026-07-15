@@ -1,23 +1,9 @@
-CLDF GITHUB-UPDATE v4.7.2 auf v4.7.3
-======================================
+CLDF GITHUB-UPDATE v4.7.3 auf v4.7.4
 
-Vollständiges Paket:
-1. ZIP entpacken.
-2. Alle Dateien und Ordner direkt in den Stamm des GitHub-Repositorys kopieren.
+1. ZIP vollständig entpacken.
+2. Alle enthaltenen Dateien und Ordner in den Stamm des bestehenden GitHub-Repositorys hochladen.
 3. Vorhandene Dateien ersetzen.
-4. Änderungen mit einer Nachricht wie "CLDF v4.7.3 Song-API" committen.
-5. GitHub Pages beziehungsweise die vorhandene Deploy-Aktion abwarten.
+4. Änderungen z. B. mit „CLDF v4.7.4 API-Sammlung“ committen.
+5. GitHub Pages abwarten und die App anschließend einmal vollständig neu laden.
 
-Kleines Updatepaket:
-1. Nur verwenden, wenn im Repository bereits v4.7.2 liegt.
-2. ZIP entpacken.
-3. Den gesamten Inhalt direkt in den Repository-Stamm kopieren.
-4. Vorhandene Dateien ersetzen; neue Dateien hinzufügen.
-5. Committen und veröffentlichen.
-
-Wichtig:
-- Die ZIP-Dateien enthalten keinen zusätzlichen Oberordner.
-- Nach dem ersten Start ersetzt der Service Worker v4.7.3 den alten App-Cache.
-- Bei einer bereits installierten PWA kann einmaliges vollständiges Schließen und erneutes Öffnen nötig sein.
-- Die Box "Lokaler Senderkatalog" bleibt entfernt.
-- API-Daten erscheinen direkt am jeweiligen Lied.
+Der Service Worker v4.7.4 löscht den alten App-Cache bei der Aktivierung.

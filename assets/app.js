@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const DATA = window.CLDF_DATA || { dances: [], motionCatalog: [], specialRhythms: [], appVersion: '4.7.3', databaseVersion: 'unbekannt' };
+  const DATA = window.CLDF_DATA || { dances: [], motionCatalog: [], specialRhythms: [], appVersion: '4.7.4', databaseVersion: 'unbekannt' };
   const GETINLINE_DATA = window.GETINLINE_DATA || { dances: [], count: 0, generatedAt: null };
   const VM = window.CLDFVideoMotion;
   const STEP_PATTERN_DB = window.CLDF_STEP_SHEET_PATTERNS || { patterns: [] };
@@ -15,7 +15,7 @@
   const RADIO_LIVE_API = window.CLDFRadioLiveAPI || null;
   const SONG_API_INDEX = window.CLDF_SONG_API_INDEX || { entries: [], stations: [], entryCount: 0, apiEndpointCount: 0 };
   const SONG_API_ENTRIES = Array.isArray(SONG_API_INDEX.entries) ? SONG_API_INDEX.entries : [];
-  const APP_VERSION = '4.7.3';
+  const APP_VERSION = '4.7.4';
   const DATABASE_VERSION = DATA.databaseVersion || 'unbekannt';
   const CLDF_DANCES = Array.isArray(DATA.dances) ? DATA.dances : [];
   let GETINLINE_DANCES = Array.isArray(GETINLINE_DATA.dances) ? GETINLINE_DATA.dances : [];
@@ -3268,7 +3268,7 @@
     RADIO_LIVE_API?.start?.();
     runDiagnostics();
     handleInitialRoute();
-    $('#versionText').textContent = `CLDF v4.7.3 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${SONG_API_ENTRIES.length} Song-API-Zuordnungen · ${allFingerprintEntries().length} Audio-Referenzen · Liedzuordnung zuerst`;
+    $('#versionText').textContent = `CLDF v4.7.4 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${SONG_API_ENTRIES.length} Song-API-Zuordnungen · ${allFingerprintEntries().length} Audio-Referenzen · Liedzuordnung zuerst`;
     // Der Startbildschirm bleibt bei jedem neuen App-Start sichtbar,
     // bis der Benutzer bewusst auf „App öffnen“ tippt.
     $('#splash').classList.remove('hidden');

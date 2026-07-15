@@ -1,0 +1,100 @@
+{
+  "collectedAt": "2026-07-15T16:50:00.081Z",
+  "station": {
+    "name": "country-station",
+    "display_name": "Country Station",
+    "spoken_name": null,
+    "page_url": "https://laut.fm/country-station",
+    "stream_url": "https://country-station.stream.laut.fm/country-station",
+    "api_urls": {
+      "station": "https://api.laut.fm/station/country-station",
+      "current_song": "https://api.laut.fm/station/country-station/current_song",
+      "last_songs": "https://api.laut.fm/station/country-station/last_songs",
+      "next_artists": "https://api.laut.fm/station/country-station/next_artists",
+      "playlists": "https://api.laut.fm/station/country-station/playlists",
+      "schedule": "https://api.laut.fm/station/country-station/schedule",
+      "listeners": "https://api.laut.fm/station/country-station/listeners"
+    },
+    "format": "Country Station.",
+    "description": "Country Station ist das neue Webradio für US-Countrymusic. Wir spielen Country der 70er, 80er, 90er bis heute.  Viel Spaß beim Reinhören. Wem das Programm gefällt, darf es ruhig weitersagen.",
+    "djs": "Maniac",
+    "location": "Ebersdorf bei Coburg",
+    "lat": 50.2208,
+    "lng": 11.0714,
+    "color": "#993300",
+    "updated_at": "2026-06-17 13:50:15 +0000",
+    "genres": [
+      "Country"
+    ],
+    "active": true,
+    "position": 623,
+    "third_parties": {
+      "amazon": {
+        "skill_name": "Country Station",
+        "invocation_name": "country station"
+      },
+      "facebook": {
+        "page": "https://www.facebook.com/groups/country.station/"
+      },
+      "tunein": {
+        "id": "269656",
+        "url": "https://tunein.com/radio/country-station-s269656/"
+      },
+      "phonostar": {
+        "url": "https://www.phonostar.de/radio/lautfm/country-station"
+      },
+      "radiode": {
+        "url": "https://www.radio.de/s/lautfm-country-station"
+      }
+    },
+    "images": {
+      "station": "https://assets.laut.fm/cfda9e4fbee8cea6518be90b56580a58",
+      "station_80x80": "https://assets.laut.fm/cfda9e4fbee8cea6518be90b56580a58?t=_80x80",
+      "station_120x120": "https://assets.laut.fm/cfda9e4fbee8cea6518be90b56580a58?t=_120x120",
+      "station_640x640": "https://assets.laut.fm/cfda9e4fbee8cea6518be90b56580a58?t=_640x640",
+      "background": "https://assets.laut.fm/00451b65307fe444f69463c799e23890",
+      "background_1024x768": "https://assets.laut.fm/00451b65307fe444f69463c799e23890?t=_1024x768",
+      "background_768x1024": "https://assets.laut.fm/00451b65307fe444f69463c799e23890?t=_768x1024"
+    },
+    "current_playlist": {
+      "id": 118436,
+      "name": "The Best Of Country",
+      "day": "mon",
+      "hour": 0,
+      "end_time": null,
+      "description": "Das Beste aus der US-Countryszene 24 Stunden am Tag, 7 Tage die Woche. Country von den 70s bis heute. Keep It Country!",
+      "color": "#666666",
+      "length": 430731,
+      "shuffled": true,
+      "starts_at": "2026-07-13 00:00:00 +0200",
+      "started_at": "2026-07-13 00:00:00 +0200",
+      "ends_at": "2026-07-20 00:00:00 +0200"
+    },
+    "next_playlist": {
+      "id": 118436,
+      "name": "The Best Of Country",
+      "day": "mon",
+      "hour": 0,
+      "end_time": null,
+      "description": "Das Beste aus der US-Countryszene 24 Stunden am Tag, 7 Tage die Woche. Country von den 70s bis heute. Keep It Country!",
+      "color": "#666666",
+      "length": 430731,
+      "shuffled": true,
+      "starts_at": "2026-07-20 00:00:00 +0200",
+      "started_at": "2026-07-20 00:00:00 +0200",
+      "ends_at": "2026-07-27 00:00:00 +0200"
+    },
+    "top_artists": [
+      "Jon Pardi",
+      "Dolly Parton",
+      "Brooks & Dunn",
+      "Kiefer Sutherland",
+      "Don Williams",
+      "Scotty McCreery",
+      "Michael Martin Murphey",
+      "Brett Kissel",
+      "Shania Twain",
+      "Merle Haggard"
+    ]
+  }
+}

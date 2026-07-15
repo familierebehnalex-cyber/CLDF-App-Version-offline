@@ -1,52 +1,25 @@
-# CLDF Offline-App v4.7.3 – API-Zuordnung pro Song
+# CLDF Offline-App v4.7.4 – erweiterte Song-API-Sammlung
 
-## Wichtigste Korrektur
+## Neu
 
-Die vom Nutzer gelieferte `data.zip` wird jetzt nicht mehr nur als allgemeiner Radio-Katalog behandelt. Aus den enthaltenen Senderkatalogen, Verlaufsdateien und `station-info.json`-Dateien wurde ein eigener **Song-API-Index** erzeugt.
+- fünf zusätzliche Senderquellen ergänzt; Eagle FM wurde mit dem aktuelleren Stand aktualisiert
+- 3.237 neue Senderdatensätze vor dem Import geprüft
+- Dubletten nach normalisiertem Lied/Interpret und bei eindeutigen Schreibvarianten über API-Song-ID zusammengeführt
+- 4.011 eindeutige Song-API-Zuordnungen aus 10 Sendern
+- 70 öffentliche laut.fm-Endpunkte im Hintergrund verfügbar
+- 338 Songs mit Tanzvorschlägen und 143 exakten Tanzzuordnungen
+- sichtbare Senderbox bleibt entfernt
 
-Für jedes passende Lied stehen nun direkt zur Verfügung:
+## Sicherheitsregel bei Dubletten
 
-- laut.fm-API-Song-ID beziehungsweise mehrere Song-IDs
-- Senderquelle
-- die zum Sender gehörenden API-Endpunkte
-- Album, Genre und Veröffentlichungsjahr, soweit in der Sammlung vorhanden
-- Spielhäufigkeit und letzter bekannter Sendezeitpunkt
-- Tanzvorschläge und exakte Tanzzuordnungen
+API-Song-IDs wurden nicht blind als eindeutig behandelt. Fünf bereits vorhandene widersprüchliche IDs wurden getrennt gelassen, weil Künstler oder Titel nicht ausreichend übereinstimmten.
 
-## Verhalten in der App
+## Geänderte Kerndateien
 
-- Der Liedabgleich prüft zuerst eine exakte Song-API-Zuordnung aus der gelieferten Sammlung.
-- Bei einem Treffer erscheint direkt am Lied die Kennzeichnung **„API-Daten vorhanden“**.
-- Song-ID, Quelle und vorhandene Metadaten werden direkt im Lied-Ergebnis angezeigt.
-- In der manuellen Liedliste sind API-verknüpfte Titel mit **„API“** markiert.
-- Die unerwünschte Box „Lokaler Senderkatalog“ bleibt entfernt.
-- Es gibt weiterhin keinen Radioplayer und keine sichtbare Senderauswahl.
-- Neue Live-Titel werden im Hintergrund über `current_song` und `last_songs` ergänzt.
-- Ohne Internet bleibt der vollständige lokale Song-API-Index verfügbar.
-
-## Datenstand
-
-- 1.254 eindeutige Song-API-Zuordnungen
-- 1.254 Einträge mit mindestens einer API-Song-ID
-- 5 Senderquellen
-- 35 in der Sammlung enthaltene Sender-Endpunkte
-- 261 Songs mit Tanzvorschlägen
-- 63 Songs mit exakter Tanzzuordnung
-
-## Technische Dateien
-
-Neu:
-
-- `assets/song-api-index.js`
+- `data/radio-api-catalog.json`
 - `data/song-api-index.json`
-- `tools/test-song-api-index.js`
-- `API-ZUORDNUNG-v4.7.3.md`
-
-Geändert:
-
+- `assets/radio-api-data.js`
+- `assets/song-api-index.js`
 - `assets/app.js`
-- `assets/styles.css`
-- `index.html`
-- `404.html`
 - `service-worker.js`
-- Versions-, Test- und Begleitdateien
+- neue Senderordner unter `data/radio-api-sammlung/`

@@ -1,0 +1,117 @@
+{
+  "collectedAt": "2026-07-15T16:50:13.244Z",
+  "station": {
+    "name": "freunde-des-nordens",
+    "display_name": "Freunde Des Nordens",
+    "spoken_name": null,
+    "page_url": "https://laut.fm/freunde-des-nordens",
+    "stream_url": "https://freunde-des-nordens.stream.laut.fm/freunde-des-nordens",
+    "api_urls": {
+      "station": "https://api.laut.fm/station/freunde-des-nordens",
+      "current_song": "https://api.laut.fm/station/freunde-des-nordens/current_song",
+      "last_songs": "https://api.laut.fm/station/freunde-des-nordens/last_songs",
+      "next_artists": "https://api.laut.fm/station/freunde-des-nordens/next_artists",
+      "playlists": "https://api.laut.fm/station/freunde-des-nordens/playlists",
+      "schedule": "https://api.laut.fm/station/freunde-des-nordens/schedule",
+      "listeners": "https://api.laut.fm/station/freunde-des-nordens/listeners"
+    },
+    "format": "Classic Rock, Pop, Progressive Rock, Oldies.",
+    "description": "Have fun listening !",
+    "djs": "Thomas",
+    "location": "Freudenberg",
+    "lat": 50.9041,
+    "lng": 7.87808,
+    "color": "#000000",
+    "updated_at": "2026-06-25 08:51:18 +0000",
+    "genres": [
+      "Pop",
+      "Rock",
+      "Hard Rock",
+      "Blues",
+      "Progressive Rock",
+      "World Music",
+      "Classic Rock",
+      "Country",
+      "Folk"
+    ],
+    "active": true,
+    "position": 898,
+    "third_parties": {
+      "amazon": {
+        "skill_name": "Freunde Des Nordens",
+        "invocation_name": "freunde des nordens"
+      },
+      "rss": {
+        "url": "https://heepfanbasegermany.wordpress.com/feed/"
+      },
+      "twitter": {
+        "name": "uriah_heep",
+        "url": "https://twitter.com/uriah_heep"
+      },
+      "website": {
+        "url": "http://heepfanbasegermany.wordpress.com"
+      },
+      "tunein": {
+        "id": "101487",
+        "url": "https://tunein.com/radio/freunde-des-nordens-s101487/"
+      },
+      "phonostar": {
+        "url": "https://www.phonostar.de/radio/lautfm/freunde-des-nordens"
+      },
+      "radiode": {
+        "url": "https://www.radio.de/s/lautfm-freunde-des-nordens"
+      }
+    },
+    "images": {
+      "station": "https://assets.laut.fm/ca0996c1a47d40785f293e3c54bf2dbb",
+      "station_80x80": "https://assets.laut.fm/ca0996c1a47d40785f293e3c54bf2dbb?t=_80x80",
+      "station_120x120": "https://assets.laut.fm/ca0996c1a47d40785f293e3c54bf2dbb?t=_120x120",
+      "station_640x640": "https://assets.laut.fm/ca0996c1a47d40785f293e3c54bf2dbb?t=_640x640",
+      "background": "https://assets.laut.fm/9d74d2fa5b15536357fa50747aa41e71",
+      "background_1024x768": "https://assets.laut.fm/9d74d2fa5b15536357fa50747aa41e71?t=_1024x768",
+      "background_768x1024": "https://assets.laut.fm/9d74d2fa5b15536357fa50747aa41e71?t=_768x1024",
+      "website": "https://assets.laut.fm/d13b9e72a8e12051d98b471666db927e",
+      "website_640x640": "https://assets.laut.fm/d13b9e72a8e12051d98b471666db927e?t=_640x640"
+    },
+    "current_playlist": {
+      "id": 90714,
+      "name": "Progrock",
+      "day": "wed",
+      "hour": 18,
+      "end_time": 20,
+      "description": null,
+      "color": "#FFFF00",
+      "length": 35370,
+      "shuffled": true,
+      "starts_at": "2026-07-15 18:00:00 +0200",
+      "started_at": "2026-07-15 18:00:00 +0200",
+      "ends_at": "2026-07-15 20:00:00 +0200"
+    },
+    "next_playlist": {
+      "id": 90729,
+      "name": "50 Jahre Mellotron",
+      "day": "wed",
+      "hour": 20,
+      "end_time": 22,
+      "description": null,
+      "color": "#BBBBBB",
+      "length": 8185,
+      "shuffled": true,
+      "starts_at": "2026-07-15 20:00:00 +0200",
+      "started_at": "2026-07-15 20:00:00 +0200",
+      "ends_at": "2026-07-15 22:00:00 +0200"
+    },
+    "top_artists": [
+      "Rainbow",
+      "Uriah Heep",
+      "Jethro Tull",
+      "AC/DC",
+      "Free",
+      "Led Zeppelin",
+      "Genesis",
+      "Queen",
+      "Black Sabbath",
+      "Black Country Communion"
+    ]
+  }
+}

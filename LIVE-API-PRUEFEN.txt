@@ -1,4 +1,4 @@
-CLDF v4.7.3 – SONG- UND LIVE-API PRÜFEN
+CLDF v4.7.4 – SONG- UND LIVE-API PRÜFEN
 ========================================
 
 Songbezogene Prüfung:

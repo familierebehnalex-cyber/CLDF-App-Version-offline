@@ -1,13 +1,13 @@
 'use strict';
 
-const CACHE = 'cldf-offline-v4-7-3';
+const CACHE = 'cldf-offline-v4-7-4';
 const APP_SHELL = [
   './',
   './index.html',
   './404.html',
   './manifest.webmanifest',
-  './assets/styles.css?v=4.7.3',
-  './assets/app.js?v=4.7.3',
+  './assets/styles.css?v=4.7.4',
+  './assets/app.js?v=4.7.4',
   './assets/local-store.js',
   './assets/audio-engine.js',
   './assets/audio-fingerprints.js',
@@ -17,11 +17,11 @@ const APP_SHELL = [
   './assets/song-metadata.js',
   './assets/song-api-index.js',
   './assets/radio-api-data.js',
-  './assets/radio-live-api.js?v=4.7.3',
+  './assets/radio-live-api.js?v=4.7.4',
   './assets/getinline-data.js',
-  './assets/step-sheet-patterns.js?v=4.7.3',
-  './assets/video-motion.js?v=4.7.3',
-  './assets/mediapipe/pose/pose.js?v=4.7.3',
+  './assets/step-sheet-patterns.js?v=4.7.4',
+  './assets/video-motion.js?v=4.7.4',
+  './assets/mediapipe/pose/pose.js?v=4.7.4',
   './assets/mediapipe/pose/pose_web.binarypb',
   './assets/mediapipe/pose/pose_solution_packed_assets.data',
   './assets/mediapipe/pose/pose_solution_packed_assets_loader.js',

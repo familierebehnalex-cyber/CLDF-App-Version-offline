@@ -1,20 +1,10 @@
-CLDF Offline-App v4.7.3
-=======================
+CLDF Offline-App v4.7.4
 
-Diese Version integriert die vom Nutzer gelieferte API-Sammlung direkt pro Song.
+Neu:
+- 4.011 deduplizierte Song-API-Zuordnungen
+- 10 Senderquellen / 70 Endpunkte
+- neue Sammlung auf Dubletten und widersprüchliche IDs geprüft
+- Senderbox bleibt unsichtbar
 
-Wichtigste Änderung:
-- 1.254 Song-API-Zuordnungen
-- API-Song-ID und Quelle direkt am Lied
-- 261 Tanzvorschläge
-- 63 exakte Tanzzuordnungen
-- keine sichtbare Senderkatalog-Box
-
-Start:
-- über GitHub Pages veröffentlichen oder
-- lokal STARTEN-AM-PC.bat ausführen und die angezeigte Adresse öffnen.
-
-Weitere Informationen:
-- RELEASE-NOTES.md
-- API-ZUORDNUNG-v4.7.3.md
-- TESTBERICHT-v4.7.3.md
+Für GitHub: alle Dateien direkt in den Repository-Stamm kopieren.
+Siehe GITHUB-UPDATE-ANLEITUNG.txt und DUBLETTENPRUEFUNG-v4.7.4.md.

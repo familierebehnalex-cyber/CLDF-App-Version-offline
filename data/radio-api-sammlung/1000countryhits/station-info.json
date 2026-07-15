@@ -1,0 +1,106 @@
+{
+  "collectedAt": "2026-07-15T16:50:00.753Z",
+  "station": {
+    "name": "1000countryhits",
+    "display_name": "1000 Countryhits",
+    "spoken_name": null,
+    "page_url": "https://laut.fm/1000countryhits",
+    "stream_url": "https://1000countryhits.stream.laut.fm/1000countryhits",
+    "api_urls": {
+      "station": "https://api.laut.fm/station/1000countryhits",
+      "current_song": "https://api.laut.fm/station/1000countryhits/current_song",
+      "last_songs": "https://api.laut.fm/station/1000countryhits/last_songs",
+      "next_artists": "https://api.laut.fm/station/1000countryhits/next_artists",
+      "playlists": "https://api.laut.fm/station/1000countryhits/playlists",
+      "schedule": "https://api.laut.fm/station/1000countryhits/schedule",
+      "listeners": "https://api.laut.fm/station/1000countryhits/listeners"
+    },
+    "format": "Countrymusik für Cowboys und Trucker.",
+    "description": "Countrymusik für Cowboys und Trucker.",
+    "djs": "1000 Countryhits",
+    "location": "Konstanz",
+    "lat": 47.6592,
+    "lng": 9.17507,
+    "color": "#913101",
+    "updated_at": "2026-06-17 13:49:53 +0000",
+    "genres": [
+      "Country",
+      "Blues",
+      "Pop",
+      "Rock",
+      "Schlager"
+    ],
+    "active": true,
+    "position": 30,
+    "third_parties": {
+      "amazon": {
+        "skill_name": "1000 Countryhits",
+        "invocation_name": "tausend country hits"
+      },
+      "facebook": {
+        "page": "https://www.facebook.com/1000Countryhits/"
+      },
+      "website": {
+        "url": "https://1000countryhits.de"
+      },
+      "tunein": {
+        "id": "226473",
+        "url": "https://tunein.com/radio/1000countryhits-s226473/"
+      },
+      "phonostar": {
+        "url": "https://www.phonostar.de/radio/lautfm/1000countryhits"
+      },
+      "radiode": {
+        "url": "https://www.radio.de/s/lautfm-1000countryhits"
+      }
+    },
+    "images": {
+      "station": "https://assets.laut.fm/199261a401c995c064d2881a96c7f656",
+      "station_80x80": "https://assets.laut.fm/199261a401c995c064d2881a96c7f656?t=_80x80",
+      "station_120x120": "https://assets.laut.fm/199261a401c995c064d2881a96c7f656?t=_120x120",
+      "station_640x640": "https://assets.laut.fm/199261a401c995c064d2881a96c7f656?t=_640x640",
+      "website": "https://assets.laut.fm/1232e8736988af9bf900c1cb699a5d68",
+      "website_640x640": "https://assets.laut.fm/1232e8736988af9bf900c1cb699a5d68?t=_640x640"
+    },
+    "current_playlist": {
+      "id": 360017,
+      "name": "standard",
+      "day": "mon",
+      "hour": 0,
+      "end_time": null,
+      "description": null,
+      "color": "#FF0000",
+      "length": 180469,
+      "shuffled": true,
+      "starts_at": "2026-07-13 00:00:00 +0200",
+      "started_at": "2026-07-13 00:00:00 +0200",
+      "ends_at": "2026-07-20 00:00:00 +0200"
+    },
+    "next_playlist": {
+      "id": 360017,
+      "name": "standard",
+      "day": "mon",
+      "hour": 0,
+      "end_time": null,
+      "description": null,
+      "color": "#FF0000",
+      "length": 180469,
+      "shuffled": true,
+      "starts_at": "2026-07-20 00:00:00 +0200",
+      "started_at": "2026-07-20 00:00:00 +0200",
+      "ends_at": "2026-07-27 00:00:00 +0200"
+    },
+    "top_artists": [
+      "Alan Jackson",
+      "George Strait",
+      "Bellamy Brothers",
+      "Martina McBride",
+      "Alabama",
+      "Reba McEntire",
+      "Kenny Rogers",
+      "Blake Shelton",
+      "Clint Black",
+      "Truck Stop"
+    ]
+  }
+}

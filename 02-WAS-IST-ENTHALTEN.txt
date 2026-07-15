@@ -1,17 +1,9 @@
-CLDF Offline-App v4.7.3 – Inhalt
-================================
+CLDF Offline-App v4.7.4 – Inhalt
 
-- vollständige Offline-Web-App/PWA
-- CLDF-Tanzdaten
-- Lied-/Tanzzuordnungen
-- lokale Audio-Fingerprints
-- BPM-, Motion- und Rhythmusanalyse
-- MediaPipe-Video- und Schritterkennung
-- 1.254 liedbezogene API-Zuordnungen
-- API-Song-IDs, Senderquellen und Metadaten
-- 35 bereitgestellte Sender-Endpunkte
-- Live-Aktualisierung über current_song und last_songs
-- Offline-Fallback
-- Datenschutz-, Urheberrechts-, Designschutz- und Impressumsseiten
-- GitHub-Pages-Workflows
-- vollständige Test- und Prüfdokumentation
+- vollständige GitHub-Pages/PWA-App
+- 4.011 liedbezogene API-Zuordnungen
+- 10 Senderquellen
+- 70 öffentliche laut.fm-Endpunkte
+- lokale Audio-Fingerprints und Videoanalyse
+- Datenschutz-, Rechte-, Designschutz-, Impressums- und Lizenzseiten
+- Dublettenbericht und Testbericht
