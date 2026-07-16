@@ -963,3 +963,8 @@ body.app-open {
   letter-spacing: .03em;
   text-transform: uppercase;
 }
+
+/* v4.7.5: sichtbare Verwaltung der lokalen Audio-Referenzen */
+#audioFingerprintSection .catalog-list { margin-top: 14px; max-height: 340px; overflow: auto; }
+#audioFingerprintSection .button-grid .file-button { display: inline-flex; align-items: center; justify-content: center; }
+#audioFingerprintSection .text-button { justify-self: start; }

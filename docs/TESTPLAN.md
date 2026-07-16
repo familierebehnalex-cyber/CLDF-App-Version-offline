@@ -1,9 +1,9 @@
-# Testplan CLDF Offline-App v4.7.4
+# Testplan CLDF Offline-App v4.7.6
 
 ## Start, Version und Offline
 
 1. `STARTEN-AM-PC.bat` starten.
-2. Startseite, ursprüngliche Grafik, Navigation und sichtbare Version 4.7.4 prüfen.
+2. Startseite, ursprüngliche Grafik, Navigation und sichtbare Version 4.7.6 prüfen.
 3. Browser-Entwicklerwerkzeuge öffnen und auf JavaScript-Fehler prüfen.
 4. Seite einmal vollständig laden, Netzwerk auf „Offline“ stellen und neu laden.
 5. Suche, Favoriten, Übungslisten, Tanzdetails und Liedlisten prüfen.
@@ -62,3 +62,11 @@ npm run validate
 ```
 
 Der Bericht wird in `VALIDIERUNG.json` geschrieben.
+
+## Audio-Erkennung v4.7.6
+
+1. Bei leerer Fingerprint-Datenbank auf „Lied erkennen“ tippen.
+2. Prüfen, dass der Hinweis „Es fehlen Musikreferenzen“ erscheint und keine Titelerkennung vorgetäuscht wird.
+3. Prüfen, dass 1.959 eingebaute Audio-Referenzen angezeigt werden und keine Benutzerdatei verlangt wird.
+4. Prüfen, dass die Anzahl der Audio-Referenzen steigt.
+5. Einen Ausschnitt desselben Liedes aufnehmen und Ergebnis, Zuordnung sowie Fallback prüfen.

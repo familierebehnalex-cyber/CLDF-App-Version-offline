@@ -9,7 +9,7 @@ const worker=fs.readFileSync(path.join(ROOT,'service-worker.js'),'utf8');
 function assert(c,m){if(!c)throw new Error(m);}
 assert(index.format==='CLDF-SONG-API-INDEX','Falsches Song-API-Format.');
 assert(index.version===2,'Falsche Indexversion.');
-assert(index.appVersion==='4.7.4','Falsche App-Version im Song-API-Index.');
+assert(index.appVersion==='4.7.6','Falsche App-Version im Song-API-Index.');
 assert(Array.isArray(index.entries)&&index.entries.length===4011,'Unerwartete Anzahl liedbezogener API-Einträge.');
 assert(index.stationCount===10,'Es müssen zehn Senderquellen vorhanden sein.');
 assert(index.apiEndpointCount===70,'Es müssen 70 bereitgestellte Sender-Endpunkte vorhanden sein.');

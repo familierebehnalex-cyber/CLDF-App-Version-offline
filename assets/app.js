@@ -1,21 +1,22 @@
 'use strict';
 
 (() => {
-  const DATA = window.CLDF_DATA || { dances: [], motionCatalog: [], specialRhythms: [], appVersion: '4.7.4', databaseVersion: 'unbekannt' };
+  const DATA = window.CLDF_DATA || { dances: [], motionCatalog: [], specialRhythms: [], appVersion: '4.7.6', databaseVersion: 'unbekannt' };
   const GETINLINE_DATA = window.GETINLINE_DATA || { dances: [], count: 0, generatedAt: null };
   const VM = window.CLDFVideoMotion;
   const STEP_PATTERN_DB = window.CLDF_STEP_SHEET_PATTERNS || { patterns: [] };
   const STEP_PATTERNS = Array.isArray(STEP_PATTERN_DB.patterns) ? STEP_PATTERN_DB.patterns : [];
   const AUDIO = window.CLDFAudioEngine;
   const STORE = window.CLDFLocalStore;
-  const FINGERPRINT_DB = window.CLDF_AUDIO_FINGERPRINTS || { entries: [] };
+  const FINGERPRINT_DB = window.CLDF_AUDIO_FINGERPRINTS || { entries: [], packs: [], count: 0 };
+  let embeddedFingerprintLoadPromise = null;
   const SONG_META = window.CLDF_SONG_METADATA || { entries: [] };
   const RADIO_API_DATA = window.CLDF_RADIO_API_DATA || { stations: [], entries: [], count: 0, stationCount: 0 };
   const RADIO_ENTRIES = Array.isArray(RADIO_API_DATA.entries) ? RADIO_API_DATA.entries : [];
   const RADIO_LIVE_API = window.CLDFRadioLiveAPI || null;
   const SONG_API_INDEX = window.CLDF_SONG_API_INDEX || { entries: [], stations: [], entryCount: 0, apiEndpointCount: 0 };
   const SONG_API_ENTRIES = Array.isArray(SONG_API_INDEX.entries) ? SONG_API_INDEX.entries : [];
-  const APP_VERSION = '4.7.4';
+  const APP_VERSION = '4.7.6';
   const DATABASE_VERSION = DATA.databaseVersion || 'unbekannt';
   const CLDF_DANCES = Array.isArray(DATA.dances) ? DATA.dances : [];
   let GETINLINE_DANCES = Array.isArray(GETINLINE_DATA.dances) ? GETINLINE_DATA.dances : [];
@@ -1086,14 +1087,50 @@
     return [...embedded, ...(state.audioFingerprints || [])];
   }
 
+  function embeddedFingerprintConfiguredCount() {
+    const loaded = Array.isArray(FINGERPRINT_DB.entries) ? FINGERPRINT_DB.entries.length : 0;
+    return Math.max(loaded, Number(FINGERPRINT_DB.count) || 0);
+  }
+
+  function availableFingerprintCount() {
+    return embeddedFingerprintConfiguredCount() + (state.audioFingerprints || []).length;
+  }
+
+  async function ensureEmbeddedFingerprintsLoaded() {
+    const packs = Array.isArray(FINGERPRINT_DB.packs) ? FINGERPRINT_DB.packs : [];
+    if (FINGERPRINT_DB.loaded || !packs.length) return FINGERPRINT_DB.entries || [];
+    if (embeddedFingerprintLoadPromise) return embeddedFingerprintLoadPromise;
+    embeddedFingerprintLoadPromise = (async () => {
+      const entries = [];
+      for (let index = 0; index < packs.length; index += 1) {
+        const pack = packs[index];
+        setTaskProgress(true, 'Musikreferenzen werden geladen', `Fingerprint-Paket ${index + 1} von ${packs.length} …`, 4 + ((index + 1) / packs.length) * 38);
+        const response = await fetch(`./${pack.file}`, { cache: 'force-cache' });
+        if (!response.ok) throw new Error(`Fingerprint-Paket ${index + 1} konnte nicht geladen werden.`);
+        const payload = await response.json();
+        if (!Array.isArray(payload.entries)) throw new Error(`Fingerprint-Paket ${index + 1} ist ungültig.`);
+        entries.push(...payload.entries);
+      }
+      FINGERPRINT_DB.entries = entries;
+      FINGERPRINT_DB.loaded = true;
+      return entries;
+    })().catch((error) => {
+      embeddedFingerprintLoadPromise = null;
+      throw error;
+    });
+    return embeddedFingerprintLoadPromise;
+  }
+
   async function recognizeSongOffline(blob) {
     if (blob?.name) {
       const name = String(blob.name).replace(/\.[^.]+$/, '').replace(/[_]+/g, ' ');
       const candidate = findSongsByText(name)[0];
       if (candidate?.score >= 92) return { title: candidate.song.title, artist: candidate.song.artist || '', source: 'Dateiname', confidence: candidate.score };
     }
+    if (!AUDIO) return null;
+    await ensureEmbeddedFingerprintsLoaded();
     const entries = allFingerprintEntries();
-    if (!AUDIO || !entries.length) return null;
+    if (!entries.length) return null;
     const audio = await AUDIO.decodeBlob(blob);
     const fingerprint = await AUDIO.extractFingerprint(audio, {
       maxSeconds: Math.min(30, audio.duration || 30),
@@ -1110,6 +1147,9 @@
       fingerprintScore: match.score,
       confidence: match.confidence,
       fingerprintVotes: match.votes,
+      confirmedDances: match.entry?.danceMapping?.confirmed || match.entry?.exactDanceCandidates || [],
+      suggestedDances: match.entry?.danceMapping?.suggested || match.entry?.candidateDances || [],
+      fingerprintEntryId: match.entry?.id || '',
     };
   }
 
@@ -1185,16 +1225,16 @@
 
   function renderAudioFingerprintCatalog() {
     const entries = state.audioFingerprints || [];
-    const count = allFingerprintEntries().length;
+    const count = availableFingerprintCount();
     const badge = $('#audioFingerprintCount');
     if (badge) badge.textContent = `${count} Lied${count === 1 ? '' : 'er'}`;
     const status = $('#audioFingerprintStatus');
     status?.classList.toggle('good', count > 0);
     status?.classList.toggle('warning', count === 0);
-    if ($('#audioFingerprintStatusTitle')) $('#audioFingerprintStatusTitle').textContent = count ? 'Offline-Titelerkennung bereit' : 'Noch keine Referenzmusik';
+    if ($('#audioFingerprintStatusTitle')) $('#audioFingerprintStatusTitle').textContent = count ? 'Integrierte Titelerkennung bereit' : 'Noch keine Referenzmusik';
     if ($('#audioFingerprintStatusText')) $('#audioFingerprintStatusText').textContent = count
-      ? `${count} akustische Referenz${count === 1 ? '' : 'en'} sind lokal gespeichert. Die Musikdateien selbst wurden nicht gespeichert.`
-      : 'Lies deine rechtmäßig vorhandenen Musikdateien einmal ein. Danach kann die Mikrofonerkennung diese Aufnahmen offline wiedererkennen.';
+      ? `${embeddedFingerprintConfiguredCount()} fest eingebaute Audio-Referenzen${(state.audioFingerprints || []).length ? ` und ${(state.audioFingerprints || []).length} eigene Ergänzungen` : ''} sind verfügbar. Die Musikdateien selbst sind nicht Bestandteil der App.`
+      : 'Es sind noch keine Audio-Referenzen vorhanden.';
     const list = $('#audioFingerprintList');
     if (!list) return;
     list.innerHTML = entries.slice().sort((a, b) => a.title.localeCompare(b.title, 'de')).slice(0, 80).map((entry) => `
@@ -1477,19 +1517,19 @@
   }
 
   async function checkOnlineService(showMessage = true) {
-    const fingerprintCount = allFingerprintEntries().length;
-    state.onlineServiceReady = true;
+    const fingerprintCount = availableFingerprintCount();
+    state.onlineServiceReady = fingerprintCount > 0;
     state.onlineServiceMessage = fingerprintCount
-      ? `Musik-Erkennung bereit · ${fingerprintCount} Audio-Fingerprint${fingerprintCount === 1 ? '' : 's'} · ${SONG_API_ENTRIES.length} Song-API-Zuordnungen geladen.`
-      : `Musik-Erkennung bereit · ${SONG_API_ENTRIES.length} Song-API-Zuordnungen, Liedliste, BPM, Motion und Rhythmus sind lokal verfügbar; für die exakte Audio-Titelerkennung bitte einmal eigene Musikdateien einlesen.`;
+      ? `Audio-Erkennung bereit · ${fingerprintCount} Audio-Fingerprint${fingerprintCount === 1 ? '' : 's'} · ${SONG_API_ENTRIES.length} Song-Metadatensätze geladen.`
+      : `Audio-Erkennung noch nicht eingerichtet · ${SONG_API_ENTRIES.length} Song-Metadatensätze sind geladen, enthalten aber keine akustischen Fingerprints. Es sind keine eingebauten Audio-Referenzen vorhanden.`;
     const card = $('#onlineServiceStatus');
     const title = $('#onlineServiceStatusTitle');
     const text = $('#onlineServiceStatusText');
-    card?.classList.add('good'); card?.classList.remove('warning');
-    if (title) title.textContent = 'Musik-Erkennung bereit';
+    card?.classList.toggle('good', fingerprintCount > 0); card?.classList.toggle('warning', fingerprintCount === 0);
+    if (title) title.textContent = fingerprintCount ? 'Audio-Erkennung bereit' : 'Musikreferenzen fehlen';
     if (text) text.textContent = state.onlineServiceMessage;
     if (showMessage) toast(state.onlineServiceMessage, 4500);
-    return true;
+    return fingerprintCount > 0;
   }
 
   function openManualSongPicker() {
@@ -1793,7 +1833,14 @@
     const recognizedSong = options.recognizedSong || null;
     $('#resultTitle').textContent = recognizedSong ? 'Lied erkannt – kein fest zugeordneter Tanz' : 'Kein eindeutiger Liedtreffer';
     $('#songResult').classList.toggle('hidden', !recognizedSong);
-    if (recognizedSong) $('#songResult').innerHTML = songResultHtml(recognizedSong, recognizedSong.apiDataAvailable ? 'Lokal erkannt · API zugeordnet' : 'Lokal erkannt');
+    if (recognizedSong) {
+      const confirmed = [...new Set(recognizedSong.confirmedDances || [])].filter(Boolean);
+      const suggested = [...new Set(recognizedSong.suggestedDances || [])].filter((name) => name && !confirmed.includes(name));
+      const mappingHtml = confirmed.length || suggested.length
+        ? `<small>${confirmed.length ? `<strong>Bestätigte Tanzzuordnung:</strong> ${confirmed.map(escapeHtml).join(', ')}` : ''}${confirmed.length && suggested.length ? '<br>' : ''}${suggested.length ? `<strong>Tanzvorschlag – bitte prüfen:</strong> ${suggested.map(escapeHtml).join(', ')}` : ''}</small>`
+        : '';
+      $('#songResult').innerHTML = songResultHtml(recognizedSong, recognizedSong.apiDataAvailable ? 'Lokal erkannt · API zugeordnet' : 'Lokal erkannt') + mappingHtml;
+    }
     $('#tempoResult').classList.remove('hidden');
     $('#bpmValue').textContent = Number.isFinite(bpm) ? bpm : '–';
     $('#alternateBpmRow').classList.toggle('hidden', possibleBpms.length < 2);
@@ -2735,8 +2782,50 @@
     showAnalysisResult({ bpm, possibleBpms: makePossibleBpms([bpm]), confidence: 1 }, true, 'BPM manuell eingegeben');
   }
 
-  function startRecognitionFlow() {
+  function showMissingFingerprintHelp() {
+    openDialog(`
+      <div class="onboarding">
+        <div class="onboarding-icon">🎧</div>
+        <p class="eyebrow">Audio-Referenzen nicht verfügbar</p>
+        <h2>Das GitHub-Update ist unvollständig</h2>
+        <p>Diese App-Version enthält fest eingebaute Fingerprint-Pakete. Wenn hier keine Referenzen erkannt werden, fehlen wahrscheinlich einzelne Dateien aus dem Ordner <strong>data</strong> oder der alte Offline-Cache ist noch aktiv.</p>
+        <div class="onboarding-steps">
+          <div class="onboarding-step"><span>1</span><div><strong>Dateien prüfen</strong><br>Alle Dateien <code>audio-fingerprints-pack-001.json</code> bis <code>audio-fingerprints-pack-008.json</code> müssen auf GitHub vorhanden sein.</div></div>
+          <div class="onboarding-step"><span>2</span><div><strong>App vollständig neu laden</strong><br>Die installierte PWA schließen oder einmal neu installieren, damit der Cache v4.7.6 aktiv wird.</div></div>
+          <div class="onboarding-step"><span>3</span><div><strong>Erneut aufnehmen</strong><br>Danach vergleicht die App die Mikrofonaufnahme kostenlos und lokal mit den eingebauten Referenzen.</div></div>
+        </div>
+        <div class="dialog-actions">
+          <button id="manualSongFallbackBtn" class="secondary-btn" type="button">Lied aus Liste wählen</button>
+          <button id="bpmOnlyRecordingBtn" class="text-button" type="button">Nur BPM aufnehmen</button>
+        </div>
+      </div>`, { focusSelector: '#manualSongFallbackBtn' });
+    $('#manualSongFallbackBtn')?.addEventListener('click', () => { closeDialog(); openManualSongPicker(); }, { once: true });
+    $('#bpmOnlyRecordingBtn')?.addEventListener('click', () => { closeDialog(); requestRecordingStart(); }, { once: true });
+  }
+
+  async function startRecognitionFlow() {
     updateOnlineStatus();
+    if (state.mediaRecorder?.state === 'recording') {
+      stopRecording();
+      return;
+    }
+    if (!availableFingerprintCount()) {
+      showMissingFingerprintHelp();
+      return;
+    }
+    try {
+      await ensureEmbeddedFingerprintsLoaded();
+      setTaskProgress(false);
+    } catch (error) {
+      setTaskProgress(false);
+      console.error(error);
+      toast('Die eingebauten Musikreferenzen konnten nicht geladen werden. Bitte die App vollständig aktualisieren.', 6500);
+      return;
+    }
+    if (!allFingerprintEntries().length) {
+      showMissingFingerprintHelp();
+      return;
+    }
     requestRecordingStart();
   }
 
@@ -3080,8 +3169,8 @@
     items.push({ title: 'Offline-Daten', text: `Bereit – ${state.dances.length} Tänze, ${GETINLINE_DANCES.length} Get-in-Line-Einträge und lokale Liedzuordnungen geladen.`, level: '' });
     items.push({ title: 'Sichere Umgebung', text: window.isSecureContext ? 'Ja – Mikrofonfreigabe ist möglich.' : 'Nein – für das Mikrofon ist HTTPS oder localhost erforderlich.', level: window.isSecureContext ? '' : 'error' });
     const serviceReady = await checkOnlineService(false);
-    items.push({ title: 'Offline-Liederkennung', text: state.onlineServiceMessage, level: serviceReady ? '' : 'error' });
-    items.push({ title: 'Audio-Referenzen', text: allFingerprintEntries().length ? `${allFingerprintEntries().length} lokale akustische Referenzen bereit.` : 'Noch keine eigene Musikbibliothek eingelesen; BPM/Motion-Fallback bleibt verfügbar.', level: allFingerprintEntries().length ? '' : 'warn' });
+    items.push({ title: 'Offline-Liederkennung', text: state.onlineServiceMessage, level: serviceReady ? '' : 'warn' });
+    items.push({ title: 'Audio-Referenzen', text: availableFingerprintCount() ? `${availableFingerprintCount()} akustische Referenzen bereit (${embeddedFingerprintConfiguredCount()} fest eingebaut).` : 'Keine Audio-Referenzen vorhanden; BPM/Motion-Fallback bleibt verfügbar.', level: availableFingerprintCount() ? '' : 'warn' });
     items.push({ title: 'Get-in-Line-Katalog', text: GETINLINE_DANCES.length ? `${GETINLINE_DANCES.length} Metadatensätze mit Tanzsheet-Links geladen.` : 'Noch leer; Aktualisierer oder Katalogimport verwenden.', level: GETINLINE_DANCES.length ? '' : 'warn' });
     const micPermission = await refreshMicrophoneStatus();
     items.push({ title: 'Mikrofon', text: supportsLiveMicrophone() ? `Live-Aufnahme unterstützt · Berechtigung: ${micPermission === 'granted' ? 'erlaubt' : micPermission === 'denied' ? 'blockiert' : 'noch nicht erteilt'}.` : 'Live-Aufnahme nicht verfügbar; Dateiauswahl bleibt nutzbar.', level: micPermission === 'denied' ? 'error' : supportsLiveMicrophone() ? '' : 'warn' });
@@ -3098,9 +3187,9 @@
         <h2>Vier kurze Schritte</h2>
         <div class="onboarding-steps">
           <div class="onboarding-step"><span>1</span><div><strong>Offline-Daten</strong><br>Tänze, Liedzuordnungen, BPM-, Motion- und Rhythmusregeln sind lokal gespeichert.</div></div>
-          <div class="onboarding-step"><span>2</span><div><strong>Eigene Musik einmal einlesen</strong><br>Unter „Mehr → Eigene Musikbibliothek“ werden nur akustische Fingerprints gespeichert, keine Musikdateien.</div></div>
+          <div class="onboarding-step"><span>2</span><div><strong>Referenzen sind eingebaut</strong><br>1.959 Audio-Fingerprints für 1.326 Lieder werden automatisch aus der App geladen.</div></div>
           <div class="onboarding-step"><span>3</span><div><strong>Mikrofon erlauben</strong><br>Die offizielle Handy- oder Browserabfrage erscheint einmal nach deinem Tipp.</div></div>
-          <div class="onboarding-step"><span>4</span><div><strong>Lied aufnehmen</strong><br>Die App erkennt eingelesene Aufnahmen offline; ohne sicheren Titel werden BPM, Motion und Rhythmus verwendet.</div></div>
+          <div class="onboarding-step"><span>4</span><div><strong>Lied aufnehmen</strong><br>Die App erkennt bekannte Aufnahmen offline; ohne sicheren Titel werden BPM, Motion und Rhythmus verwendet.</div></div>
         </div>
         <div class="dialog-actions">
           <button id="onboardingMicBtn" class="primary-btn" type="button">Mikrofon testen</button>
@@ -3152,7 +3241,7 @@
     $('#brandHome').addEventListener('click', () => showView('home'));
     $$('.bottom-nav button').forEach((button) => button.addEventListener('click', () => showView(button.dataset.view)));
     $$('[data-open-view]').forEach((button) => button.addEventListener('click', () => showView(button.dataset.openView, { focus: button.dataset.focus ? `#${button.dataset.focus}` : null })));
-    $('#recordBtn').addEventListener('click', startRecognitionFlow);
+    $('#recordBtn').addEventListener('click', () => startRecognitionFlow().catch((error) => { console.error(error); toast('Die Lied-Erkennung konnte nicht gestartet werden.'); }));
     $('#audioFile').addEventListener('change', async (event) => { const file = event.target.files?.[0]; if (file) await analyseBlob(file); event.target.value = ''; });
     $('#captureAudioFile').addEventListener('change', async (event) => { const file = event.target.files?.[0]; if (file) await analyseBlob(file); event.target.value = ''; });
     $('#captureDanceVideo').addEventListener('change', async (event) => { const file = event.target.files?.[0]; if (file) await analyzeDanceVideo(file); event.target.value = ''; });
@@ -3268,7 +3357,7 @@
     RADIO_LIVE_API?.start?.();
     runDiagnostics();
     handleInitialRoute();
-    $('#versionText').textContent = `CLDF v4.7.4 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${SONG_API_ENTRIES.length} Song-API-Zuordnungen · ${allFingerprintEntries().length} Audio-Referenzen · Liedzuordnung zuerst`;
+    $('#versionText').textContent = `CLDF v4.7.6 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${SONG_API_ENTRIES.length} Song-Metadatensätze · ${availableFingerprintCount()} Audio-Referenzen`;
     // Der Startbildschirm bleibt bei jedem neuen App-Start sichtbar,
     // bis der Benutzer bewusst auf „App öffnen“ tippt.
     $('#splash').classList.remove('hidden');

@@ -13,7 +13,7 @@ const required = [
   'assets/data.js', 'assets/getinline-data.js', 'assets/image-mappings.js', 'assets/song-metadata.js', 'assets/song-api-index.js', 'assets/radio-api-data.js', 'assets/radio-live-api.js',
   'assets/video-motion.js', 'assets/step-sheet-patterns.js', 'assets/mediapipe/pose/pose.js',
   'assets/mediapipe/pose/pose_landmark_lite.tflite', 'assets/mediapipe/pose/pose_solution_simd_wasm_bin.wasm',
-  'data/cldf-data.json', 'data/getinline-dances.json', 'data/bild-lied-tanz-zuordnungen.json', 'data/song-metadata.json', 'data/song-api-index.json', 'data/radio-api-catalog.json',
+  'data/cldf-data.json', 'data/getinline-dances.json', 'data/bild-lied-tanz-zuordnungen.json', 'data/song-metadata.json', 'data/song-api-index.json', 'data/radio-api-catalog.json', 'data/audio-fingerprints-index.json',
   'docs/DATENSCHUTZ.html', 'docs/URHEBERRECHT.html', 'docs/DESIGNSCHUTZ.html', 'docs/IMPRESSUM.html', 'docs/LIZENZEN.html',
 ];
 const missing = required.filter((relative) => !fs.existsSync(path.join(ROOT, relative)));
@@ -30,7 +30,8 @@ const cldf = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/cldf-data.json'), 
 const getinline = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/getinline-dances.json'), 'utf8'));
 const image = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/bild-lied-tanz-zuordnungen.json'), 'utf8'));
 const songs = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/song-metadata.json'), 'utf8'));
-const fingerprints = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/audio-fingerprints.json'), 'utf8'));
+const fingerprints = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/audio-fingerprints-index.json'), 'utf8'));
+const fingerprintPackEntries = (fingerprints.packs || []).reduce((total, pack) => { const payload = JSON.parse(fs.readFileSync(path.join(ROOT, pack.file), 'utf8')); return total + (payload.entries || []).length; }, 0);
 const radio = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/radio-api-catalog.json'), 'utf8'));
 const songApi = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/song-api-index.json'), 'utf8'));
 const normalize = (value = '') => String(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
@@ -63,7 +64,8 @@ if (!originalCssBasePreserved || !originalGraphicsUnchanged) {
 const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 const essentialDomIds = [
   'app', 'recordBtn', 'audioFile', 'searchInput', 'versionText',
-  'audioFingerprintFiles', 'audioFingerprintCount', 'audioFingerprintList',
+  'audioFingerprintSection', 'audioFingerprintFiles', 'audioFingerprintCount', 'audioFingerprintStatus', 'audioFingerprintStatusTitle', 'audioFingerprintStatusText', 'audioFingerprintList',
+  'importFingerprintsBtn', 'importFingerprintsFile', 'exportFingerprintsBtn', 'clearFingerprintsBtn',
   'importGetInLineBtn', 'importGetInLineFile', 'getinlineCatalogCount',
   'getinlineCatalogStatus', 'appDialog', 'fingerprintProgress', 'liveDanceVideoBtn'
 ];
@@ -77,6 +79,18 @@ if (missingDomIds.length) {
   console.error(`Fehlende wichtige HTML-Elemente: ${missingDomIds.join(', ')}`);
   process.exit(1);
 }
+const duplicateFingerprintIds = essentialDomIds.filter((id) => (html.match(new RegExp(`id=[\"']${id}[\"']`, 'g')) || []).length !== 1);
+if (duplicateFingerprintIds.length) {
+  console.error(`Wichtige HTML-IDs fehlen oder sind mehrfach vorhanden: ${duplicateFingerprintIds.join(', ')}`);
+  process.exit(1);
+}
+const appSource = fs.readFileSync(path.join(ROOT, 'assets/app.js'), 'utf8');
+const fingerprintSetupGuardPresent = appSource.includes('showMissingFingerprintHelp') && appSource.includes('ensureEmbeddedFingerprintsLoaded');
+const fingerprintLibraryVisible = html.includes('id="audioFingerprintSection"') && html.includes('Integrierte Musikreferenzen');
+if (!fingerprintSetupGuardPresent || !fingerprintLibraryVisible) {
+  console.error('v4.7.6-Prüfung der sichtbaren Fingerprint-Einrichtung fehlgeschlagen.');
+  process.exit(1);
+}
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-getinline-parser.js')], { stdio: 'pipe' });
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-audio-fingerprint.js')], { stdio: 'pipe' });
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-video-step-matcher.js')], { stdio: 'pipe' });
@@ -85,11 +99,13 @@ execFileSync(process.execPath, [path.join(ROOT, 'tools/test-radio-live-api.js')]
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-song-api-index.js')], { stdio: 'pipe' });
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-api-dedup.js')], { stdio: 'pipe' });
 const report = {
-  appVersion: '4.7.4',
+  appVersion: '4.7.6',
   generatedAt: new Date().toISOString(),
   requiredFilesPresent: true,
   javascriptSyntaxValid: true,
   essentialDomIdsPresent: true,
+  fingerprintLibraryVisible,
+  fingerprintSetupGuardPresent,
   getInLineParserTestsPassed: true,
   audioFingerprintSelfTestPassed: true,
   videoStepMatcherSelfTestPassed: true,
@@ -137,7 +153,8 @@ const report = {
   songsWithBpm: (songs.entries || []).filter((entry) => Array.isArray(entry.bpm) && entry.bpm.length).length,
   microphoneSeconds: 12,
   audioFingerprintAlgorithm: 'cldf-landmark-v1',
-  embeddedAudioFingerprints: (fingerprints.entries || []).length,
+  embeddedAudioFingerprints: fingerprintPackEntries,
+  fingerprintPackCount: (fingerprints.packs || []).length,
   indexedDbAudioLibrary: true,
   indexedDbGetInLineImport: true,
   staticRadioApiCatalog: true,

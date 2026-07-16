@@ -1,9 +1,11 @@
 {
-  "appVersion": "4.7.4",
-  "generatedAt": "2026-07-15T17:01:55.151Z",
+  "appVersion": "4.7.6",
+  "generatedAt": "2026-07-16T16:10:23.749Z",
   "requiredFilesPresent": true,
   "javascriptSyntaxValid": true,
   "essentialDomIdsPresent": true,
+  "fingerprintLibraryVisible": true,
+  "fingerprintSetupGuardPresent": true,
   "getInLineParserTestsPassed": true,
   "audioFingerprintSelfTestPassed": true,
   "videoStepMatcherSelfTestPassed": true,
@@ -21,7 +23,7 @@
   "originalCssBasePreserved": true,
   "originalCssBaseLines": 596,
   "originalCssBaseSha256": "89cc732bfecdfc0022e627aba4d0c4718056e198af3a17f45cb050a10af56768",
-  "addedCssLinesForLiveCamera": 369,
+  "addedCssLinesForLiveCamera": 374,
   "originalGraphicsUnchanged": true,
   "originalGraphicHashes": {
     "assets/cldf-hero.webp": {
@@ -45,7 +47,7 @@
       "unchanged": true
     }
   },
-  "completeStylesSha256": "8dc3d20d51cca8f2f7a6240bb047a841c136422d1bf49fb3f4a906a201586efe",
+  "completeStylesSha256": "62df80c39d981468a87046fa61607c7364b3b800e9fd98ab5b33e076bed47c9d",
   "cldfBaseDances": 135,
   "imageMappings": 659,
   "imageUniqueDances": 182,
@@ -69,7 +71,8 @@
   "songsWithBpm": 237,
   "microphoneSeconds": 12,
   "audioFingerprintAlgorithm": "cldf-landmark-v1",
-  "embeddedAudioFingerprints": 0,
+  "embeddedAudioFingerprints": 1959,
+  "fingerprintPackCount": 8,
   "indexedDbAudioLibrary": true,
   "indexedDbGetInLineImport": true,
   "staticRadioApiCatalog": true,
