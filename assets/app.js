@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const DATA = window.CLDF_DATA || { dances: [], motionCatalog: [], specialRhythms: [], appVersion: '4.7.6', databaseVersion: 'unbekannt' };
+  const DATA = window.CLDF_DATA || { dances: [], motionCatalog: [], specialRhythms: [], appVersion: '4.7.7', databaseVersion: 'unbekannt' };
   const GETINLINE_DATA = window.GETINLINE_DATA || { dances: [], count: 0, generatedAt: null };
   const VM = window.CLDFVideoMotion;
   const STEP_PATTERN_DB = window.CLDF_STEP_SHEET_PATTERNS || { patterns: [] };
@@ -16,7 +16,7 @@
   const RADIO_LIVE_API = window.CLDFRadioLiveAPI || null;
   const SONG_API_INDEX = window.CLDF_SONG_API_INDEX || { entries: [], stations: [], entryCount: 0, apiEndpointCount: 0 };
   const SONG_API_ENTRIES = Array.isArray(SONG_API_INDEX.entries) ? SONG_API_INDEX.entries : [];
-  const APP_VERSION = '4.7.6';
+  const APP_VERSION = '4.7.7';
   const DATABASE_VERSION = DATA.databaseVersion || 'unbekannt';
   const CLDF_DANCES = Array.isArray(DATA.dances) ? DATA.dances : [];
   let GETINLINE_DANCES = Array.isArray(GETINLINE_DATA.dances) ? GETINLINE_DATA.dances : [];
@@ -2790,8 +2790,8 @@
         <h2>Das GitHub-Update ist unvollständig</h2>
         <p>Diese App-Version enthält fest eingebaute Fingerprint-Pakete. Wenn hier keine Referenzen erkannt werden, fehlen wahrscheinlich einzelne Dateien aus dem Ordner <strong>data</strong> oder der alte Offline-Cache ist noch aktiv.</p>
         <div class="onboarding-steps">
-          <div class="onboarding-step"><span>1</span><div><strong>Dateien prüfen</strong><br>Alle Dateien <code>audio-fingerprints-pack-001.json</code> bis <code>audio-fingerprints-pack-008.json</code> müssen auf GitHub vorhanden sein.</div></div>
-          <div class="onboarding-step"><span>2</span><div><strong>App vollständig neu laden</strong><br>Die installierte PWA schließen oder einmal neu installieren, damit der Cache v4.7.6 aktiv wird.</div></div>
+          <div class="onboarding-step"><span>1</span><div><strong>Dateien prüfen</strong><br>Alle im Fingerprint-Index aufgeführten Paketdateien müssen auf GitHub vorhanden sein.</div></div>
+          <div class="onboarding-step"><span>2</span><div><strong>App vollständig neu laden</strong><br>Die installierte PWA schließen oder einmal neu installieren, damit der Cache v4.7.7 aktiv wird.</div></div>
           <div class="onboarding-step"><span>3</span><div><strong>Erneut aufnehmen</strong><br>Danach vergleicht die App die Mikrofonaufnahme kostenlos und lokal mit den eingebauten Referenzen.</div></div>
         </div>
         <div class="dialog-actions">
@@ -3187,7 +3187,7 @@
         <h2>Vier kurze Schritte</h2>
         <div class="onboarding-steps">
           <div class="onboarding-step"><span>1</span><div><strong>Offline-Daten</strong><br>Tänze, Liedzuordnungen, BPM-, Motion- und Rhythmusregeln sind lokal gespeichert.</div></div>
-          <div class="onboarding-step"><span>2</span><div><strong>Referenzen sind eingebaut</strong><br>1.959 Audio-Fingerprints für 1.326 Lieder werden automatisch aus der App geladen.</div></div>
+          <div class="onboarding-step"><span>2</span><div><strong>Referenzen sind eingebaut</strong><br>3.480 Audio-Fingerprints für 2.323 Lieder werden automatisch aus der App geladen.</div></div>
           <div class="onboarding-step"><span>3</span><div><strong>Mikrofon erlauben</strong><br>Die offizielle Handy- oder Browserabfrage erscheint einmal nach deinem Tipp.</div></div>
           <div class="onboarding-step"><span>4</span><div><strong>Lied aufnehmen</strong><br>Die App erkennt bekannte Aufnahmen offline; ohne sicheren Titel werden BPM, Motion und Rhythmus verwendet.</div></div>
         </div>
@@ -3357,7 +3357,7 @@
     RADIO_LIVE_API?.start?.();
     runDiagnostics();
     handleInitialRoute();
-    $('#versionText').textContent = `CLDF v4.7.6 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${SONG_API_ENTRIES.length} Song-Metadatensätze · ${availableFingerprintCount()} Audio-Referenzen`;
+    $('#versionText').textContent = `CLDF v4.7.7 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${SONG_API_ENTRIES.length} Song-Metadatensätze · ${availableFingerprintCount()} Audio-Referenzen`;
     // Der Startbildschirm bleibt bei jedem neuen App-Start sichtbar,
     // bis der Benutzer bewusst auf „App öffnen“ tippt.
     $('#splash').classList.remove('hidden');
