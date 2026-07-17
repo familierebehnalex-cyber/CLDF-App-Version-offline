@@ -11,7 +11,7 @@
   <link rel="icon" href="./assets/icon-64.png" sizes="64x64" type="image/png">
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./assets/styles.css?v=4.7.6">
+  <link rel="stylesheet" href="./assets/styles.css?v=4.7.7">
   <title>CLDF – Line Dance App</title>
 </head>
 <body>
@@ -232,18 +232,18 @@
             <div class="button-grid">
               <button id="checkOnlineServiceBtnSettings" class="primary-btn" type="button">Offline-Status erneut prüfen</button>
             </div>
-            <p class="help-text">Die App benötigt keinen AudD-Schlüssel. Für die genaue Titelerkennung werden 1.959 fest eingebaute Audio-Fingerprints verwendet; ohne Treffer bleiben BPM-, Motion- und Rhythmusvorschläge verfügbar.</p>
+            <p class="help-text">Die App benötigt keinen AudD-Schlüssel. Für die genaue Titelerkennung werden 3.480 fest eingebaute Audio-Fingerprints verwendet; ohne Treffer bleiben BPM-, Motion- und Rhythmusvorschläge verfügbar.</p>
           </article>
 
 
           <article id="audioFingerprintSection" class="settings-card">
             <div class="section-heading compact">
               <div><p class="eyebrow">Kostenlose Offline-Erkennung</p><h2>Integrierte Musikreferenzen</h2></div>
-              <span id="audioFingerprintCount" class="count-badge">1.959 Referenzen</span>
+              <span id="audioFingerprintCount" class="count-badge">3.480 Referenzen</span>
             </div>
             <div id="audioFingerprintStatus" class="catalog-status good">
               <span class="catalog-status-icon">🎧</span>
-              <div><strong id="audioFingerprintStatusTitle">Integrierte Titelerkennung bereit</strong><small id="audioFingerprintStatusText">1.959 bereinigte Audio-Referenzen für 1.326 Lieder sind fest eingebaut.</small></div>
+              <div><strong id="audioFingerprintStatusTitle">Integrierte Titelerkennung bereit</strong><small id="audioFingerprintStatusText">3.480 bereinigte Audio-Referenzen für 2.323 Lieder sind fest eingebaut.</small></div>
             </div>
             <p class="help-text"><strong>Bereits eingebaut:</strong> Die App lädt die Fingerprint-Pakete automatisch. Nutzer müssen keine Musikdateien oder Referenzpakete hochladen. Bei einem Treffer werden Lied, Interpret und vorhandene Tanzzuordnungen beziehungsweise geprüfte Vorschläge angezeigt.</p>
             <div class="hidden" aria-hidden="true">
@@ -373,7 +373,7 @@
 
           <article class="settings-card version-card">
             <img src="./assets/icon-128.png" alt="">
-            <div><h2>CLDF v4.7.6 Offline</h2><p id="versionText">4.011 Song-API-Zuordnungen · Lied zuerst · Tanzsheet-Link · BPM als Reserve</p></div>
+            <div><h2>CLDF v4.7.7 Offline</h2><p id="versionText">4.011 Song-API-Zuordnungen · Lied zuerst · Tanzsheet-Link · BPM als Reserve</p></div>
           </article>
         </div>
       </section>
@@ -429,15 +429,15 @@
   <script src="./assets/song-metadata.js"></script>
   <script src="./assets/song-api-index.js"></script>
   <script src="./assets/radio-api-data.js"></script>
-  <script src="./assets/radio-live-api.js?v=4.7.6"></script>
+  <script src="./assets/radio-live-api.js?v=4.7.7"></script>
   <script src="./assets/audio-fingerprints.js"></script>
   <script src="./assets/local-store.js"></script>
   <script src="./assets/audio-engine.js"></script>
   <script src="./assets/offline-bootstrap.js"></script>
-  <script src="./assets/mediapipe/pose/pose.js?v=4.7.6"></script>
-  <script src="./assets/step-sheet-patterns.js?v=4.7.6"></script>
-  <script src="./assets/video-motion.js?v=4.7.6"></script>
-  <script src="./assets/app.js?v=4.7.6"></script>
-  <script>if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.7.6').catch(console.warn));</script>
+  <script src="./assets/mediapipe/pose/pose.js?v=4.7.7"></script>
+  <script src="./assets/step-sheet-patterns.js?v=4.7.7"></script>
+  <script src="./assets/video-motion.js?v=4.7.7"></script>
+  <script src="./assets/app.js?v=4.7.7"></script>
+  <script>if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.7.7').catch(console.warn));</script>
 </body>
 </html>

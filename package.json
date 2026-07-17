@@ -1,6 +1,6 @@
 {
   "name": "cldf-offline-app",
-  "version": "4.7.6",
+  "version": "4.7.7",
   "private": true,
   "description": "CLDF Offline Line Dance App mit lokaler Audio-, Video- und Radio-API-Metadatensuche",
   "scripts": {

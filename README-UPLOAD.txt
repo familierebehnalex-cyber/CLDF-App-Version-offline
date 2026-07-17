@@ -1,0 +1,14 @@
+CLDF v4.7.7 – GITHUB-UPLOAD
+
+1. Diese ZIP-Datei auf dem PC vollständig entpacken.
+2. NICHT die ZIP-Datei selbst zu GitHub hochladen.
+3. Den Inhalt des entpackten Ordners in den Stamm des GitHub-Repositorys ziehen.
+4. Vorhandene Dateien ersetzen und „Commit changes“ bestätigen.
+5. Warten, bis GitHub Pages fertig ist.
+6. Die App vollständig schließen und neu öffnen. Bei einer installierten PWA gegebenenfalls einmal neu installieren.
+
+Wichtig:
+- Die kleine Datei assets/audio-fingerprints.js ist nur die Steuerdatei.
+- Die eigentlichen 3.480 Referenzen liegen in 14 Dateien im Ordner data.
+- Keine einzelne Datei ist größer als 6 MB.
+- Beim ersten Start der Lied-Erkennung werden die Pakete geladen und danach offline gespeichert.
