@@ -2,75 +2,116 @@
   "format": "CLDF-AUDIO-FINGERPRINTS",
   "version": 2,
   "algorithm": "cldf-landmark-v1",
-  "exportedAt": "2026-07-16T15:55:19Z",
-  "count": 1959,
-  "uniqueSongCount": 1326,
+  "exportedAt": "2026-07-17T15:04:28Z",
+  "count": 3480,
+  "uniqueSongCount": 2323,
   "danceMapping": {
-    "confirmedSongCount": 23,
-    "suggestedSongCount": 96,
-    "sourceApp": "CLDF v4.7.5 song-api-index + Tanzdatenbank",
-    "note": "Bestätigt = exakte vorhandene App-Zuordnung. Vorschläge müssen fachlich geprüft werden."
+    "originalSongCount": 67,
+    "suggestedSongCount": 92,
+    "originalLabel": "Original Tanz",
+    "suggestionLabel": "Vorschlag",
+    "note": "Original Tanz = exakte vorhandene Lied-Tanz-Zuordnung. Vorschlag = mögliche weitere Zuordnung."
   },
   "merge": {
     "inputPackages": [
       {
-        "file": "CLDF-Audio-Fingerprints.json",
-        "exportedAt": "2026-07-16T15:40:48Z",
-        "count": 1604
+        "file": "CLDF-Fingerprints-Bereinigt-Zugeordnet-2026-07-16.zip",
+        "exportedAt": "2026-07-16T15:55:19Z",
+        "count": 1959
       },
       {
-        "file": "CLDF-Audio-Fingerprints.json",
-        "exportedAt": "2026-07-16T14:59:20Z",
-        "count": 658
+        "file": "CLDF-Fingerprints-2026-07-17_16-54-35.zip",
+        "exportedAt": "2026-07-17T14:54:35Z",
+        "count": 3513
       }
     ],
-    "inputReferenceCount": 2262,
-    "invalidCollisionReferencesRemoved": 237,
+    "inputReferences": 5472,
+    "inputExistingReferences": 1959,
+    "inputNewReferences": 3513,
+    "inputUniqueSongs": 2592,
+    "invalidCollisionGroups": 10,
+    "invalidCollisionReferencesRemoved": 550,
+    "exactDuplicatesRemoved": 1352,
     "nearDuplicatesRemoved": 29,
-    "extraReferencesRemovedByThreeLimit": 37
+    "extraReferencesRemovedByThreeLimit": 61,
+    "outputReferences": 3480,
+    "outputUniqueSongs": 2323,
+    "songsWithOriginalDance": 67,
+    "songsWithSuggestions": 92,
+    "apiSongIdConflicts": 2
   },
-  "appVersion": "4.7.6",
-  "packCount": 8,
+  "appVersion": "4.7.7",
+  "packCount": 14,
   "packs": [
     {
       "file": "data/audio-fingerprints-pack-001.json",
-      "entryCount": 264,
-      "bytes": 5490543
+      "entryCount": 267,
+      "bytes": 5485451
     },
     {
       "file": "data/audio-fingerprints-pack-002.json",
-      "entryCount": 266,
-      "bytes": 5499143
+      "entryCount": 267,
+      "bytes": 5495382
     },
     {
       "file": "data/audio-fingerprints-pack-003.json",
-      "entryCount": 263,
-      "bytes": 5485881
+      "entryCount": 267,
+      "bytes": 5492053
     },
     {
       "file": "data/audio-fingerprints-pack-004.json",
       "entryCount": 267,
-      "bytes": 5496613
+      "bytes": 5499569
     },
     {
       "file": "data/audio-fingerprints-pack-005.json",
-      "entryCount": 263,
-      "bytes": 5480474
+      "entryCount": 266,
+      "bytes": 5498629
     },
     {
       "file": "data/audio-fingerprints-pack-006.json",
-      "entryCount": 265,
-      "bytes": 5494337
+      "entryCount": 267,
+      "bytes": 5492270
     },
     {
       "file": "data/audio-fingerprints-pack-007.json",
-      "entryCount": 266,
-      "bytes": 5488168
+      "entryCount": 268,
+      "bytes": 5484667
     },
     {
       "file": "data/audio-fingerprints-pack-008.json",
-      "entryCount": 105,
-      "bytes": 2187725
+      "entryCount": 266,
+      "bytes": 5481971
+    },
+    {
+      "file": "data/audio-fingerprints-pack-009.json",
+      "entryCount": 265,
+      "bytes": 5483809
+    },
+    {
+      "file": "data/audio-fingerprints-pack-010.json",
+      "entryCount": 267,
+      "bytes": 5484957
+    },
+    {
+      "file": "data/audio-fingerprints-pack-011.json",
+      "entryCount": 267,
+      "bytes": 5487182
+    },
+    {
+      "file": "data/audio-fingerprints-pack-012.json",
+      "entryCount": 267,
+      "bytes": 5485322
+    },
+    {
+      "file": "data/audio-fingerprints-pack-013.json",
+      "entryCount": 266,
+      "bytes": 5484423
+    },
+    {
+      "file": "data/audio-fingerprints-pack-014.json",
+      "entryCount": 13,
+      "bytes": 262774
     }
   ]
 }
