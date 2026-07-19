@@ -968,3 +968,92 @@ body.app-open {
 #audioFingerprintSection .catalog-list { margin-top: 14px; max-height: 340px; overflow: auto; }
 #audioFingerprintSection .button-grid .file-button { display: inline-flex; align-items: center; justify-content: center; }
 #audioFingerprintSection .text-button { justify-self: start; }
+
+
+/* CLDF v4.7.8 – Kameraauswahl, Zoom, Querformat und Ganzkörperführung */
+.live-camera-dialog { width: min(98vw, 760px); }
+.live-camera-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  margin: 10px 0 8px;
+}
+.live-camera-controls label {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  color: var(--wood-800);
+  font-size: .8rem;
+  font-weight: 750;
+}
+.live-camera-controls select,
+.live-camera-controls input[type="range"] { width: 100%; min-width: 0; }
+.live-zoom-control { grid-column: 1 / -1; }
+.live-zoom-control span { display: flex; justify-content: space-between; gap: 12px; }
+.live-zoom-control output { color: var(--muted); font-weight: 700; }
+.live-zoom-control.is-unavailable { opacity: .62; }
+.live-dance-preview { object-fit: contain; transition: width .2s ease, aspect-ratio .2s ease; }
+.live-dance-preview.is-portrait { width: min(82vw, 360px); aspect-ratio: 9 / 16; }
+.live-dance-preview.is-landscape { width: min(92vw, 680px); aspect-ratio: 16 / 9; }
+.live-dance-preview video,
+.live-dance-preview canvas { object-fit: contain; }
+.live-dance-preview.is-mirrored video,
+.live-dance-preview.is-mirrored canvas { transform: scaleX(-1); }
+.live-body-guide {
+  position: absolute;
+  inset: 4% auto;
+  left: 50%;
+  z-index: 3;
+  width: 50%;
+  transform: translateX(-50%);
+  border: 2px dashed rgba(255,255,255,.76);
+  border-radius: 45% 45% 20% 20% / 15% 15% 10% 10%;
+  pointer-events: none;
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+.is-landscape .live-body-guide { width: 28%; }
+.live-body-guide.is-good { border-style: solid; border-color: rgba(142,255,176,.96); box-shadow: 0 0 0 3px rgba(48,142,82,.22); }
+.live-body-guide.is-warning { border-color: rgba(255,220,132,.95); }
+.live-body-guide .guide-head {
+  position: absolute;
+  top: 1%; left: 50%;
+  width: 23%; aspect-ratio: 1;
+  transform: translateX(-50%);
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+.live-body-guide .guide-body {
+  position: absolute;
+  top: 14%; bottom: 12%; left: 50%;
+  width: 1px;
+  border-left: 2px solid currentColor;
+}
+.live-body-guide .guide-feet {
+  position: absolute;
+  bottom: 2%; left: 22%; right: 22%;
+  border-bottom: 2px solid currentColor;
+}
+.live-camera-readiness {
+  display: grid;
+  gap: 2px;
+  margin: 8px 0;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255,255,255,.72);
+}
+.live-camera-readiness strong { color: var(--wood-900); }
+.live-camera-readiness span { color: var(--muted); font-size: .82rem; }
+.live-camera-readiness.is-good { border-color: rgba(42,133,73,.48); background: rgba(218,247,226,.86); }
+.live-camera-readiness.is-warning { border-color: rgba(182,123,24,.46); background: rgba(255,242,207,.88); }
+.live-camera-actions { display: flex; flex-wrap: wrap; gap: 9px; }
+.live-camera-actions button { flex: 1 1 160px; }
+@media (max-width: 620px) {
+  .live-camera-controls { grid-template-columns: 1fr; }
+  .live-zoom-control { grid-column: auto; }
+  .live-dance-preview.is-landscape { width: min(94vw, 620px); }
+}
+@media (orientation: landscape) and (max-height: 620px) {
+  .live-camera-dialog { max-height: 98dvh; }
+  .live-dance-preview.is-landscape { width: min(66vw, 620px); max-height: 55dvh; }
+}

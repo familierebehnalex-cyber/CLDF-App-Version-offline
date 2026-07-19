@@ -87,6 +87,22 @@ if (duplicateFingerprintIds.length) {
 const appSource = fs.readFileSync(path.join(ROOT, 'assets/app.js'), 'utf8');
 const fingerprintSetupGuardPresent = appSource.includes('showMissingFingerprintHelp') && appSource.includes('ensureEmbeddedFingerprintsLoaded');
 const fingerprintLibraryVisible = html.includes('id="audioFingerprintSection"') && html.includes('Integrierte Musikreferenzen');
+const cameraFeatureChecks = {
+  cameraSelection: appSource.includes('liveCameraSelect') && appSource.includes('enumerateDevices'),
+  orientationSelection: appSource.includes('liveOrientationSelect') && appSource.includes('cameraVideoConstraints'),
+  zoomCapabilities: appSource.includes('getCapabilities') && appSource.includes('applyConstraints'),
+  fullBodyGuide: appSource.includes('liveBodyGuide') && appSource.includes('assessPoseFrame'),
+  noForcedCrop: appSource.includes("resizeMode: { ideal: 'none' }") && stylesText.includes('object-fit: contain'),
+};
+if (Object.values(cameraFeatureChecks).some((value) => !value)) {
+  console.error(`v4.7.8-Kameraprüfung fehlgeschlagen: ${JSON.stringify(cameraFeatureChecks)}`);
+  process.exit(1);
+}
+const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, 'manifest.webmanifest'), 'utf8'));
+if (manifest.orientation !== 'any') {
+  console.error('Das Manifest erlaubt das Querformat nicht.');
+  process.exit(1);
+}
 if (!fingerprintSetupGuardPresent || !fingerprintLibraryVisible) {
   console.error('v4.7.6-Prüfung der sichtbaren Fingerprint-Einrichtung fehlgeschlagen.');
   process.exit(1);
@@ -94,12 +110,13 @@ if (!fingerprintSetupGuardPresent || !fingerprintLibraryVisible) {
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-getinline-parser.js')], { stdio: 'pipe' });
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-audio-fingerprint.js')], { stdio: 'pipe' });
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-video-step-matcher.js')], { stdio: 'pipe' });
+execFileSync(process.execPath, [path.join(ROOT, 'tools/test-camera-controls.js')], { stdio: 'pipe' });
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-radio-api.js')], { stdio: 'pipe' });
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-radio-live-api.js')], { stdio: 'pipe' });
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-song-api-index.js')], { stdio: 'pipe' });
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-api-dedup.js')], { stdio: 'pipe' });
 const report = {
-  appVersion: '4.7.6',
+  appVersion: '4.7.8',
   generatedAt: new Date().toISOString(),
   requiredFilesPresent: true,
   javascriptSyntaxValid: true,
@@ -109,6 +126,7 @@ const report = {
   getInLineParserTestsPassed: true,
   audioFingerprintSelfTestPassed: true,
   videoStepMatcherSelfTestPassed: true,
+  cameraControlsSelfTestPassed: true,
   radioApiSelfTestPassed: true,
   radioLiveApiSelfTestPassed: true,
   songApiIndexSelfTestPassed: true,
@@ -118,6 +136,8 @@ const report = {
   builtInSheetPatterns: 8,
   liveVideoMinimumSeconds: 30,
   liveStepEvaluationDuringRecording: true,
+  liveCameraSettings: cameraFeatureChecks,
+  pwaOrientation: manifest.orientation,
   staticOfflineServer: true,
   serviceWorkerPresent: true,
   originalCssBasePreserved,

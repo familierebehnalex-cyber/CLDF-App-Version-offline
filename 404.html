@@ -11,7 +11,7 @@
   <link rel="icon" href="./assets/icon-64.png" sizes="64x64" type="image/png">
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./assets/styles.css?v=4.7.7">
+  <link rel="stylesheet" href="./assets/styles.css?v=4.7.8">
   <title>CLDF – Line Dance App</title>
 </head>
 <body>
@@ -118,7 +118,7 @@
             <div><p class="eyebrow">Zusatzfunktion · Beta</p><h2 id="videoRecognitionTitle">Tanz per Video erkennen</h2></div>
             <span class="video-recognition-icon" aria-hidden="true">🎥</span>
           </div>
-          <p class="help-text">Nimm 15–30 Sekunden auf, sodass eine Person mit Oberkörper und Füßen vollständig zu sehen ist. MediaPipe verfolgt 33 Körperpunkte, erkennt grundlegende Line-Dance-Schritte und vergleicht sie mit lokalen Referenzen und maschinenlesbaren Sheet-Mustern.</p>
+          <p class="help-text">Wähle bei der Live-Kamera Front-, Rück- oder Ultraweitwinkelkamera, Hoch- oder Querformat und – sofern unterstützt – den Zoom. Ein Ganzkörperrahmen hilft dabei, Kopf und Füße vollständig sichtbar zu halten. MediaPipe verfolgt 33 Körperpunkte und vergleicht grundlegende Line-Dance-Schritte mit lokalen Referenzen und Sheet-Mustern.</p>
           <div class="video-action-grid">
             <button id="liveDanceVideoBtn" class="primary-btn" type="button">Live-Kamera starten</button>
             <label class="secondary-btn file-button">Video aufnehmen
@@ -373,7 +373,7 @@
 
           <article class="settings-card version-card">
             <img src="./assets/icon-128.png" alt="">
-            <div><h2>CLDF v4.7.7 Offline</h2><p id="versionText">4.011 Song-API-Zuordnungen · Lied zuerst · Tanzsheet-Link · BPM als Reserve</p></div>
+            <div><h2>CLDF v4.7.8 Offline</h2><p id="versionText">4.011 Song-API-Zuordnungen · Lied zuerst · Tanzsheet-Link · BPM als Reserve</p></div>
           </article>
         </div>
       </section>
@@ -429,15 +429,15 @@
   <script src="./assets/song-metadata.js"></script>
   <script src="./assets/song-api-index.js"></script>
   <script src="./assets/radio-api-data.js"></script>
-  <script src="./assets/radio-live-api.js?v=4.7.7"></script>
+  <script src="./assets/radio-live-api.js?v=4.7.8"></script>
   <script src="./assets/audio-fingerprints.js"></script>
   <script src="./assets/local-store.js"></script>
   <script src="./assets/audio-engine.js"></script>
   <script src="./assets/offline-bootstrap.js"></script>
-  <script src="./assets/mediapipe/pose/pose.js?v=4.7.7"></script>
-  <script src="./assets/step-sheet-patterns.js?v=4.7.7"></script>
-  <script src="./assets/video-motion.js?v=4.7.7"></script>
-  <script src="./assets/app.js?v=4.7.7"></script>
-  <script>if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.7.7').catch(console.warn));</script>
+  <script src="./assets/mediapipe/pose/pose.js?v=4.7.8"></script>
+  <script src="./assets/step-sheet-patterns.js?v=4.7.8"></script>
+  <script src="./assets/video-motion.js?v=4.7.8"></script>
+  <script src="./assets/app.js?v=4.7.8"></script>
+  <script>if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.7.8').catch(console.warn));</script>
 </body>
 </html>

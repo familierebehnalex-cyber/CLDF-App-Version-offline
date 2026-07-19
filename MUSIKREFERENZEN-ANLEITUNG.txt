@@ -1,0 +1,7 @@
+CLDF v4.7.8 – EINGEBAUTE MUSIKREFERENZEN
+
+Die App enthält bereits 3.480 Audio-Fingerprints für 2.323 Lieder.
+Die Referenzen liegen in 14 Dateien unter data/audio-fingerprints-pack-001.json bis data/audio-fingerprints-pack-014.json.
+
+Normale Nutzer müssen keine Musikdateien oder Referenzpakete hochladen.
+Weitere Fingerprint-Sammlungen werden außerhalb der App zusammengeführt und bei einem späteren Update fest eingebaut.

@@ -1,7 +1,7 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-title CLDF Offline-App v4.7.4
+title CLDF Offline-App v4.7.8
 where node >nul 2>nul
 if errorlevel 1 (
   echo Node.js wurde nicht gefunden.

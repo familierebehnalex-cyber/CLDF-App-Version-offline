@@ -1,10 +1,9 @@
-CLDF Offline-App v4.7.4
+CLDF Offline-App v4.7.8
 
-Neu:
-- 4.011 deduplizierte Song-API-Zuordnungen
-- 10 Senderquellen / 70 Endpunkte
-- neue Sammlung auf Dubletten und widersprüchliche IDs geprüft
-- Senderbox bleibt unsichtbar
+Die Fingerprints sind bereits vollständig eingebaut.
 
-Für GitHub: alle Dateien direkt in den Repository-Stamm kopieren.
-Siehe GITHUB-UPDATE-ANLEITUNG.txt und DUBLETTENPRUEFUNG-v4.7.4.md.
+1. Inhalt des ZIP-Archivs direkt in den Stamm des GitHub-Repositorys hochladen.
+2. Vorhandene Dateien ersetzen.
+3. GitHub Pages fertig bereitstellen lassen.
+4. App auf dem Handy vollständig schließen und neu öffnen.
+5. Auf „Lied erkennen“ tippen – Nutzer müssen keine Musikreferenzen importieren.

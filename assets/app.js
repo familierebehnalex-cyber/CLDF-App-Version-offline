@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const DATA = window.CLDF_DATA || { dances: [], motionCatalog: [], specialRhythms: [], appVersion: '4.7.7', databaseVersion: 'unbekannt' };
+  const DATA = window.CLDF_DATA || { dances: [], motionCatalog: [], specialRhythms: [], appVersion: '4.7.8', databaseVersion: 'unbekannt' };
   const GETINLINE_DATA = window.GETINLINE_DATA || { dances: [], count: 0, generatedAt: null };
   const VM = window.CLDFVideoMotion;
   const STEP_PATTERN_DB = window.CLDF_STEP_SHEET_PATTERNS || { patterns: [] };
@@ -16,7 +16,7 @@
   const RADIO_LIVE_API = window.CLDFRadioLiveAPI || null;
   const SONG_API_INDEX = window.CLDF_SONG_API_INDEX || { entries: [], stations: [], entryCount: 0, apiEndpointCount: 0 };
   const SONG_API_ENTRIES = Array.isArray(SONG_API_INDEX.entries) ? SONG_API_INDEX.entries : [];
-  const APP_VERSION = '4.7.7';
+  const APP_VERSION = '4.7.8';
   const DATABASE_VERSION = DATA.databaseVersion || 'unbekannt';
   const CLDF_DANCES = Array.isArray(DATA.dances) ? DATA.dances : [];
   let GETINLINE_DANCES = Array.isArray(GETINLINE_DATA.dances) ? GETINLINE_DATA.dances : [];
@@ -2487,41 +2487,35 @@
     return mimeType ? { mimeType } : {};
   }
 
-  function drawVideoCoverToCanvas(context, video, targetWidth, targetHeight) {
+  function drawVideoContainToCanvas(context, video, targetWidth, targetHeight) {
     const sourceWidth = video.videoWidth || 0;
     const sourceHeight = video.videoHeight || 0;
     if (!sourceWidth || !sourceHeight) return false;
-    const sourceRatio = sourceWidth / sourceHeight;
-    const targetRatio = targetWidth / targetHeight;
-    let sourceX = 0;
-    let sourceY = 0;
-    let cropWidth = sourceWidth;
-    let cropHeight = sourceHeight;
-    if (sourceRatio > targetRatio) {
-      cropWidth = sourceHeight * targetRatio;
-      sourceX = (sourceWidth - cropWidth) / 2;
-    } else if (sourceRatio < targetRatio) {
-      cropHeight = sourceWidth / targetRatio;
-      sourceY = (sourceHeight - cropHeight) / 2;
-    }
-    context.clearRect(0, 0, targetWidth, targetHeight);
-    context.drawImage(video, sourceX, sourceY, cropWidth, cropHeight, 0, 0, targetWidth, targetHeight);
+    const scale = Math.min(targetWidth / sourceWidth, targetHeight / sourceHeight);
+    const drawWidth = Math.max(1, sourceWidth * scale);
+    const drawHeight = Math.max(1, sourceHeight * scale);
+    const drawX = (targetWidth - drawWidth) / 2;
+    const drawY = (targetHeight - drawHeight) / 2;
+    context.fillStyle = '#000';
+    context.fillRect(0, 0, targetWidth, targetHeight);
+    context.drawImage(video, 0, 0, sourceWidth, sourceHeight, drawX, drawY, drawWidth, drawHeight);
     return true;
   }
 
-  function createPortraitRecordingPipeline(video, sourceStream) {
+  function createCameraRecordingPipeline(video, sourceStream, orientation = 'portrait') {
     if (!video || !sourceStream || typeof document === 'undefined') return null;
     const canvas = document.createElement('canvas');
     if (typeof canvas.captureStream !== 'function') return null;
-    canvas.width = 540;
-    canvas.height = 960;
+    const landscape = orientation === 'landscape';
+    canvas.width = landscape ? 960 : 540;
+    canvas.height = landscape ? 540 : 960;
     const context = canvas.getContext('2d', { alpha: false, desynchronized: true });
     if (!context) return null;
     let frameId = 0;
     let stopped = false;
     const render = () => {
       if (stopped) return;
-      drawVideoCoverToCanvas(context, video, canvas.width, canvas.height);
+      drawVideoContainToCanvas(context, video, canvas.width, canvas.height);
       frameId = requestAnimationFrame(render);
     };
     render();
@@ -2533,7 +2527,7 @@
         clonedAudio = sourceAudio.clone();
         outputStream.addTrack(clonedAudio);
       } catch (error) {
-        console.warn('Ton konnte nicht in den Hochkant-Aufnahmestrom übernommen werden.', error);
+        console.warn('Ton konnte nicht in den Kamera-Aufnahmestrom übernommen werden.', error);
       }
     }
     return {
@@ -2545,6 +2539,37 @@
         try { clonedAudio?.stop(); } catch {}
       },
     };
+  }
+
+  function cameraOrientation(value) {
+    return value === 'landscape' ? 'landscape' : 'portrait';
+  }
+
+  function cameraFacingLabel(label = '', index = 0) {
+    const normalized = String(label).toLowerCase();
+    if (/ultra|weit|wide|0[.,]5/.test(normalized)) return `Ultraweitwinkel · ${label || `Kamera ${index + 1}`}`;
+    if (/front|user|selfie|vorn/.test(normalized)) return `Frontkamera · ${label || `Kamera ${index + 1}`}`;
+    if (/back|rear|environment|rück|ruck/.test(normalized)) return `Rückkamera · ${label || `Kamera ${index + 1}`}`;
+    return label || `Kamera ${index + 1}`;
+  }
+
+  function saveLiveCameraSettings(patch = {}) {
+    state.settings.liveCamera = { ...(state.settings.liveCamera || {}), ...patch };
+    writeJson(STORAGE.settings, state.settings);
+  }
+
+  function cameraVideoConstraints(settings = {}) {
+    const orientation = cameraOrientation(settings.orientation);
+    const landscape = orientation === 'landscape';
+    const constraints = {
+      width: { ideal: landscape ? 1280 : 720, max: 1920 },
+      height: { ideal: landscape ? 720 : 1280, max: 1920 },
+      aspectRatio: { ideal: landscape ? 16 / 9 : 9 / 16 },
+      resizeMode: { ideal: 'none' },
+    };
+    if (settings.deviceId) constraints.deviceId = { exact: settings.deviceId };
+    else constraints.facingMode = { ideal: settings.facingMode || 'environment' };
+    return constraints;
   }
 
   function liveCameraErrorMessage(error) {
@@ -2589,75 +2614,262 @@
     let stream = null;
     let recorder = null;
     let recorderStopped = null;
-    let portraitRecording = null;
+    let cameraRecording = null;
+    let poseCheckTimer = null;
+    let poseCheckBusy = false;
+    let lastPoseAssessment = null;
+    let recordingStarted = false;
     const chunks = [];
+    const saved = state.settings.liveCamera || {};
+    let selectedOrientation = cameraOrientation(saved.orientation);
+    let selectedDeviceId = saved.deviceId || '';
     const dialog = openDialog(`
       <div class="live-dance-panel">
         <p class="eyebrow">MediaPipe · Live-Beta</p>
         <h2>Live-Tanzerkennung</h2>
-        <p>Stelle das Handy hochkant und ruhig auf. Die Person muss mit Oberkörper und Füßen vollständig sichtbar sein. Vorschau und Aufnahme werden im Hochformat 9:16 angepasst. Die App wertet die erkannten Schritte bereits während der Aufnahme aus. Die Aufnahme läuft mindestens 30 Sekunden und endet danach automatisch.</p>
-        <div class="live-dance-preview">
+        <p>Wähle Kamera und Format, stelle den Bildausschnitt ein und positioniere dich im Ganzkörperrahmen. Die Aufnahme startet erst nach deinem Tippen auf „Analyse starten“ und läuft anschließend mindestens 30 Sekunden.</p>
+        <div class="live-camera-controls" aria-label="Kameraeinstellungen">
+          <label><span>Kamera</span><select id="liveCameraSelect"><option value="">Automatisch · Rückkamera</option></select></label>
+          <label><span>Format</span><select id="liveOrientationSelect"><option value="portrait">Hochformat</option><option value="landscape">Querformat</option></select></label>
+          <label id="liveZoomControl" class="live-zoom-control is-unavailable"><span>Bildausschnitt / Zoom <output id="liveZoomValue">–</output></span><input id="liveZoomRange" type="range" min="1" max="1" step="0.1" value="1" disabled></label>
+        </div>
+        <div id="liveDancePreview" class="live-dance-preview ${selectedOrientation === 'landscape' ? 'is-landscape' : 'is-portrait'}">
           <video id="liveDanceVideo" autoplay playsinline muted></video>
           <canvas id="liveDanceCanvas" aria-hidden="true"></canvas>
+          <div id="liveBodyGuide" class="live-body-guide" aria-hidden="true"><span class="guide-head"></span><span class="guide-body"></span><span class="guide-feet"></span></div>
         </div>
+        <div id="liveCameraReadiness" class="live-camera-readiness is-waiting" aria-live="polite"><strong>Kamera wird gestartet …</strong><span>Bitte kurz warten.</span></div>
         <div class="progress-track"><span id="liveDanceProgressBar"></span></div>
         <strong id="liveDanceProgressText">Kamera wird gestartet …</strong>
         <div class="live-step-analysis" aria-live="polite">
           <div><span>Erkannte Schritte</span><strong id="liveDanceSteps">Noch keine sicheren Schrittmerkmale</strong></div>
-          <div><span>Vorläufiger Tanzvergleich</span><strong id="liveDanceCandidates">Die Auswertung beginnt, sobald genug Körperbilder vorliegen.</strong></div>
+          <div><span>Vorläufiger Tanzvergleich</span><strong id="liveDanceCandidates">Die Auswertung beginnt nach dem Start der Aufnahme.</strong></div>
         </div>
-        <button id="cancelLiveDanceBtn" class="secondary-btn" type="button">Abbrechen</button>
+        <div class="dialog-actions live-camera-actions">
+          <button id="startLiveDanceAnalysisBtn" class="primary-btn" type="button" disabled>Analyse starten</button>
+          <button id="cancelLiveDanceBtn" class="secondary-btn" type="button">Abbrechen</button>
+        </div>
       </div>`, { focusSelector: '#cancelLiveDanceBtn' });
     dialog.classList.add('live-camera-dialog');
     const video = $('#liveDanceVideo', dialog);
     const canvas = $('#liveDanceCanvas', dialog);
+    const preview = $('#liveDancePreview', dialog);
+    const bodyGuide = $('#liveBodyGuide', dialog);
+    const cameraSelect = $('#liveCameraSelect', dialog);
+    const orientationSelect = $('#liveOrientationSelect', dialog);
+    const zoomControl = $('#liveZoomControl', dialog);
+    const zoomRange = $('#liveZoomRange', dialog);
+    const zoomValue = $('#liveZoomValue', dialog);
+    const readiness = $('#liveCameraReadiness', dialog);
+    const startButton = $('#startLiveDanceAnalysisBtn', dialog);
+    const cancelButton = $('#cancelLiveDanceBtn', dialog);
     const progressBar = $('#liveDanceProgressBar', dialog);
     const progressText = $('#liveDanceProgressText', dialog);
     const liveSteps = $('#liveDanceSteps', dialog);
     const liveCandidates = $('#liveDanceCandidates', dialog);
-    const cleanup = () => {
-      try { if (recorder?.state === 'recording') recorder.stop(); } catch {}
-      try { portraitRecording?.stop(); } catch {}
+    orientationSelect.value = selectedOrientation;
+
+    const setReadiness = (kind, title, detail) => {
+      if (!readiness) return;
+      readiness.className = `live-camera-readiness is-${kind}`;
+      readiness.innerHTML = `<strong>${escapeHtml(title)}</strong><span>${escapeHtml(detail)}</span>`;
+      bodyGuide?.classList.toggle('is-good', kind === 'good');
+      bodyGuide?.classList.toggle('is-warning', kind === 'warning');
+    };
+
+    const stopPoseCheck = () => {
+      if (poseCheckTimer) clearInterval(poseCheckTimer);
+      poseCheckTimer = null;
+    };
+
+    const stopCurrentStream = () => {
       stream?.getTracks().forEach((track) => track.stop());
+      stream = null;
+      if (video) video.srcObject = null;
+    };
+
+    const cleanup = () => {
+      stopPoseCheck();
+      try { if (recorder?.state === 'recording') recorder.stop(); } catch {}
+      try { cameraRecording?.stop(); } catch {}
+      stopCurrentStream();
       state.liveVideoController = null;
       dialog.classList.remove('live-camera-dialog');
     };
+
     const abort = () => controller.abort();
-    $('#cancelLiveDanceBtn', dialog)?.addEventListener('click', () => { abort(); closeDialog(); }, { once: true });
+    cancelButton?.addEventListener('click', () => { abort(); closeDialog(); }, { once: true });
     dialog.addEventListener('close', abort, { once: true });
-    try {
-      const videoConstraints = {
-        facingMode: { ideal: 'environment' },
-        width: { ideal: 720, max: 1080 },
-        height: { ideal: 1280, max: 1920 },
-        aspectRatio: { ideal: 9 / 16 },
-        resizeMode: { ideal: 'crop-and-scale' },
-      };
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true });
-      } catch (firstError) {
-        console.warn('Kamera mit Ton konnte nicht geöffnet werden; erneuter Versuch ohne Ton.', firstError);
-        stream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: false });
-        toast('Die Kamera läuft ohne Ton. Die Körper- und Schritterkennung funktioniert trotzdem.', 4500);
+
+    const populateCameraList = async () => {
+      if (!navigator.mediaDevices?.enumerateDevices || !cameraSelect) return;
+      const devices = (await navigator.mediaDevices.enumerateDevices()).filter((device) => device.kind === 'videoinput');
+      const currentId = stream?.getVideoTracks?.()[0]?.getSettings?.().deviceId || selectedDeviceId;
+      cameraSelect.innerHTML = '<option value="">Automatisch · Rückkamera</option>' + devices.map((device, index) =>
+        `<option value="${escapeHtml(device.deviceId)}">${escapeHtml(cameraFacingLabel(device.label, index))}</option>`
+      ).join('');
+      if (currentId && devices.some((device) => device.deviceId === currentId)) {
+        cameraSelect.value = currentId;
+        selectedDeviceId = currentId;
+      } else cameraSelect.value = '';
+    };
+
+    const configureZoom = async () => {
+      const track = stream?.getVideoTracks?.()[0];
+      const capabilities = track?.getCapabilities?.() || {};
+      const settings = track?.getSettings?.() || {};
+      const zoom = capabilities.zoom;
+      if (!zoom || !Number.isFinite(zoom.min) || !Number.isFinite(zoom.max) || zoom.max <= zoom.min) {
+        zoomControl?.classList.add('is-unavailable');
+        if (zoomRange) zoomRange.disabled = true;
+        if (zoomValue) zoomValue.textContent = 'nicht unterstützt';
+        return;
       }
-      video.srcObject = stream;
-      await video.play();
-      await waitForLiveVideo(video);
-      if (progressText) progressText.textContent = 'MediaPipe wird geladen …';
-      await VM.ensurePose();
+      const step = Number.isFinite(zoom.step) && zoom.step > 0 ? zoom.step : 0.1;
+      const storedZoom = Number(saved.zoom);
+      const targetZoom = Math.min(zoom.max, Math.max(zoom.min, Number.isFinite(storedZoom) ? storedZoom : zoom.min));
+      zoomControl?.classList.remove('is-unavailable');
+      zoomRange.min = String(zoom.min);
+      zoomRange.max = String(zoom.max);
+      zoomRange.step = String(step);
+      zoomRange.value = String(targetZoom);
+      zoomRange.disabled = false;
+      zoomValue.textContent = `${targetZoom.toFixed(targetZoom < 1 ? 1 : 1)}×`;
+      if (Math.abs((Number(settings.zoom) || zoom.min) - targetZoom) > step / 2) {
+        try { await track.applyConstraints({ advanced: [{ zoom: targetZoom }] }); } catch (error) { console.warn('Gespeicherter Zoom konnte nicht gesetzt werden.', error); }
+      }
+    };
+
+    const updatePreviewMirror = () => {
+      const trackSettings = stream?.getVideoTracks?.()[0]?.getSettings?.() || {};
+      const label = stream?.getVideoTracks?.()[0]?.label || '';
+      const front = trackSettings.facingMode === 'user' || /front|user|selfie|vorn/i.test(label);
+      preview?.classList.toggle('is-mirrored', front);
+    };
+
+    const runPoseCheck = async () => {
+      if (poseCheckBusy || recordingStarted || controller.signal.aborted || !VM.assessPoseFrame) return;
+      poseCheckBusy = true;
+      try {
+        const assessment = await VM.assessPoseFrame(video);
+        lastPoseAssessment = assessment;
+        if (assessment?.results) VM.drawPose?.(canvas, video, assessment.results);
+        if (!assessment?.detected) setReadiness('warning', 'Noch keine Person erkannt', assessment?.message || 'Stelle dich vollständig vor die Kamera.');
+        else if (assessment.ready) setReadiness('good', 'Abstand ist gut', assessment.message || 'Kopf und Füße sind vollständig sichtbar.');
+        else setReadiness('warning', 'Bildausschnitt anpassen', assessment.message || 'Kopf und Füße müssen vollständig sichtbar sein.');
+      } catch (error) {
+        console.debug('Ganzkörperprüfung noch nicht verfügbar.', error?.message || error);
+      } finally {
+        poseCheckBusy = false;
+      }
+    };
+
+    const startPoseCheck = () => {
+      stopPoseCheck();
+      runPoseCheck();
+      poseCheckTimer = setInterval(runPoseCheck, 850);
+    };
+
+    const openCamera = async () => {
+      stopPoseCheck();
+      stopCurrentStream();
+      startButton.disabled = true;
+      setReadiness('waiting', 'Kamera wird geöffnet …', 'Bitte kurz warten.');
+      if (progressText) progressText.textContent = 'Kamera wird gestartet …';
+      const settings = { orientation: selectedOrientation, deviceId: selectedDeviceId, facingMode: 'environment' };
+      const videoConstraints = cameraVideoConstraints(settings);
+      try {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true });
+        } catch (firstError) {
+          console.warn('Kamera mit Ton konnte nicht geöffnet werden; erneuter Versuch ohne Ton.', firstError);
+          const fallbackConstraints = selectedDeviceId ? cameraVideoConstraints({ orientation: selectedOrientation, facingMode: 'environment' }) : videoConstraints;
+          stream = await navigator.mediaDevices.getUserMedia({ video: fallbackConstraints, audio: false });
+          toast('Die Kamera läuft ohne Ton. Die Körper- und Schritterkennung funktioniert trotzdem.', 4500);
+        }
+        video.srcObject = stream;
+        await video.play();
+        await waitForLiveVideo(video);
+        await populateCameraList();
+        await configureZoom();
+        updatePreviewMirror();
+        const actualId = stream.getVideoTracks?.()[0]?.getSettings?.().deviceId || selectedDeviceId;
+        if (actualId) selectedDeviceId = actualId;
+        saveLiveCameraSettings({ deviceId: selectedDeviceId, orientation: selectedOrientation });
+        if (progressText) progressText.textContent = 'MediaPipe wird geladen …';
+        await VM.ensurePose();
+        startButton.disabled = false;
+        if (progressText) progressText.textContent = 'Kamera bereit · Bildausschnitt einstellen';
+        startPoseCheck();
+      } catch (error) {
+        stopCurrentStream();
+        throw error;
+      }
+    };
+
+    cameraSelect?.addEventListener('change', async () => {
+      if (recordingStarted) return;
+      selectedDeviceId = cameraSelect.value || '';
+      saveLiveCameraSettings({ deviceId: selectedDeviceId });
+      try { await openCamera(); } catch (error) { toast(liveCameraErrorMessage(error), 6000); }
+    });
+
+    orientationSelect?.addEventListener('change', async () => {
+      if (recordingStarted) return;
+      selectedOrientation = cameraOrientation(orientationSelect.value);
+      preview?.classList.toggle('is-landscape', selectedOrientation === 'landscape');
+      preview?.classList.toggle('is-portrait', selectedOrientation !== 'landscape');
+      saveLiveCameraSettings({ orientation: selectedOrientation });
+      try { await openCamera(); } catch (error) { toast(liveCameraErrorMessage(error), 6000); }
+    });
+
+    zoomRange?.addEventListener('input', async () => {
+      const track = stream?.getVideoTracks?.()[0];
+      const zoom = Number(zoomRange.value);
+      if (!track?.applyConstraints || !Number.isFinite(zoom)) return;
+      if (zoomValue) zoomValue.textContent = `${zoom.toFixed(1)}×`;
+      try {
+        await track.applyConstraints({ advanced: [{ zoom }] });
+        saveLiveCameraSettings({ zoom });
+      } catch (error) {
+        console.warn('Zoom konnte nicht geändert werden.', error);
+        toast('Diese Zoomstufe wird von der Kamera nicht unterstützt.', 3500);
+      }
+    });
+
+    try {
+      await openCamera();
+      await new Promise((resolve, reject) => {
+        const onAbort = () => reject(new DOMException('Live-Aufnahme abgebrochen.', 'AbortError'));
+        controller.signal.addEventListener('abort', onAbort, { once: true });
+        startButton.addEventListener('click', () => {
+          if (!lastPoseAssessment?.ready && !window.confirm('Kopf und Füße sind noch nicht sicher vollständig sichtbar. Analyse trotzdem starten?')) return;
+          controller.signal.removeEventListener('abort', onAbort);
+          resolve();
+        });
+      });
+      recordingStarted = true;
+      stopPoseCheck();
+      cameraSelect.disabled = true;
+      orientationSelect.disabled = true;
+      zoomRange.disabled = true;
+      startButton.disabled = true;
+      startButton.textContent = 'Analyse läuft …';
+      setReadiness(lastPoseAssessment?.ready ? 'good' : 'warning', lastPoseAssessment?.ready ? 'Aufnahme läuft' : 'Aufnahme läuft trotz Warnung', 'Bitte während der Analyse vollständig im Bild bleiben.');
+
       const recorderOptions = preferredRecorderOptions();
       if (recorderOptions) {
         try {
-          portraitRecording = createPortraitRecordingPipeline(video, stream);
-          const recordingStream = portraitRecording?.stream || stream;
+          cameraRecording = createCameraRecordingPipeline(video, stream, selectedOrientation);
+          const recordingStream = cameraRecording?.stream || stream;
           recorder = new MediaRecorder(recordingStream, recorderOptions);
           recorder.ondataavailable = (event) => { if (event.data?.size) chunks.push(event.data); };
           recorderStopped = new Promise((resolve) => { recorder.onstop = resolve; });
           recorder.start(500);
-          if (!portraitRecording) console.warn('Dieser Browser unterstützt keine Canvas-Aufnahme; es wird der originale Kamerastrom aufgezeichnet.');
+          if (!cameraRecording) console.warn('Dieser Browser unterstützt keine Canvas-Aufnahme; es wird der originale Kamerastrom aufgezeichnet.');
         } catch (recorderError) {
-          try { portraitRecording?.stop(); } catch {}
-          portraitRecording = null;
+          try { cameraRecording?.stop(); } catch {}
+          cameraRecording = null;
           console.warn('Live-Videoton kann auf diesem Gerät nicht aufgenommen werden; Körperanalyse läuft weiter.', recorderError);
           recorder = null;
           recorderStopped = null;
@@ -2791,7 +3003,7 @@
         <p>Diese App-Version enthält fest eingebaute Fingerprint-Pakete. Wenn hier keine Referenzen erkannt werden, fehlen wahrscheinlich einzelne Dateien aus dem Ordner <strong>data</strong> oder der alte Offline-Cache ist noch aktiv.</p>
         <div class="onboarding-steps">
           <div class="onboarding-step"><span>1</span><div><strong>Dateien prüfen</strong><br>Alle im Fingerprint-Index aufgeführten Paketdateien müssen auf GitHub vorhanden sein.</div></div>
-          <div class="onboarding-step"><span>2</span><div><strong>App vollständig neu laden</strong><br>Die installierte PWA schließen oder einmal neu installieren, damit der Cache v4.7.7 aktiv wird.</div></div>
+          <div class="onboarding-step"><span>2</span><div><strong>App vollständig neu laden</strong><br>Die installierte PWA schließen oder einmal neu installieren, damit der Cache v4.7.8 aktiv wird.</div></div>
           <div class="onboarding-step"><span>3</span><div><strong>Erneut aufnehmen</strong><br>Danach vergleicht die App die Mikrofonaufnahme kostenlos und lokal mit den eingebauten Referenzen.</div></div>
         </div>
         <div class="dialog-actions">
@@ -3357,7 +3569,7 @@
     RADIO_LIVE_API?.start?.();
     runDiagnostics();
     handleInitialRoute();
-    $('#versionText').textContent = `CLDF v4.7.7 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${SONG_API_ENTRIES.length} Song-Metadatensätze · ${availableFingerprintCount()} Audio-Referenzen`;
+    $('#versionText').textContent = `CLDF v4.7.8 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${SONG_API_ENTRIES.length} Song-Metadatensätze · ${availableFingerprintCount()} Audio-Referenzen`;
     // Der Startbildschirm bleibt bei jedem neuen App-Start sichtbar,
     // bis der Benutzer bewusst auf „App öffnen“ tippt.
     $('#splash').classList.remove('hidden');

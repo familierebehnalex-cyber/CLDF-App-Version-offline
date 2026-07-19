@@ -1,9 +1,11 @@
-CLDF Offline-App v4.7.4 – Inhalt
+CLDF Offline-App v4.7.8 – Inhalt
 
-- vollständige GitHub-Pages/PWA-App
-- 4.011 liedbezogene API-Zuordnungen
-- 10 Senderquellen
-- 70 öffentliche laut.fm-Endpunkte
-- lokale Audio-Fingerprints und Videoanalyse
-- Datenschutz-, Rechte-, Designschutz-, Impressums- und Lizenzseiten
-- Dublettenbericht und Testbericht
+- vollständige GitHub-Pages-App
+- 3.480 fest eingebaute Audio-Fingerprints für 2.323 Lieder
+- 14 GitHub-kompatible Fingerprint-Pakete
+- 4.011 Song-API-Metadatensätze
+- Lied–Tanz-Zuordnung mit „Original Tanz“ und „Vorschlag“
+- flexible Live-Kamera mit Kameraauswahl, Hoch-/Querformat und Zoomsteuerung
+- Ganzkörperrahmen und automatische Sichtbarkeitsprüfung
+- Offline-Cache v4.7.8
+- keine Musikdateien und keine Pflicht zum Benutzer-Upload

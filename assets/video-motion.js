@@ -435,6 +435,60 @@
     return output;
   }
 
+  function assessPoseResults(results) {
+    const points = results?.poseLandmarks;
+    if (!Array.isArray(points) || points.length < 33) {
+      return { detected: false, fullBody: false, ready: false, message: 'Stelle dich so vor die Kamera, dass dein ganzer Körper sichtbar ist.', visibility: 0, results };
+    }
+    const visible = (index, threshold = 0.38) => (points[index]?.visibility ?? 1) >= threshold;
+    const headVisible = visible(0, 0.32);
+    const shouldersVisible = visible(11) && visible(12);
+    const hipsVisible = visible(23) && visible(24);
+    const kneesVisible = visible(25) && visible(26);
+    const feetVisible = (visible(27) || visible(29) || visible(31)) && (visible(28) || visible(30) || visible(32));
+    const fullBody = headVisible && shouldersVisible && hipsVisible && kneesVisible && feetVisible;
+    const indexes = [0, 11, 12, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32];
+    const reliable = indexes.map((index) => points[index]).filter((point) => point && (point.visibility ?? 1) >= 0.3);
+    const visibility = reliable.length ? mean(reliable.map((point) => point.visibility ?? 1)) : 0;
+    if (reliable.length < 7) {
+      return { detected: false, fullBody, ready: false, message: 'Noch keine vollständige Person erkannt.', visibility: round(visibility), results };
+    }
+    const xs = reliable.map((point) => point.x);
+    const ys = reliable.map((point) => point.y);
+    const minX = Math.min(...xs);
+    const maxX = Math.max(...xs);
+    const minY = Math.min(...ys);
+    const maxY = Math.max(...ys);
+    const bodyHeight = maxY - minY;
+    const sideMargin = Math.min(minX, 1 - maxX);
+    let message = 'Kopf und Füße sind vollständig sichtbar. Die Analyse kann gestartet werden.';
+    let ready = fullBody;
+    if (!headVisible) { ready = false; message = 'Der Kopf ist nicht vollständig sichtbar. Kamera weiter stellen oder Querformat wählen.'; }
+    else if (!feetVisible) { ready = false; message = 'Beide Füße fehlen im Bild. Kamera weiter stellen, Ultraweitwinkel wählen oder herauszoomen.'; }
+    else if (!kneesVisible || !hipsVisible) { ready = false; message = 'Hüfte und Knie müssen vollständig sichtbar sein.'; }
+    else if (bodyHeight > 0.94 || minY < 0.015 || maxY > 0.985) { ready = false; message = 'Du stehst zu nah oder am Bildrand. Bitte etwas weiter zurückgehen oder herauszoomen.'; }
+    else if (bodyHeight < 0.28) { ready = false; message = 'Du bist sehr weit entfernt. Für eine bessere Schritterkennung etwas näher kommen.'; }
+    else if (sideMargin < 0.025) { ready = false; message = 'Mehr seitlichen Platz lassen oder Querformat verwenden.'; }
+    return {
+      detected: true,
+      fullBody,
+      ready,
+      message,
+      visibility: round(visibility),
+      bodyHeight: round(bodyHeight),
+      sideMargin: round(sideMargin),
+      bounds: { minX: round(minX), maxX: round(maxX), minY: round(minY), maxY: round(maxY) },
+      results,
+    };
+  }
+
+  async function assessPoseFrame(video) {
+    if (!video) throw new Error('Keine Live-Kamera verfügbar.');
+    await ensurePose();
+    const results = await inferPose(video);
+    return assessPoseResults(results);
+  }
+
   function buildSignature(frames, metadata = {}) {
     const valid = frames.filter(Boolean);
     if (valid.length < DEFAULTS.minPoseFrames) throw new Error('Die Person war nicht lange genug vollständig erkennbar. Bitte Füße und Oberkörper vollständig filmen.');
@@ -828,11 +882,13 @@
   }
 
   window.CLDFVideoMotion = {
-    version: '2.1.0-beta',
+    version: '2.2.0-beta',
     engine: 'mediapipe-pose',
     ensurePose,
     analyzeVideo,
     analyzeLiveVideo,
+    assessPoseFrame,
+    assessPoseResults,
     compareSignatures,
     rankReferences,
     rankSheetPatterns,

@@ -1,13 +1,18 @@
-# CLDF Offline-App v4.7.7
+# CLDF Offline-App v4.7.8
 
-Vollständige GitHub-Pages-Version mit fest eingebauten Audio-Fingerprints.
+Vollständige GitHub-Pages-Version mit fest eingebauten Audio-Fingerprints und flexibler Live-Kamera.
 
 ## Enthalten
 
-- 3480 bereinigte Fingerprints für 2323 Lieder
+- 3.480 bereinigte Fingerprints für 2.323 Lieder
 - 4.011 Song-API-Metadatensätze
 - lokale Lied-Erkennung ohne laufende Kosten
 - automatische Lied–Tanz-Zuordnung und gekennzeichnete Tanzvorschläge
+- Front-, Rück- und Ultraweitwinkelkamera auswählbar, soweit vom Gerät angeboten
+- Hochformat und Querformat
+- Zoom-/Bildausschnittregler, soweit vom Browser unterstützt
+- Ganzkörperrahmen mit Prüfung von Kopf, Körper und Füßen
+- unbeschnittene Kameravorschau
 - Offline-Cache und GitHub-Pages-Workflow
 
 ## Hochladen

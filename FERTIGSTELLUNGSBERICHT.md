@@ -1,15 +1,29 @@
-# Fertigstellungsbericht – CLDF Offline-App v4.7.4
+# Fertigstellungsbericht – CLDF Offline-App v4.7.8
 
-Die neue Radio-API-Sammlung wurde analysiert, dedupliziert und in den vorhandenen Song-API-Index integriert.
+Die Live-Tanzerkennung wurde für unterschiedliche Handy-Kameras und kleine Räume erweitert.
 
-- 10 Senderquellen
-- 70 API-Endpunkte
-- 4.011 eindeutige Song-API-Einträge
-- 4.011 Einträge mit mindestens einer API-Song-ID
-- 338 Einträge mit Tanzvorschlägen
-- 143 exakte Tanzzuordnungen
-- 21 Jingles/Stationshinweise aus der Liedsuche ausgeschlossen
-- keine sichtbare Senderkatalog-Box
-- keine API-Schlüssel und keine laufenden Kosten
+## Kamera
 
-Die vollständige Validierung ist in `TESTBERICHT-v4.7.4.md` und `VALIDIERUNG.json` dokumentiert.
+- Front-, Rück- und Ultraweitwinkelkameras auswählbar, sofern der Browser sie bereitstellt
+- Hochformat und Querformat
+- Zoom-/Bildausschnittregler, sofern die Kamera Zoom-Fähigkeiten meldet
+- unbeschnittene Vorschau und Aufnahme
+- Ganzkörperrahmen
+- automatische Prüfung von Kopf, Schultern, Hüfte, Knien und Füßen
+- Hinweise bei zu geringem Abstand, fehlenden Füßen oder zu wenig seitlichem Platz
+- Aufnahme startet erst nach „Analyse starten“
+- Kameraeinstellungen werden lokal gespeichert
+
+## Bestehender Datenbestand
+
+- 3.480 Audio-Referenzen
+- 2.323 eindeutige Lieder
+- 67 Lieder mit „Original Tanz“
+- 92 Lieder mit „Vorschlag“
+- 14 Fingerprint-Pakete, jeweils kleiner als 25 MB
+- keine Musikdateien im Repository
+- keine Benutzerdatei erforderlich
+
+## Prüfung
+
+JavaScript, Kamera-Steuerung, Ganzkörperbewertung, Fingerprints, Video-Schrittmuster, Offline-Cache, API-Daten und Originaldesign wurden automatisch geprüft.

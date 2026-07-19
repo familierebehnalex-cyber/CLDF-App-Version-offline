@@ -1,9 +1,11 @@
-CLDF GITHUB-UPDATE v4.7.3 auf v4.7.4
+CLDF v4.7.8 – DIREKT AUF GITHUB HOCHLADEN
 
 1. ZIP vollständig entpacken.
-2. Alle enthaltenen Dateien und Ordner in den Stamm des bestehenden GitHub-Repositorys hochladen.
-3. Vorhandene Dateien ersetzen.
-4. Änderungen z. B. mit „CLDF v4.7.4 API-Sammlung“ committen.
-5. GitHub Pages abwarten und die App anschließend einmal vollständig neu laden.
+2. GitHub-Repository öffnen.
+3. Add file → Upload files wählen.
+4. Den Inhalt des entpackten Ordners hochladen. Die Dateien müssen direkt im Repository-Stamm liegen.
+5. Vorhandene Dateien ersetzen und Commit changes bestätigen.
+6. Warten, bis die GitHub-Pages-Aktion abgeschlossen ist.
+7. App auf dem Handy vollständig schließen und erneut öffnen.
 
-Der Service Worker v4.7.4 löscht den alten App-Cache bei der Aktivierung.
+Die Fingerprints sind bereits auf mehrere Dateien unter 25 MB verteilt. Nutzer müssen keine Referenzen importieren.

@@ -1,6 +1,6 @@
 {
-  "appVersion": "4.7.6",
-  "generatedAt": "2026-07-16T16:10:23.749Z",
+  "appVersion": "4.7.8",
+  "generatedAt": "2026-07-19T07:55:42.811Z",
   "requiredFilesPresent": true,
   "javascriptSyntaxValid": true,
   "essentialDomIdsPresent": true,
@@ -9,6 +9,7 @@
   "getInLineParserTestsPassed": true,
   "audioFingerprintSelfTestPassed": true,
   "videoStepMatcherSelfTestPassed": true,
+  "cameraControlsSelfTestPassed": true,
   "radioApiSelfTestPassed": true,
   "radioLiveApiSelfTestPassed": true,
   "songApiIndexSelfTestPassed": true,
@@ -18,12 +19,20 @@
   "builtInSheetPatterns": 8,
   "liveVideoMinimumSeconds": 30,
   "liveStepEvaluationDuringRecording": true,
+  "liveCameraSettings": {
+    "cameraSelection": true,
+    "orientationSelection": true,
+    "zoomCapabilities": true,
+    "fullBodyGuide": true,
+    "noForcedCrop": true
+  },
+  "pwaOrientation": "any",
   "staticOfflineServer": true,
   "serviceWorkerPresent": true,
   "originalCssBasePreserved": true,
   "originalCssBaseLines": 596,
   "originalCssBaseSha256": "89cc732bfecdfc0022e627aba4d0c4718056e198af3a17f45cb050a10af56768",
-  "addedCssLinesForLiveCamera": 374,
+  "addedCssLinesForLiveCamera": 463,
   "originalGraphicsUnchanged": true,
   "originalGraphicHashes": {
     "assets/cldf-hero.webp": {
@@ -47,7 +56,7 @@
       "unchanged": true
     }
   },
-  "completeStylesSha256": "62df80c39d981468a87046fa61607c7364b3b800e9fd98ab5b33e076bed47c9d",
+  "completeStylesSha256": "f2ecb9f3e42711a7b7d6d0ba765f5a335d11dac039ec233fe8e76f03f7ec9e25",
   "cldfBaseDances": 135,
   "imageMappings": 659,
   "imageUniqueDances": 182,
@@ -71,8 +80,8 @@
   "songsWithBpm": 237,
   "microphoneSeconds": 12,
   "audioFingerprintAlgorithm": "cldf-landmark-v1",
-  "embeddedAudioFingerprints": 1959,
-  "fingerprintPackCount": 8,
+  "embeddedAudioFingerprints": 3480,
+  "fingerprintPackCount": 14,
   "indexedDbAudioLibrary": true,
   "indexedDbGetInLineImport": true,
   "staticRadioApiCatalog": true,
