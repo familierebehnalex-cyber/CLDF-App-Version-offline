@@ -1,76 +1,206 @@
 {
   "format": "CLDF-AUDIO-FINGERPRINTS",
-  "version": 2,
+  "version": 3,
   "algorithm": "cldf-landmark-v1",
-  "exportedAt": "2026-07-16T15:55:19Z",
-  "count": 1959,
-  "uniqueSongCount": 1326,
+  "exportedAt": "2026-07-20T15:33:52Z",
+  "count": 5909,
+  "uniqueSongCount": 3769,
   "danceMapping": {
-    "confirmedSongCount": 23,
-    "suggestedSongCount": 96,
-    "sourceApp": "CLDF v4.7.5 song-api-index + Tanzdatenbank",
-    "note": "Bestätigt = exakte vorhandene App-Zuordnung. Vorschläge müssen fachlich geprüft werden."
+    "originalSongCount": 328,
+    "suggestedSongCount": 2142,
+    "originalLabel": "Original Tanz",
+    "suggestionLabel": "Vorschlag",
+    "maxSuggestionsPerSong": 5
   },
   "merge": {
-    "inputPackages": [
-      {
-        "file": "CLDF-Audio-Fingerprints.json",
-        "exportedAt": "2026-07-16T15:40:48Z",
-        "count": 1604
-      },
-      {
-        "file": "CLDF-Audio-Fingerprints.json",
-        "exportedAt": "2026-07-16T14:59:20Z",
-        "count": 658
-      }
-    ],
-    "inputReferenceCount": 2262,
-    "invalidCollisionReferencesRemoved": 237,
-    "nearDuplicatesRemoved": 29,
-    "extraReferencesRemovedByThreeLimit": 37
+    "inputExistingReferences": 3480,
+    "inputNewReferences": 2997,
+    "inputReferences": 6477,
+    "inputExistingUniqueSongs": 2323,
+    "inputNewUniqueSongs": 2157,
+    "overlappingSongs": 652,
+    "invalidCollisionGroups": 8,
+    "invalidCollisionReferencesRemoved": 142,
+    "exactDuplicatesRemoved": 0,
+    "nearDuplicatesRemoved": 14,
+    "extraReferencesRemovedByThreeLimit": 412,
+    "outputReferences": 5909,
+    "outputUniqueSongs": 3769,
+    "songsWithOriginalDance": 328,
+    "songsWithSuggestions": 2142
   },
-  "appVersion": "4.7.6",
-  "packCount": 8,
+  "appVersion": "4.7.10",
+  "packCount": 34,
   "packs": [
     {
       "file": "data/audio-fingerprints-pack-001.json",
-      "entryCount": 264,
-      "bytes": 5490543
+      "entryCount": 177,
+      "bytes": 4768719
     },
     {
       "file": "data/audio-fingerprints-pack-002.json",
-      "entryCount": 266,
-      "bytes": 5499143
+      "entryCount": 176,
+      "bytes": 4786861
     },
     {
       "file": "data/audio-fingerprints-pack-003.json",
-      "entryCount": 263,
-      "bytes": 5485881
+      "entryCount": 183,
+      "bytes": 4797890
     },
     {
       "file": "data/audio-fingerprints-pack-004.json",
-      "entryCount": 267,
-      "bytes": 5496613
+      "entryCount": 177,
+      "bytes": 4797041
     },
     {
       "file": "data/audio-fingerprints-pack-005.json",
-      "entryCount": 263,
-      "bytes": 5480474
+      "entryCount": 173,
+      "bytes": 4793202
     },
     {
       "file": "data/audio-fingerprints-pack-006.json",
-      "entryCount": 265,
-      "bytes": 5494337
+      "entryCount": 184,
+      "bytes": 4785776
     },
     {
       "file": "data/audio-fingerprints-pack-007.json",
-      "entryCount": 266,
-      "bytes": 5488168
+      "entryCount": 181,
+      "bytes": 4792809
     },
     {
       "file": "data/audio-fingerprints-pack-008.json",
-      "entryCount": 105,
-      "bytes": 2187725
+      "entryCount": 184,
+      "bytes": 4796754
+    },
+    {
+      "file": "data/audio-fingerprints-pack-009.json",
+      "entryCount": 173,
+      "bytes": 4786290
+    },
+    {
+      "file": "data/audio-fingerprints-pack-010.json",
+      "entryCount": 178,
+      "bytes": 4782250
+    },
+    {
+      "file": "data/audio-fingerprints-pack-011.json",
+      "entryCount": 180,
+      "bytes": 4794282
+    },
+    {
+      "file": "data/audio-fingerprints-pack-012.json",
+      "entryCount": 181,
+      "bytes": 4785768
+    },
+    {
+      "file": "data/audio-fingerprints-pack-013.json",
+      "entryCount": 179,
+      "bytes": 4797796
+    },
+    {
+      "file": "data/audio-fingerprints-pack-014.json",
+      "entryCount": 181,
+      "bytes": 4772156
+    },
+    {
+      "file": "data/audio-fingerprints-pack-015.json",
+      "entryCount": 180,
+      "bytes": 4781170
+    },
+    {
+      "file": "data/audio-fingerprints-pack-016.json",
+      "entryCount": 182,
+      "bytes": 4794220
+    },
+    {
+      "file": "data/audio-fingerprints-pack-017.json",
+      "entryCount": 171,
+      "bytes": 4794901
+    },
+    {
+      "file": "data/audio-fingerprints-pack-018.json",
+      "entryCount": 173,
+      "bytes": 4771865
+    },
+    {
+      "file": "data/audio-fingerprints-pack-019.json",
+      "entryCount": 174,
+      "bytes": 4775195
+    },
+    {
+      "file": "data/audio-fingerprints-pack-020.json",
+      "entryCount": 176,
+      "bytes": 4797692
+    },
+    {
+      "file": "data/audio-fingerprints-pack-021.json",
+      "entryCount": 169,
+      "bytes": 4794597
+    },
+    {
+      "file": "data/audio-fingerprints-pack-022.json",
+      "entryCount": 179,
+      "bytes": 4782673
+    },
+    {
+      "file": "data/audio-fingerprints-pack-023.json",
+      "entryCount": 177,
+      "bytes": 4780588
+    },
+    {
+      "file": "data/audio-fingerprints-pack-024.json",
+      "entryCount": 177,
+      "bytes": 4785252
+    },
+    {
+      "file": "data/audio-fingerprints-pack-025.json",
+      "entryCount": 181,
+      "bytes": 4790249
+    },
+    {
+      "file": "data/audio-fingerprints-pack-026.json",
+      "entryCount": 188,
+      "bytes": 4790246
+    },
+    {
+      "file": "data/audio-fingerprints-pack-027.json",
+      "entryCount": 173,
+      "bytes": 4789525
+    },
+    {
+      "file": "data/audio-fingerprints-pack-028.json",
+      "entryCount": 168,
+      "bytes": 4770046
+    },
+    {
+      "file": "data/audio-fingerprints-pack-029.json",
+      "entryCount": 180,
+      "bytes": 4789319
+    },
+    {
+      "file": "data/audio-fingerprints-pack-030.json",
+      "entryCount": 184,
+      "bytes": 4792781
+    },
+    {
+      "file": "data/audio-fingerprints-pack-031.json",
+      "entryCount": 180,
+      "bytes": 4781848
+    },
+    {
+      "file": "data/audio-fingerprints-pack-032.json",
+      "entryCount": 185,
+      "bytes": 4795423
+    },
+    {
+      "file": "data/audio-fingerprints-pack-033.json",
+      "entryCount": 176,
+      "bytes": 4795926
+    },
+    {
+      "file": "data/audio-fingerprints-pack-034.json",
+      "entryCount": 29,
+      "bytes": 751841
     }
   ]
 }
