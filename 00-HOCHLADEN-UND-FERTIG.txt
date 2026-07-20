@@ -1,4 +1,4 @@
-CLDF v4.7.9 – GITHUB-UPLOAD
+CLDF v4.7.10 – GITHUB-UPLOAD
 
 1. Diese ZIP-Datei auf dem PC vollständig entpacken.
 2. NICHT die ZIP-Datei selbst zu GitHub hochladen.

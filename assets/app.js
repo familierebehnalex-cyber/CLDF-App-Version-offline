@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const DATA = window.CLDF_DATA || { dances: [], motionCatalog: [], specialRhythms: [], appVersion: '4.7.9', databaseVersion: 'unbekannt' };
+  const DATA = window.CLDF_DATA || { dances: [], motionCatalog: [], specialRhythms: [], appVersion: '4.7.10', databaseVersion: 'unbekannt' };
   const GETINLINE_DATA = window.GETINLINE_DATA || { dances: [], count: 0, generatedAt: null };
   const VM = window.CLDFVideoMotion;
   const STEP_PATTERN_DB = window.CLDF_STEP_SHEET_PATTERNS || { patterns: [] };
@@ -20,7 +20,7 @@
   const RADIO_LIVE_API = window.CLDFRadioLiveAPI || null;
   const SONG_API_INDEX = window.CLDF_SONG_API_INDEX || { entries: [], stations: [], entryCount: 0, apiEndpointCount: 0 };
   const SONG_API_ENTRIES = Array.isArray(SONG_API_INDEX.entries) ? SONG_API_INDEX.entries : [];
-  const APP_VERSION = '4.7.9';
+  const APP_VERSION = '4.7.10';
   const DATABASE_VERSION = DATA.databaseVersion || 'unbekannt';
   const CLDF_DANCES = Array.isArray(DATA.dances) ? DATA.dances : [];
   let GETINLINE_DANCES = Array.isArray(GETINLINE_DATA.dances) ? GETINLINE_DATA.dances : [];
@@ -1841,7 +1841,7 @@
       const confirmed = [...new Set(recognizedSong.confirmedDances || [])].filter(Boolean);
       const suggested = [...new Set(recognizedSong.suggestedDances || [])].filter((name) => name && !confirmed.includes(name));
       const mappingHtml = confirmed.length || suggested.length
-        ? `<small>${confirmed.length ? `<strong>Bestätigte Tanzzuordnung:</strong> ${confirmed.map(escapeHtml).join(', ')}` : ''}${confirmed.length && suggested.length ? '<br>' : ''}${suggested.length ? `<strong>Tanzvorschlag – bitte prüfen:</strong> ${suggested.map(escapeHtml).join(', ')}` : ''}</small>`
+        ? `<small>${confirmed.length ? `<strong>Original Tanz:</strong> ${confirmed.map(escapeHtml).join(', ')}` : ''}${confirmed.length && suggested.length ? '<br>' : ''}${suggested.length ? `<strong>Vorschlag:</strong> ${suggested.map(escapeHtml).join(', ')}` : ''}</small>`
         : '';
       $('#songResult').innerHTML = songResultHtml(recognizedSong, recognizedSong.apiDataAvailable ? 'Lokal erkannt · API zugeordnet' : 'Lokal erkannt') + mappingHtml;
     }
@@ -3109,7 +3109,7 @@
         <p>Diese App-Version enthält fest eingebaute Fingerprint-Pakete. Wenn hier keine Referenzen erkannt werden, fehlen wahrscheinlich einzelne Dateien aus dem Ordner <strong>data</strong> oder der alte Offline-Cache ist noch aktiv.</p>
         <div class="onboarding-steps">
           <div class="onboarding-step"><span>1</span><div><strong>Dateien prüfen</strong><br>Alle im Fingerprint-Index aufgeführten Paketdateien müssen auf GitHub vorhanden sein.</div></div>
-          <div class="onboarding-step"><span>2</span><div><strong>App vollständig neu laden</strong><br>Die installierte PWA schließen oder einmal neu installieren, damit der Cache v4.7.9 aktiv wird.</div></div>
+          <div class="onboarding-step"><span>2</span><div><strong>App vollständig neu laden</strong><br>Die installierte PWA schließen oder einmal neu installieren, damit der Cache v4.7.10 aktiv wird.</div></div>
           <div class="onboarding-step"><span>3</span><div><strong>Erneut aufnehmen</strong><br>Danach vergleicht die App die Mikrofonaufnahme kostenlos und lokal mit den eingebauten Referenzen.</div></div>
         </div>
         <div class="dialog-actions">
@@ -3675,7 +3675,7 @@
     RADIO_LIVE_API?.start?.();
     runDiagnostics();
     handleInitialRoute();
-    $('#versionText').textContent = `CLDF v4.7.9 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${SONG_API_ENTRIES.length} Song-Metadatensätze · ${availableFingerprintCount()} Audio-Referenzen · ${embeddedMotionReferenceConfiguredCount()} Bewegungsreferenzen`;
+    $('#versionText').textContent = `CLDF v4.7.10 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${SONG_API_ENTRIES.length} Song-Metadatensätze · ${availableFingerprintCount()} Audio-Referenzen · ${embeddedMotionReferenceConfiguredCount()} Bewegungsreferenzen`;
     // Der Startbildschirm bleibt bei jedem neuen App-Start sichtbar,
     // bis der Benutzer bewusst auf „App öffnen“ tippt.
     $('#splash').classList.remove('hidden');

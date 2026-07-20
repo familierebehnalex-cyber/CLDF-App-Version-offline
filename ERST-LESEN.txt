@@ -1,4 +1,4 @@
-CLDF Offline-App v4.7.9
+CLDF Offline-App v4.7.10
 
 Die Fingerprints sind bereits vollständig eingebaut.
 

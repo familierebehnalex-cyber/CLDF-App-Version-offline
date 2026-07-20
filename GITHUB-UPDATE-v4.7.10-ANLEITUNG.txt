@@ -1,0 +1,10 @@
+CLDF v4.7.10 – GITHUB-UPDATE
+================================
+
+1. ZIP vollständig entpacken.
+2. Den Inhalt des entpackten Ordners in den Stamm des GitHub-Repositorys hochladen.
+3. Vorhandene Dateien ersetzen und Commit changes bestätigen.
+4. GitHub Pages abwarten.
+5. App vollständig schließen und neu öffnen; bei Bedarf PWA neu installieren.
+
+Nicht die ZIP-Datei selbst hochladen.

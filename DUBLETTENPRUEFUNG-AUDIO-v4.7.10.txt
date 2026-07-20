@@ -1,0 +1,30 @@
+CLDF Fingerprints – Zusammenführung und Dublettenprüfung
+=========================================================
+Erstellt: 2026-07-20T15:33:52Z
+
+Eingaben
+--------
+Bisher in v4.7.9:        3480 Referenzen
+Neue Sammlung:           2997 Referenzen
+Gesamt vor Prüfung:      6477 Referenzen
+
+Bereinigung
+-----------
+Fehlerhafte Kollisionsgruppen:             8
+Referenzen aus Kollisionsgruppen entfernt: 142
+Exakt doppelte Referenzen entfernt:         0
+Nahe Dubletten entfernt:                    14
+Überzählige Referenzen (>3 je Lied):        412
+
+Ergebnis
+--------
+Gültige Fingerprints:      5909
+Eindeutige Lieder:         3769
+Mit „Original Tanz“:       328
+Mit „Vorschlag“:           2142
+
+Hinweis
+-------
+Identische Fingerprints für unterschiedliche Lieder wurden vollständig entfernt.
+Pro Lied bleiben höchstens drei möglichst unterschiedliche Referenzen erhalten.
+Vorschlagslisten sind für die App auf höchstens fünf sinnvolle Einträge begrenzt.

@@ -1,4 +1,4 @@
-CLDF Offline-App v4.7.9 – Inhalt
+CLDF Offline-App v4.7.10 – Inhalt
 
 - vollständige GitHub-Pages-App
 - 3.480 fest eingebaute Audio-Fingerprints für 2.323 Lieder
@@ -7,5 +7,5 @@ CLDF Offline-App v4.7.9 – Inhalt
 - Lied–Tanz-Zuordnung mit „Original Tanz“ und „Vorschlag“
 - flexible Live-Kamera mit Kameraauswahl, Hoch-/Querformat und Zoomsteuerung
 - Ganzkörperrahmen und automatische Sichtbarkeitsprüfung
-- Offline-Cache v4.7.9
+- Offline-Cache v4.7.10
 - keine Musikdateien und keine Pflicht zum Benutzer-Upload

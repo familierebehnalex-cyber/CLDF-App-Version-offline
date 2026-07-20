@@ -1,6 +1,6 @@
 # Drittanbieter-Hinweise
 
-Stand: 15. Juli 2026 · CLDF Offline-App v4.7.9
+Stand: 15. Juli 2026 · CLDF Offline-App v4.7.10
 
 ## MediaPipe Pose / BlazePose
 
