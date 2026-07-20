@@ -1,0 +1,11 @@
+CLDF v4.7.9 – GITHUB-UPDATE VON v4.7.8
+
+1. Dieses ZIP vollständig entpacken.
+2. Den Inhalt des entpackten Ordners in den Stamm des GitHub-Repositorys hochladen.
+3. Vorhandene Dateien ersetzen und „Commit changes“ bestätigen.
+4. Nicht die ZIP-Datei selbst hochladen.
+5. GitHub Pages fertig veröffentlichen lassen.
+6. Die installierte App vollständig schließen und erneut öffnen.
+7. Falls weiterhin v4.7.8 angezeigt wird: Browserdaten/alten PWA-Cache löschen oder die PWA einmal neu installieren.
+
+Danach sind 128 geprüfte Bewegungsreferenzen für 127 Tänze fest eingebaut. Ein manueller Referenzimport ist nicht nötig.

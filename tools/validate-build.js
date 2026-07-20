@@ -95,7 +95,7 @@ const cameraFeatureChecks = {
   noForcedCrop: appSource.includes("resizeMode: { ideal: 'none' }") && stylesText.includes('object-fit: contain'),
 };
 if (Object.values(cameraFeatureChecks).some((value) => !value)) {
-  console.error(`v4.7.8-Kameraprüfung fehlgeschlagen: ${JSON.stringify(cameraFeatureChecks)}`);
+  console.error(`v4.7.9-Kameraprüfung fehlgeschlagen: ${JSON.stringify(cameraFeatureChecks)}`);
   process.exit(1);
 }
 const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, 'manifest.webmanifest'), 'utf8'));
@@ -116,7 +116,7 @@ execFileSync(process.execPath, [path.join(ROOT, 'tools/test-radio-live-api.js')]
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-song-api-index.js')], { stdio: 'pipe' });
 execFileSync(process.execPath, [path.join(ROOT, 'tools/test-api-dedup.js')], { stdio: 'pipe' });
 const report = {
-  appVersion: '4.7.8',
+  appVersion: '4.7.9',
   generatedAt: new Date().toISOString(),
   requiredFilesPresent: true,
   javascriptSyntaxValid: true,

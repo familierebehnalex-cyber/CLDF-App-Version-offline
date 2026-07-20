@@ -1,10 +1,10 @@
-CLDF v4.7.8 – UPDATE VON v4.7.7
+CLDF v4.7.9 – GITHUB-UPDATE VON v4.7.8
 
 1. ZIP vollständig entpacken.
-2. NICHT die ZIP-Datei selbst hochladen.
-3. Den gesamten Inhalt des entpackten Ordners in den Stamm des bestehenden GitHub-Repositorys hochladen.
-4. Vorhandene Dateien ersetzen und „Commit changes“ bestätigen.
-5. Warten, bis GitHub Pages fertig ist.
-6. Die App vollständig schließen und neu öffnen. Bei einer installierten PWA gegebenenfalls einmal neu installieren.
+2. Den Inhalt des entpackten Ordners in den Stamm des GitHub-Repositorys hochladen.
+3. Vorhandene Dateien ersetzen und „Commit changes“ bestätigen.
+4. Nicht die ZIP-Datei selbst hochladen.
+5. GitHub Pages fertig veröffentlichen lassen.
+6. Die App vollständig schließen und neu öffnen.
 
-Dieses Update verändert nur App-Code, Kameraoberfläche, Manifest, Cache und Dokumentation. Die 14 vorhandenen Fingerprint-Pakete werden nicht erneut mitgeliefert.
+Danach sind 128 geprüfte Bewegungsreferenzen für 127 Tänze fest eingebaut. Ein manueller Import ist nicht nötig.

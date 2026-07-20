@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const DATA = window.CLDF_DATA || { dances: [], motionCatalog: [], specialRhythms: [], appVersion: '4.7.8', databaseVersion: 'unbekannt' };
+  const DATA = window.CLDF_DATA || { dances: [], motionCatalog: [], specialRhythms: [], appVersion: '4.7.9', databaseVersion: 'unbekannt' };
   const GETINLINE_DATA = window.GETINLINE_DATA || { dances: [], count: 0, generatedAt: null };
   const VM = window.CLDFVideoMotion;
   const STEP_PATTERN_DB = window.CLDF_STEP_SHEET_PATTERNS || { patterns: [] };
@@ -10,13 +10,17 @@
   const STORE = window.CLDFLocalStore;
   const FINGERPRINT_DB = window.CLDF_AUDIO_FINGERPRINTS || { entries: [], packs: [], count: 0 };
   let embeddedFingerprintLoadPromise = null;
+  const MOVEMENT_REFERENCE_DB = window.CLDF_MOVEMENT_REFERENCE_INDEX || { count: 0, danceCount: 0, packs: [], items: [] };
+  let embeddedMotionReferenceLoadPromise = null;
+  let embeddedMotionReferences = [];
+  let embeddedMotionReferencesLoaded = false;
   const SONG_META = window.CLDF_SONG_METADATA || { entries: [] };
   const RADIO_API_DATA = window.CLDF_RADIO_API_DATA || { stations: [], entries: [], count: 0, stationCount: 0 };
   const RADIO_ENTRIES = Array.isArray(RADIO_API_DATA.entries) ? RADIO_API_DATA.entries : [];
   const RADIO_LIVE_API = window.CLDFRadioLiveAPI || null;
   const SONG_API_INDEX = window.CLDF_SONG_API_INDEX || { entries: [], stations: [], entryCount: 0, apiEndpointCount: 0 };
   const SONG_API_ENTRIES = Array.isArray(SONG_API_INDEX.entries) ? SONG_API_INDEX.entries : [];
-  const APP_VERSION = '4.7.8';
+  const APP_VERSION = '4.7.9';
   const DATABASE_VERSION = DATA.databaseVersion || 'unbekannt';
   const CLDF_DANCES = Array.isArray(DATA.dances) ? DATA.dances : [];
   let GETINLINE_DANCES = Array.isArray(GETINLINE_DATA.dances) ? GETINLINE_DATA.dances : [];
@@ -1730,7 +1734,7 @@
       ? `Die Körperbewegung ähnelt „${matchedDance?.title || match?.reference?.danceTitle || 'einem anderen Tanz'}“, aber das erkannte Lied und seine feste Tanzzuordnung haben Vorrang.`
       : matchedDance
         ? `Bestes lokales ${sourceName}: ${matchedDance.title} · ${Math.round(match.score || 0)} % Beta-Übereinstimmung.`
-        : (state.motionReferences.length || STEP_PATTERNS.length)
+        : (embeddedMotionReferenceConfiguredCount() || state.motionReferences.length || STEP_PATTERNS.length)
           ? 'Kein Körper- oder Schrittmuster war eindeutig genug für eine belastbare Beta-Zuordnung.'
           : 'Noch keine lokalen Bewegungsreferenzen oder Sheet-Muster gespeichert.';
     container.innerHTML = `
@@ -1876,52 +1880,151 @@
     }
   }
 
+  function embeddedMotionReferenceConfiguredCount() {
+    return Math.max(
+      embeddedMotionReferences.length,
+      Number(MOVEMENT_REFERENCE_DB.count) || 0,
+    );
+  }
+
+  function embeddedMotionDanceCount() {
+    return Math.max(
+      new Set(embeddedMotionReferences.map((reference) => reference.danceId).filter(Boolean)).size,
+      Number(MOVEMENT_REFERENCE_DB.danceCount) || 0,
+    );
+  }
+
+  function allMotionReferences() {
+    const combined = new Map();
+    for (const reference of embeddedMotionReferences) {
+      if (!reference?.signature || !reference?.danceId) continue;
+      combined.set(reference.id || `embedded-${reference.danceId}-${combined.size}`, {
+        ...reference,
+        type: reference.type || 'embedded-video-reference',
+        embedded: true,
+      });
+    }
+    for (const reference of (state.motionReferences || [])) {
+      if (!reference?.signature || !reference?.danceId) continue;
+      combined.set(reference.id || `local-${reference.danceId}-${combined.size}`, {
+        ...reference,
+        type: reference.type || 'video-reference',
+        embedded: false,
+      });
+    }
+    return [...combined.values()];
+  }
+
+  async function ensureEmbeddedMotionReferencesLoaded(options = {}) {
+    const packs = Array.isArray(MOVEMENT_REFERENCE_DB.packs) ? MOVEMENT_REFERENCE_DB.packs : [];
+    if (embeddedMotionReferencesLoaded || !packs.length) return embeddedMotionReferences;
+    if (embeddedMotionReferenceLoadPromise) return embeddedMotionReferenceLoadPromise;
+    embeddedMotionReferenceLoadPromise = (async () => {
+      const references = [];
+      const validDanceIds = new Set(state.dances.map((dance) => dance.id));
+      for (let index = 0; index < packs.length; index += 1) {
+        const pack = packs[index];
+        if (options.showProgress !== false) {
+          setTaskProgress(true, 'Bewegungsreferenzen werden geladen', `Referenzpaket ${index + 1} von ${packs.length} …`, 4 + ((index + 1) / packs.length) * 22);
+        }
+        const file = String(pack?.file || '').replace(/^\.\/?data\//, '');
+        const response = await fetch(`./data/${file}`, { cache: 'force-cache' });
+        if (!response.ok) throw new Error(`Bewegungsreferenz-Paket ${index + 1} konnte nicht geladen werden.`);
+        const payload = await response.json();
+        if (!Array.isArray(payload.references)) throw new Error(`Bewegungsreferenz-Paket ${index + 1} ist ungültig.`);
+        for (const reference of payload.references) {
+          if (!reference?.signature || !validDanceIds.has(reference.danceId)) continue;
+          references.push({
+            ...reference,
+            type: 'embedded-video-reference',
+            embedded: true,
+          });
+        }
+      }
+      const unique = new Map();
+      references.forEach((reference, index) => unique.set(reference.id || `${reference.danceId}-${index}`, reference));
+      embeddedMotionReferences = [...unique.values()];
+      embeddedMotionReferencesLoaded = true;
+      renderMotionReferenceCatalog();
+      return embeddedMotionReferences;
+    })().catch((error) => {
+      embeddedMotionReferenceLoadPromise = null;
+      embeddedMotionReferencesLoaded = false;
+      throw error;
+    });
+    return embeddedMotionReferenceLoadPromise;
+  }
+
+  async function prepareEmbeddedMotionReferences(showMessage = true) {
+    if (!embeddedMotionReferenceConfiguredCount()) return [];
+    try {
+      const references = await ensureEmbeddedMotionReferencesLoaded({ showProgress: true });
+      setTaskProgress(false);
+      return references;
+    } catch (error) {
+      setTaskProgress(false);
+      console.error('Eingebaute Bewegungsreferenzen konnten nicht geladen werden.', error);
+      if (showMessage) toast(`${error.message || 'Bewegungsreferenzen konnten nicht geladen werden.'} Sheet-Muster und eigene Referenzen bleiben nutzbar.`, 6000);
+      return [];
+    }
+  }
+
   function persistMotionReferences() {
     writeJson(STORAGE.motionReferences, state.motionReferences);
   }
 
   function renderMotionReferenceCatalog() {
-    const refs = Array.isArray(state.motionReferences) ? state.motionReferences : [];
-    const count = refs.length;
-    const uniqueDances = new Set(refs.map((reference) => reference.danceId)).size;
+    const localRefs = Array.isArray(state.motionReferences) ? state.motionReferences : [];
+    const embeddedCount = embeddedMotionReferenceConfiguredCount();
+    const embeddedDances = embeddedMotionDanceCount();
+    const localCount = localRefs.length;
+    const totalCount = embeddedCount + localCount;
     const countBadge = $('#motionReferenceCount');
     if (!countBadge) return;
-    countBadge.textContent = `${count} Referenz${count === 1 ? '' : 'en'} · ${STEP_PATTERNS.length} Sheet-Muster`;
+    countBadge.textContent = `${embeddedCount} eingebaut · ${localCount} eigene · ${STEP_PATTERNS.length} Sheet-Muster`;
     const status = $('#motionReferenceStatus');
-    status.classList.toggle('warning', count === 0 && STEP_PATTERNS.length === 0);
-    status.classList.toggle('good', count > 0 || STEP_PATTERNS.length > 0);
-    $('#motionReferenceStatusTitle').textContent = count
-      ? `${uniqueDances} Tanz${uniqueDances === 1 ? '' : 'e'} mit eigenen Referenzen vorbereitet`
-      : STEP_PATTERNS.length
-        ? `${STEP_PATTERNS.length} maschinenlesbare Sheet-Muster aktiv`
-        : 'Noch keine Bewegungsreferenz';
-    $('#motionReferenceStatusText').textContent = count
-      ? `${count} lokale MediaPipe-Signatur${count === 1 ? '' : 'en'} gespeichert; zusätzlich sind ${STEP_PATTERNS.length} Sheet-Muster eingebaut.`
-      : STEP_PATTERNS.length
-        ? 'Grundlegende Schritte werden bereits mit den eingebauten Sheet-Mustern verglichen. Eigene Referenzvideos erhöhen die Genauigkeit.'
-        : 'Füge für bekannte Tänze eigene kurze Demo-Videos hinzu. Alles bleibt lokal auf diesem Gerät.';
+    status.classList.toggle('warning', totalCount === 0 && STEP_PATTERNS.length === 0);
+    status.classList.toggle('good', totalCount > 0 || STEP_PATTERNS.length > 0);
+    $('#motionReferenceStatusTitle').textContent = embeddedCount
+      ? `${embeddedDances} Tänze mit fest eingebauten Bewegungsreferenzen`
+      : localCount
+        ? `${new Set(localRefs.map((reference) => reference.danceId)).size} Tänze mit eigenen Referenzen vorbereitet`
+        : STEP_PATTERNS.length
+          ? `${STEP_PATTERNS.length} maschinenlesbare Sheet-Muster aktiv`
+          : 'Noch keine Bewegungsreferenz';
+    $('#motionReferenceStatusText').textContent = embeddedCount
+      ? `${embeddedCount} geprüfte MediaPipe-Signaturen werden beim Start einer Videoanalyse automatisch geladen. ${localCount ? `${localCount} eigene Ergänzung${localCount === 1 ? '' : 'en'} kommt hinzu. ` : ''}Zusätzlich sind ${STEP_PATTERNS.length} Sheet-Muster aktiv.`
+      : localCount
+        ? `${localCount} lokale MediaPipe-Signatur${localCount === 1 ? '' : 'en'} gespeichert; zusätzlich sind ${STEP_PATTERNS.length} Sheet-Muster eingebaut.`
+        : STEP_PATTERNS.length
+          ? 'Grundlegende Schritte werden bereits mit den eingebauten Sheet-Mustern verglichen. Eigene Referenzvideos erhöhen die Genauigkeit.'
+          : 'Füge für bekannte Tänze eigene kurze Demo-Videos hinzu. Alles bleibt lokal auf diesem Gerät.';
     const list = $('#motionReferenceList');
-    if (!refs.length) {
-      list.innerHTML = STEP_PATTERNS.length ? `<div class="empty-state">Noch keine eigene Video-Referenz vorhanden. ${STEP_PATTERNS.length} Sheet-Muster sind bereits aktiv.</div>` : '<div class="empty-state">Noch keine Video-Referenz vorhanden.</div>';
+    if (!localRefs.length) {
+      list.innerHTML = embeddedCount
+        ? `<div class="empty-state">${embeddedCount} geprüfte Referenzen sind fest eingebaut. Eigene Referenzvideos sind nur noch optionale Ergänzungen.</div>`
+        : STEP_PATTERNS.length
+          ? `<div class="empty-state">Noch keine eigene Video-Referenz vorhanden. ${STEP_PATTERNS.length} Sheet-Muster sind bereits aktiv.</div>`
+          : '<div class="empty-state">Noch keine Video-Referenz vorhanden.</div>';
       return;
     }
-    list.innerHTML = [...refs]
+    list.innerHTML = [...localRefs]
       .sort((left, right) => (left.danceTitle || '').localeCompare(right.danceTitle || '', 'de'))
       .map((reference) => {
         const signature = reference.signature || {};
         const quality = Math.round((signature.quality || 0) * 100);
         return `<div class="motion-reference-row" data-motion-reference-id="${escapeHtml(reference.id)}">
-          <div><strong>${escapeHtml(reference.danceTitle || 'Unbekannter Tanz')}</strong><small>${escapeHtml(reference.fileName || 'Video-Referenz')} · ${Math.round(signature.duration || 0)} s · Qualität ${quality} %${signature.cadenceBpm ? ` · ca. ${signature.cadenceBpm} BPM Bewegung` : ''}</small></div>
+          <div><strong>${escapeHtml(reference.danceTitle || 'Unbekannter Tanz')}</strong><small>${escapeHtml(reference.fileName || 'Eigene Video-Referenz')} · ${Math.round(signature.duration || 0)} s · Qualität ${quality} %${signature.cadenceBpm ? ` · ca. ${signature.cadenceBpm} BPM Bewegung` : ''}</small></div>
           <div class="motion-reference-actions"><span class="motion-reference-score">${quality} %</span><button type="button" data-delete-motion-reference>Entfernen</button></div>
         </div>`;
       }).join('');
     $$('[data-delete-motion-reference]', list).forEach((button) => button.addEventListener('click', () => {
       const id = button.closest('[data-motion-reference-id]')?.dataset.motionReferenceId;
-      if (!id || !confirm('Diese Bewegungsreferenz wirklich entfernen?')) return;
+      if (!id || !confirm('Diese eigene Bewegungsreferenz wirklich entfernen?')) return;
       state.motionReferences = state.motionReferences.filter((reference) => reference.id !== id);
       persistMotionReferences();
       renderMotionReferenceCatalog();
-      toast('Bewegungsreferenz entfernt.');
+      toast('Eigene Bewegungsreferenz entfernt.');
     }));
   }
 
@@ -2035,12 +2138,12 @@
   }
 
   function clearMotionReferences() {
-    if (!state.motionReferences.length) return toast('Der Bewegungsreferenz-Katalog ist bereits leer.');
-    if (!confirm('Alle lokalen Bewegungsreferenzen löschen?')) return;
+    if (!state.motionReferences.length) return toast('Es sind keine eigenen Bewegungsreferenzen gespeichert. Die fest eingebauten Referenzen bleiben erhalten.');
+    if (!confirm('Alle eigenen Bewegungsreferenzen löschen? Die fest eingebauten Referenzen bleiben erhalten.')) return;
     state.motionReferences = [];
     persistMotionReferences();
     renderMotionReferenceCatalog();
-    toast('Bewegungsreferenzen gelöscht.');
+    toast('Eigene Bewegungsreferenzen gelöscht. Die eingebauten Referenzen bleiben aktiv.');
   }
 
   function setTaskProgress(visible, title = '', text = '', percent = 0) {
@@ -2377,6 +2480,7 @@
     const type = match?.reference?.type;
     if (type === 'combined') return 'Referenzvideo + Sheet-Schritte';
     if (type === 'sheet-pattern') return 'Sheet-Schrittvergleich';
+    if (type === 'embedded-video-reference') return 'eingebaute Bewegungsreferenz';
     return 'Bewegungsreferenz';
   }
 
@@ -2409,7 +2513,7 @@
   }
 
   async function finishVideoRecognition(signature, audioResult, audioWarning = null, sourceLabel = 'Tanzvideo') {
-    const referenceMatches = VM?.rankReferences ? VM.rankReferences(signature, state.motionReferences) : [];
+    const referenceMatches = VM?.rankReferences ? VM.rankReferences(signature, allMotionReferences()) : [];
     const sheetMatches = VM?.rankSheetPatterns ? VM.rankSheetPatterns(signature, STEP_PATTERNS, state.dances) : [];
     const matches = combineVideoMatches(referenceMatches, sheetMatches);
     const accepted = acceptedMotionMatch(matches);
@@ -2444,7 +2548,7 @@
       'Videoanalyse: kein eindeutiger Lied-, Körper- oder Schritttreffer',
       { videoMotion: signature, motionMatch: matches[0] || null, recognizedSong: audioResult?.song || audioResult?.recognizedSong },
     );
-    setVideoRecognitionStatus('', 'Videoanalyse abgeschlossen', (state.motionReferences.length || STEP_PATTERNS.length)
+    setVideoRecognitionStatus('', 'Videoanalyse abgeschlossen', (embeddedMotionReferenceConfiguredCount() || state.motionReferences.length || STEP_PATTERNS.length)
       ? 'Kein eindeutiger Körper- oder Schritttreffer. Deshalb werden nur vorsichtige BPM-Vorschläge angezeigt.'
       : 'Noch keine Referenzen oder Sheet-Muster. Deshalb werden Videoton und BPM als Reserve verwendet.');
     if (audioWarning) toast(`${sourceLabel}-Ton nicht auswertbar: ${audioWarning.message || 'keine Audiospur'}. Körper und Schritte wurden trotzdem geprüft.`, 4500);
@@ -2454,6 +2558,7 @@
     if (!file || !isVideoFile(file)) return toast('Bitte ein unterstütztes Tanzvideo auswählen.', 4500);
     if (!VM?.analyzeVideo) return toast('Die MediaPipe-Videoanalyse ist auf diesem Gerät nicht verfügbar.', 4500);
     if (state.videoBusy) return toast('Es läuft bereits eine Videoanalyse.');
+    await prepareEmbeddedMotionReferences(true);
     state.videoBusy = true;
     setVideoRecognitionStatus('busy', 'Video wird ausgewertet', 'Zuerst wird der Videoton lokal geprüft, danach verfolgt MediaPipe Körper und Schritte.');
     let audioResult = { song: null, confidence: 0, source: '', tempo: { bpm: NaN, confidence: 0, possibleBpms: [] } };
@@ -2608,6 +2713,7 @@
     if (!window.isSecureContext) return toast('Die Live-Kamera funktioniert nur über die HTTPS-Adresse der App.', 5500);
     if (!navigator.mediaDevices?.getUserMedia) return toast('Die Live-Kamera wird von diesem Browser nicht unterstützt.', 5000);
     if (!VM?.analyzeLiveVideo || !VM?.ensurePose) return toast('Die MediaPipe-Dateien fehlen oder wurden nicht geladen. Bitte das Kamera-Fix-Paket vollständig hochladen.', 6500);
+    await prepareEmbeddedMotionReferences(true);
     state.videoBusy = true;
     const controller = new AbortController();
     state.liveVideoController = controller;
@@ -2891,7 +2997,7 @@
             : 'Noch keine sicheren Schrittmerkmale';
 
           const referenceMatches = VM.rankReferences
-            ? VM.rankReferences(partialSignature, state.motionReferences)
+            ? VM.rankReferences(partialSignature, allMotionReferences())
             : [];
           const sheetMatches = VM.rankSheetPatterns
             ? VM.rankSheetPatterns(partialSignature, STEP_PATTERNS, state.dances)
@@ -3003,7 +3109,7 @@
         <p>Diese App-Version enthält fest eingebaute Fingerprint-Pakete. Wenn hier keine Referenzen erkannt werden, fehlen wahrscheinlich einzelne Dateien aus dem Ordner <strong>data</strong> oder der alte Offline-Cache ist noch aktiv.</p>
         <div class="onboarding-steps">
           <div class="onboarding-step"><span>1</span><div><strong>Dateien prüfen</strong><br>Alle im Fingerprint-Index aufgeführten Paketdateien müssen auf GitHub vorhanden sein.</div></div>
-          <div class="onboarding-step"><span>2</span><div><strong>App vollständig neu laden</strong><br>Die installierte PWA schließen oder einmal neu installieren, damit der Cache v4.7.8 aktiv wird.</div></div>
+          <div class="onboarding-step"><span>2</span><div><strong>App vollständig neu laden</strong><br>Die installierte PWA schließen oder einmal neu installieren, damit der Cache v4.7.9 aktiv wird.</div></div>
           <div class="onboarding-step"><span>3</span><div><strong>Erneut aufnehmen</strong><br>Danach vergleicht die App die Mikrofonaufnahme kostenlos und lokal mit den eingebauten Referenzen.</div></div>
         </div>
         <div class="dialog-actions">
@@ -3386,7 +3492,7 @@
     items.push({ title: 'Get-in-Line-Katalog', text: GETINLINE_DANCES.length ? `${GETINLINE_DANCES.length} Metadatensätze mit Tanzsheet-Links geladen.` : 'Noch leer; Aktualisierer oder Katalogimport verwenden.', level: GETINLINE_DANCES.length ? '' : 'warn' });
     const micPermission = await refreshMicrophoneStatus();
     items.push({ title: 'Mikrofon', text: supportsLiveMicrophone() ? `Live-Aufnahme unterstützt · Berechtigung: ${micPermission === 'granted' ? 'erlaubt' : micPermission === 'denied' ? 'blockiert' : 'noch nicht erteilt'}.` : 'Live-Aufnahme nicht verfügbar; Dateiauswahl bleibt nutzbar.', level: micPermission === 'denied' ? 'error' : supportsLiveMicrophone() ? '' : 'warn' });
-    items.push({ title: 'Video-Tanzerkennung', text: VM?.analyzeVideo ? `MediaPipe aktiv · ${state.motionReferences.length} eigene Referenzen · ${STEP_PATTERNS.length} Sheet-Muster.` : 'MediaPipe-Videoanalyse wird von diesem Browser nicht unterstützt.', level: VM?.analyzeVideo ? '' : 'warn' });
+    items.push({ title: 'Video-Tanzerkennung', text: VM?.analyzeVideo ? `MediaPipe aktiv · ${embeddedMotionReferenceConfiguredCount()} eingebaute · ${state.motionReferences.length} eigene Referenzen · ${STEP_PATTERNS.length} Sheet-Muster.` : 'MediaPipe-Videoanalyse wird von diesem Browser nicht unterstützt.', level: VM?.analyzeVideo ? '' : 'warn' });
     renderDiagnostics(items);
     return items;
   }
@@ -3569,7 +3675,7 @@
     RADIO_LIVE_API?.start?.();
     runDiagnostics();
     handleInitialRoute();
-    $('#versionText').textContent = `CLDF v4.7.8 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${SONG_API_ENTRIES.length} Song-Metadatensätze · ${availableFingerprintCount()} Audio-Referenzen`;
+    $('#versionText').textContent = `CLDF v4.7.9 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${SONG_API_ENTRIES.length} Song-Metadatensätze · ${availableFingerprintCount()} Audio-Referenzen · ${embeddedMotionReferenceConfiguredCount()} Bewegungsreferenzen`;
     // Der Startbildschirm bleibt bei jedem neuen App-Start sichtbar,
     // bis der Benutzer bewusst auf „App öffnen“ tippt.
     $('#splash').classList.remove('hidden');

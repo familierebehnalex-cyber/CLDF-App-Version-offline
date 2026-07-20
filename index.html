@@ -11,7 +11,7 @@
   <link rel="icon" href="./assets/icon-64.png" sizes="64x64" type="image/png">
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./assets/styles.css?v=4.7.8">
+  <link rel="stylesheet" href="./assets/styles.css?v=4.7.9">
   <title>CLDF – Line Dance App</title>
 </head>
 <body>
@@ -272,11 +272,11 @@
           <article id="motionReferenceSection" class="settings-card">
             <div class="section-heading compact">
               <div><p class="eyebrow">Video-Tanzerkennung · Beta</p><h2>Bewegungsreferenzen</h2></div>
-              <span id="motionReferenceCount" class="count-badge">0 eigene Referenzen · 8 Sheet-Muster</span>
+              <span id="motionReferenceCount" class="count-badge">128 eingebaut · 0 eigene · 8 Sheet-Muster</span>
             </div>
             <div class="catalog-status warning" id="motionReferenceStatus">
               <span class="catalog-status-icon">🎥</span>
-              <div><strong id="motionReferenceStatusTitle">8 maschinenlesbare Sheet-Muster aktiv</strong><small id="motionReferenceStatusText">Eigene Referenzvideos sind optional und verbessern später die Genauigkeit.</small></div>
+              <div><strong id="motionReferenceStatusTitle">127 Tänze mit fest eingebauten Bewegungsreferenzen</strong><small id="motionReferenceStatusText">128 geprüfte MediaPipe-Signaturen werden beim Start einer Videoanalyse automatisch geladen.</small></div>
             </div>
             <div class="button-grid">
               <label class="primary-btn file-button">Referenzvideo hinzufügen
@@ -373,7 +373,7 @@
 
           <article class="settings-card version-card">
             <img src="./assets/icon-128.png" alt="">
-            <div><h2>CLDF v4.7.8 Offline</h2><p id="versionText">4.011 Song-API-Zuordnungen · Lied zuerst · Tanzsheet-Link · BPM als Reserve</p></div>
+            <div><h2>CLDF v4.7.9 Offline</h2><p id="versionText">4.011 Song-API-Zuordnungen · Lied zuerst · Tanzsheet-Link · BPM als Reserve</p></div>
           </article>
         </div>
       </section>
@@ -429,15 +429,17 @@
   <script src="./assets/song-metadata.js"></script>
   <script src="./assets/song-api-index.js"></script>
   <script src="./assets/radio-api-data.js"></script>
-  <script src="./assets/radio-live-api.js?v=4.7.8"></script>
+  <script src="./assets/radio-live-api.js?v=4.7.9"></script>
   <script src="./assets/audio-fingerprints.js"></script>
   <script src="./assets/local-store.js"></script>
   <script src="./assets/audio-engine.js"></script>
   <script src="./assets/offline-bootstrap.js"></script>
-  <script src="./assets/mediapipe/pose/pose.js?v=4.7.8"></script>
-  <script src="./assets/step-sheet-patterns.js?v=4.7.8"></script>
-  <script src="./assets/video-motion.js?v=4.7.8"></script>
-  <script src="./assets/app.js?v=4.7.8"></script>
-  <script>if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.7.8').catch(console.warn));</script>
+  <script src="./assets/mediapipe/pose/pose.js?v=4.7.9"></script>
+  <script src="./assets/step-sheet-patterns.js?v=4.7.9"></script>
+  <script src="./assets/video-movement-references.js?v=4.7.9"></script>
+  <script src="./assets/basic-step-library.js?v=4.7.9"></script>
+  <script src="./assets/video-motion.js?v=4.7.9"></script>
+  <script src="./assets/app.js?v=4.7.9"></script>
+  <script>if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.7.9').catch(console.warn));</script>
 </body>
 </html>

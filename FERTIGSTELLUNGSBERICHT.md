@@ -1,4 +1,4 @@
-# Fertigstellungsbericht – CLDF Offline-App v4.7.8
+# Fertigstellungsbericht – CLDF Offline-App v4.7.9
 
 Die Live-Tanzerkennung wurde für unterschiedliche Handy-Kameras und kleine Räume erweitert.
 

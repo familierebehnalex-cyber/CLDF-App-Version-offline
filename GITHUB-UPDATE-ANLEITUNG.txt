@@ -1,4 +1,4 @@
-CLDF v4.7.8 – DIREKT AUF GITHUB HOCHLADEN
+CLDF v4.7.9 – DIREKT AUF GITHUB HOCHLADEN
 
 1. ZIP vollständig entpacken.
 2. GitHub-Repository öffnen.

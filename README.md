@@ -1,4 +1,4 @@
-# CLDF Offline-App v4.7.8
+# CLDF Offline-App v4.7.9
 
 Vollständige GitHub-Pages-Version mit fest eingebauten Audio-Fingerprints und flexibler Live-Kamera.
 
