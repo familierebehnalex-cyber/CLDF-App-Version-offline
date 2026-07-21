@@ -1,0 +1,219 @@
+{
+  "version": "v4.7.12-erste10",
+  "title": "CLDF Tanzschritt-Lexikon – erste 10",
+  "count": 10,
+  "steps": [
+    {
+      "id": "attitude",
+      "name": "Attitude",
+      "aliases": [],
+      "counts": "1",
+      "summary": "Das freie Bein wird mit gebeugtem Knie angehoben. Der Unterschenkel zeigt je nach Choreografie nach vorn oder hinten.",
+      "sequence": [
+        [
+          "1",
+          "Rechtes Knie anheben und den Unterschenkel locker angewinkelt halten."
+        ]
+      ],
+      "pattern": "hitch",
+      "tips": "Oberkörper ruhig und aufrecht halten.",
+      "variants": "",
+      "group": "motions"
+    },
+    {
+      "id": "boogie-move",
+      "name": "Boogie Move",
+      "aliases": [],
+      "counts": "1",
+      "summary": "Eine isolierte, kreisende Hüftbewegung entsteht durch kontrolliertes Rollen über Ballen, Zehen und Außenkante des freien Fußes.",
+      "sequence": [
+        [
+          "1",
+          "Hüfte über dem Standbein kreisen lassen; der freie Fuß unterstützt die Bewegung am Platz."
+        ]
+      ],
+      "pattern": "body-hip",
+      "tips": "Die Bewegung kommt aus Hüfte und Fuß, nicht aus den Schultern.",
+      "variants": "",
+      "group": "motions"
+    },
+    {
+      "id": "brush",
+      "name": "Brush",
+      "aliases": [],
+      "counts": "1",
+      "summary": "Der freie Fuß schwingt am Standbein vorbei. Der Fußballen streift dabei leicht über den Boden, ohne Gewicht zu übernehmen.",
+      "sequence": [
+        [
+          "1",
+          "Rechten Fuß nach vorn schwingen und den Ballen sanft über den Boden streifen lassen."
+        ]
+      ],
+      "pattern": "brush",
+      "tips": "",
+      "variants": "",
+      "group": "motions"
+    },
+    {
+      "id": "bump",
+      "name": "Bump",
+      "aliases": [
+        "Hip Bump"
+      ],
+      "counts": "1",
+      "summary": "Die Hüfte wird kurz und deutlich zur Seite, nach vorn oder nach hinten gestoßen. Das Gewicht bleibt kontrolliert über den Füßen.",
+      "sequence": [
+        [
+          "1",
+          "Hüfte nach rechts schieben und wieder zentrieren."
+        ]
+      ],
+      "pattern": "body-hip",
+      "tips": "",
+      "variants": "",
+      "group": "motions"
+    },
+    {
+      "id": "close",
+      "name": "Close",
+      "aliases": [],
+      "counts": "1",
+      "summary": "Der freie Fuß wird direkt neben den Standfuß gesetzt, ohne das Körpergewicht zu übernehmen.",
+      "sequence": [
+        [
+          "1",
+          "Rechten Fuß neben den linken setzen; Gewicht bleibt links."
+        ]
+      ],
+      "pattern": "close-no-weight",
+      "tips": "",
+      "variants": "Nicht mit Together verwechseln: Together übernimmt das Gewicht.",
+      "group": "motions"
+    },
+    {
+      "id": "anchor-step",
+      "name": "Anchor Step",
+      "aliases": [
+        "Anchor"
+      ],
+      "counts": "1 & 2",
+      "summary": "Eine kleine Dreierfolge, bei der das Spielbein hinter dem Standbein verankert wird und das Gewicht zweimal wechselt.",
+      "sequence": [
+        [
+          "1",
+          "Rechten Fuß knapp hinter dem linken einkreuzen."
+        ],
+        [
+          "&",
+          "Gewicht kurz auf den linken Fuß geben."
+        ],
+        [
+          "2",
+          "Gewicht wieder auf rechts verlagern und minimal zurücksetzen."
+        ]
+      ],
+      "pattern": "anchor",
+      "tips": "",
+      "variants": "Auch spiegelbildlich mit links möglich.",
+      "group": "steps"
+    },
+    {
+      "id": "boogie-walk",
+      "name": "Boogie Walk",
+      "aliases": [],
+      "counts": "1 je Schritt",
+      "summary": "Der Boogie Move wird mit kleinen Vorwärtsschritten verbunden. Dadurch entsteht ein federnder, rhythmischer Gang.",
+      "sequence": [
+        [
+          "1",
+          "Mit rechts diagonal nach vorn gehen und die Hüfte mitführen."
+        ],
+        [
+          "2",
+          "Mit links diagonal nach vorn gehen und die Bewegung spiegeln."
+        ]
+      ],
+      "pattern": "skate",
+      "tips": "",
+      "variants": "Kann über mehrere Counts fortgesetzt werden.",
+      "group": "steps"
+    },
+    {
+      "id": "camel-walk",
+      "name": "Camel Walk",
+      "aliases": [
+        "Camel Walks"
+      ],
+      "counts": "1–2",
+      "summary": "Ein gleitender Vorwärtsgang mit gebeugtem vorderem Knie. Das hintere Knie schiebt sichtbar nach vorn.",
+      "sequence": [
+        [
+          "1",
+          "Mit rechts nach vorn treten und das linke Knie nach vorn schieben."
+        ],
+        [
+          "2",
+          "Mit links nach vorn treten und das rechte Knie nach vorn schieben."
+        ]
+      ],
+      "pattern": "camel",
+      "tips": "",
+      "variants": "",
+      "group": "steps"
+    },
+    {
+      "id": "chaine-turn",
+      "name": "Chaîné Turn",
+      "aliases": [
+        "Chaine Turn"
+      ],
+      "counts": "1–2",
+      "summary": "Eine vollständige Drehung wird mit zwei eng gesetzten Schritten ausgeführt. Die Füße schließen während der Drehung kurz zueinander.",
+      "sequence": [
+        [
+          "1",
+          "Mit rechts eine Vierteldrehung einleiten."
+        ],
+        [
+          "2",
+          "Mit links weiterdrehen und die volle Drehung beenden."
+        ]
+      ],
+      "pattern": "full-turn",
+      "tips": "Kopf zuletzt mitnehmen und den Blick schnell wieder nach vorn richten.",
+      "variants": "",
+      "group": "steps"
+    },
+    {
+      "id": "charleston-step",
+      "name": "Charleston Step",
+      "aliases": [
+        "Charleston"
+      ],
+      "counts": "1–4",
+      "summary": "Eine schwungvolle Vor-und-zurück-Folge aus Schritt und Tippen beziehungsweise Kick.",
+      "sequence": [
+        [
+          "1",
+          "Rechten Fuß nach vorn setzen."
+        ],
+        [
+          "2",
+          "Linken Fuß vorn auftippen oder leicht kicken."
+        ],
+        [
+          "3",
+          "Linken Fuß nach hinten setzen."
+        ],
+        [
+          "4",
+          "Rechten Fuß hinten auftippen."
+        ]
+      ],
+      "pattern": "charleston",
+      "tips": "",
+      "variants": "",
+      "group": "steps"
+    }
+  ]
+}
