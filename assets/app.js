@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const DATA = window.CLDF_DATA || { dances: [], motionCatalog: [], specialRhythms: [], appVersion: '4.7.10', databaseVersion: 'unbekannt' };
+  const DATA = window.CLDF_DATA || { dances: [], motionCatalog: [], specialRhythms: [], appVersion: '4.7.11', databaseVersion: 'unbekannt' };
   const GETINLINE_DATA = window.GETINLINE_DATA || { dances: [], count: 0, generatedAt: null };
   const VM = window.CLDFVideoMotion;
   const STEP_PATTERN_DB = window.CLDF_STEP_SHEET_PATTERNS || { patterns: [] };
@@ -20,7 +20,7 @@
   const RADIO_LIVE_API = window.CLDFRadioLiveAPI || null;
   const SONG_API_INDEX = window.CLDF_SONG_API_INDEX || { entries: [], stations: [], entryCount: 0, apiEndpointCount: 0 };
   const SONG_API_ENTRIES = Array.isArray(SONG_API_INDEX.entries) ? SONG_API_INDEX.entries : [];
-  const APP_VERSION = '4.7.10';
+  const APP_VERSION = '4.7.11';
   const DATABASE_VERSION = DATA.databaseVersion || 'unbekannt';
   const CLDF_DANCES = Array.isArray(DATA.dances) ? DATA.dances : [];
   let GETINLINE_DANCES = Array.isArray(GETINLINE_DATA.dances) ? GETINLINE_DATA.dances : [];
@@ -353,6 +353,7 @@
   }
 
   function statusBadge(dance, score = null) {
+    if (dance.mappingOnly) return `<span class="badge source-badge">${dance.mappingType === 'original' ? 'Original' : 'Alternative'}</span>`;
     if (score !== null) return `<span class="badge score">${Math.round(score)} %</span>`;
     if (dance.externalCatalog) return '<span class="badge source-badge">Get-in-Line</span>';
     if (dance.status === 'bestätigt') return '<span class="badge confirmed">Bestätigt</span>';
@@ -382,11 +383,13 @@
             ? `<div><small>Tags/Restarts</small><strong title="${escapeHtml(dance.tagInfo || '')}">${escapeHtml(dance.tagInfo || `${dance.tags ?? 0} Tags · ${dance.restarts ?? 0} Restarts`)}</strong></div>`
             : `<div><small>Motion</small><strong title="${escapeHtml(motion)}">${escapeHtml(motion)}</strong></div>`}
         </div>
-        <div class="card-actions">
+        ${dance.mappingOnly
+          ? '<p class="dance-sub">Tanzname aus der Liedzuordnung; weitere Tanzdetails sind noch nicht lokal hinterlegt.</p>'
+          : `<div class="card-actions">
           <button type="button" data-action="details">Details</button>
           <button type="button" data-action="favorite" class="${favorite ? 'active' : ''}">${favorite ? '★ Meine Tänze' : '☆ Meine Tänze'}</button>
           <button type="button" data-action="practice" class="${practice ? 'active' : ''}">${practice ? '✓ Übungsliste' : '＋ Üben'}</button>
-        </div>
+        </div>`}
       </article>`;
   }
 
@@ -1151,8 +1154,16 @@
       fingerprintScore: match.score,
       confidence: match.confidence,
       fingerprintVotes: match.votes,
-      confirmedDances: match.entry?.danceMapping?.confirmed || match.entry?.exactDanceCandidates || [],
-      suggestedDances: match.entry?.danceMapping?.suggested || match.entry?.candidateDances || [],
+      confirmedDances: [
+        ...(match.entry?.danceMapping?.confirmed || []),
+        ...(match.entry?.originalDances || []),
+        ...(match.entry?.exactDanceCandidates || []),
+      ],
+      suggestedDances: [
+        ...(match.entry?.danceMapping?.suggested || []),
+        ...(match.entry?.suggestedDances || []),
+        ...(match.entry?.candidateDances || []),
+      ],
       fingerprintEntryId: match.entry?.id || '',
     };
   }
@@ -1667,6 +1678,91 @@
     })[0];
   }
 
+  function danceMappingTitle(value) {
+    if (typeof value === 'string') return value.trim();
+    if (!value || typeof value !== 'object') return '';
+    return String(value.title || value.name || value.danceTitle || '').trim();
+  }
+
+  function resolveDanceNames(names = [], options = {}) {
+    const byTitle = new Map();
+    for (const dance of state.dances) {
+      const key = compactKey(dance.title);
+      if (!key) continue;
+      if (!byTitle.has(key)) byTitle.set(key, []);
+      byTitle.get(key).push(dance);
+    }
+    const resolved = [];
+    const seenTitles = new Set();
+    const song = options.song || null;
+    for (const item of names || []) {
+      const title = danceMappingTitle(item);
+      const key = compactKey(title);
+      if (!key || seenTitles.has(key)) continue;
+      seenTitles.add(key);
+      const matches = byTitle.get(key) || [];
+      if (matches.length) {
+        resolved.push(...matches);
+        continue;
+      }
+      if (!options.createMissing) continue;
+      const details = item && typeof item === 'object' ? item : {};
+      resolved.push({
+        id: details.id || `mapping-only-${options.mappingType || 'alternative'}-${slugify(title)}`,
+        title,
+        choreographer: details.choreographer || 'Noch nicht in der lokalen Tanzdatenbank',
+        music: song?.title ? [{ title: song.title, artist: song.artist || '' }] : [],
+        level: details.level || 'Zu prüfen',
+        counts: Number.isFinite(Number(details.counts)) ? Number(details.counts) : null,
+        walls: Number.isFinite(Number(details.walls)) ? Number(details.walls) : null,
+        motion: details.motion || 'Zu prüfen',
+        rhythm: details.rhythm || 'Zu prüfen',
+        source: details.source || 'Liedzuordnung',
+        sourceUrl: safeUrl(details.sourceUrl || ''),
+        status: options.mappingType === 'original' ? 'bestätigt' : 'Zu prüfen',
+        mappingOnly: true,
+        mappingType: options.mappingType || 'alternative',
+      });
+    }
+    return resolved;
+  }
+
+  function collectSongDanceGroups(song, recognizedSong = null) {
+    const fixedDances = (song?.danceIds || [])
+      .map((id) => state.dances.find((dance) => dance.id === id))
+      .filter(Boolean);
+    const confirmedNames = [
+      ...(recognizedSong?.confirmedDances || []),
+      ...(recognizedSong?.originalDances || []),
+      ...(song?.originalDances || []),
+      ...(song?.apiExactDanceCandidates || []),
+    ];
+    const suggestedNames = [
+      ...(recognizedSong?.suggestedDances || []),
+      ...(song?.suggestedDances || []),
+      ...(song?.apiCandidateDances || []),
+    ];
+    const displaySong = recognizedSong?.title ? recognizedSong : song;
+    const confirmedDances = resolveDanceNames(confirmedNames, { createMissing: true, mappingType: 'original', song: displaySong });
+    const suggestedDances = resolveDanceNames(suggestedNames, { createMissing: true, mappingType: 'alternative', song: displaySong });
+    const allDances = [];
+    const seenTitles = new Set();
+    for (const dance of [...fixedDances, ...confirmedDances, ...suggestedDances]) {
+      const titleKey = compactKey(dance?.title || '');
+      if (!dance || !titleKey || seenTitles.has(titleKey)) continue;
+      seenTitles.add(titleKey);
+      allDances.push(dance);
+    }
+    return {
+      fixedDances,
+      confirmedDances,
+      suggestedDances,
+      allDances,
+      hasOriginal: Boolean(fixedDances.length || confirmedDances.length),
+      preferredOriginal: confirmedDances[0] || fixedDances[0] || null,
+    };
+  }
+
   function renderPrimaryDanceResult(dance, options = {}) {
     const container = $('#primaryDanceResult');
     if (!dance) {
@@ -1679,12 +1775,12 @@
     const score = Number.isFinite(options.score) ? Math.round(options.score) : null;
     const motion = canonicalMotion(dance.motion);
     const explanation = exact
-      ? `Dieses Lied ist in der Tanzdatenbank diesem Tanz zugeordnet${score !== null ? ` · ${score} % Lied-Übereinstimmung` : ''}${options.videoConfirmed ? ' · Körper- und Schrittanalyse passt zum Tanz.' : ''}.`
+      ? `${options.originalDance ? 'Dieser Tanz ist als Original Tanz zu dem erkannten Lied hinterlegt' : 'Dieses Lied ist in der Tanzdatenbank diesem Tanz zugeordnet'}${score !== null ? ` · ${score} % Lied-Übereinstimmung` : ''}${options.videoConfirmed ? ' · Körper- und Schrittanalyse passt zum Tanz.' : ''}.`
       : video
         ? `MediaPipe hat Körper und Schritte ausgewertet${score !== null ? ` · Beta-Vergleich ${score} %` : ''}. Der Treffer kann aus einer eigenen Referenz, einem Sheet-Schrittmuster oder beidem stammen und ersetzt keine sichere Liedzuordnung.`
         : `Dieser Tanz passt anhand des gemessenen Tempos am besten. Das Lied selbst wurde nicht sicher erkannt${score !== null ? ` · Vorschlagswert ${score} %` : ''}.`;
     container.innerHTML = `
-      <div class="primary-dance-kicker">${exact ? '✓ Erkannter Tanz' : video ? '🎥 Video-Tanzerkennung · Beta' : '↯ Bester Tempo-Vorschlag'}</div>
+      <div class="primary-dance-kicker">${exact ? (options.originalDance ? '✓ Original Tanz' : '✓ Erkannter Tanz') : video ? '🎥 Video-Tanzerkennung · Beta' : '↯ Bester Tempo-Vorschlag'}</div>
       <div class="primary-dance-head">
         <div>
           <h2>${escapeHtml(dance.title)}</h2>
@@ -1700,12 +1796,12 @@
         <div><small>Motion</small><strong>${escapeHtml(motion)}</strong></div>
       </div>
       <p class="primary-dance-explanation">${escapeHtml(explanation)}</p>
-      <div class="primary-dance-actions">
+      ${dance.mappingOnly ? '<p class="primary-dance-explanation">Der Tanzname ist sicher zugeordnet. Weitere Tanzdetails sind noch nicht in der lokalen Datenbank hinterlegt.</p>' : `<div class="primary-dance-actions">
         <button id="openPrimaryDanceBtn" class="primary-btn" type="button">Tanzdetails anzeigen</button>
         ${dance.videoUrl ? `<a class="secondary-btn" href="${escapeHtml(dance.videoUrl)}" target="_blank" rel="noopener">CLDF-Video öffnen</a>` : ''}
-      </div>`;
+      </div>`}`;
     container.classList.remove('hidden');
-    $('#openPrimaryDanceBtn').addEventListener('click', () => openDanceDetails(dance.id));
+    if (!dance.mappingOnly) $('#openPrimaryDanceBtn').addEventListener('click', () => openDanceDetails(dance.id));
   }
 
   function renderAdditionalMatches(dances, heading, emptyText, scores = null) {
@@ -1788,15 +1884,20 @@
   }
 
   function showExactSongResult(song, confidence, source, tempo = {}, addToHistory = true, options = {}) {
-    const dances = song.danceIds.map((id) => state.dances.find((dance) => dance.id === id)).filter(Boolean);
-    const scoreMap = new Map(dances.map((dance) => [dance.id, confidence]));
+    const recognizedSong = options.recognizedSong || null;
+    const groups = collectSongDanceGroups(song, recognizedSong);
+    const dances = groups.allDances;
+    const suggestedIds = new Set(groups.suggestedDances.map((dance) => dance.id));
+    const exactIds = new Set([...groups.fixedDances, ...groups.confirmedDances].map((dance) => dance.id));
+    const scoreMap = new Map(dances.filter((dance) => exactIds.has(dance.id) || !suggestedIds.has(dance.id)).map((dance) => [dance.id, confidence]));
     const motionMatch = options.motionMatch || null;
     const motionDanceId = motionMatch?.reference?.danceId || '';
     const motionConfirmsSongDance = Boolean(motionDanceId && dances.some((dance) => dance.id === motionDanceId) && motionMatch.score >= 68);
     const motionConflicts = Boolean(motionDanceId && !dances.some((dance) => dance.id === motionDanceId) && motionMatch.score >= 70);
-    // Ein erkannter Liedtreffer hat immer Vorrang. BPM darf die Tanzsheet-Zuordnung nicht umsortieren.
-    // Eine vorhandene Video-Referenz darf nur zwischen Tänzen wählen, die bereits demselben Lied zugeordnet sind.
-    const primaryDance = choosePrimaryDance(dances, NaN, scoreMap, motionConfirmsSongDance ? motionDanceId : '');
+    // Ein sicher erkannter Liedtreffer hat Vorrang. Ein ausdrücklich bestätigter Originaltanz
+    // bleibt oben; Video und BPM dürfen nur helfen, wenn kein Originaltanz benannt ist.
+    const preferredDanceId = groups.preferredOriginal?.id || (motionConfirmsSongDance ? motionDanceId : '');
+    const primaryDance = choosePrimaryDance(dances, NaN, scoreMap, preferredDanceId);
     const otherDances = dances.filter((dance) => dance.id !== primaryDance?.id);
     $('#resultModeLabel').textContent = source;
     $('#resultTitle').textContent = 'Lied erkannt';
@@ -1805,27 +1906,28 @@
     $('#tempoResult').classList.toggle('hidden', !Number.isFinite(tempo.bpm));
     $('#bpmValue').textContent = Number.isFinite(tempo.bpm) ? Math.round(tempo.bpm) : '–';
     $('#analysisSummary').textContent = Number.isFinite(tempo.bpm)
-      ? `Tanzsheet-Zuordnung hat Vorrang. Gemessenes Tempo: etwa ${Math.round(tempo.bpm)} BPM; es beeinflusst die Auswahl nicht.`
-      : 'Tanzsheet-Zuordnung hat Vorrang. Alle diesem Lied zugeordneten Tänze werden angezeigt.';
+      ? `Der Original Tanz wird zuerst angezeigt. Darunter folgen weitere feste Zuordnungen und passende Alternativen zu diesem Lied. Gemessenes Tempo: etwa ${Math.round(tempo.bpm)} BPM; es verändert die Reihenfolge nicht.`
+      : 'Der Original Tanz wird zuerst angezeigt. Darunter folgen weitere feste Zuordnungen und passende Alternativen zu diesem Lied.';
     const exactBpms = tempoValues(tempo);
     $('#alternateBpmRow').classList.toggle('hidden', exactBpms.length < 2);
     $('#alternateBpmValue').textContent = exactBpms.join(', ');
     $('#motionChips').innerHTML = '';
     renderVideoMotionSummary(options.videoMotion || null, motionMatch, { confirmed: motionConfirmsSongDance, conflict: motionConflicts });
-    renderPrimaryDanceResult(primaryDance, { mode: 'exact', score: confidence, videoConfirmed: motionConfirmsSongDance });
-    renderAdditionalMatches(otherDances, 'Weitere Tänze zu diesem Lied', 'Keine weiteren Tänze zugeordnet.', scoreMap);
+    renderPrimaryDanceResult(primaryDance, { mode: 'exact', score: confidence, videoConfirmed: motionConfirmsSongDance, originalDance: true });
+    renderAdditionalMatches(otherDances, 'Alternative Tänze zu diesem Lied', 'Keine weiteren passenden Tänze gefunden.', scoreMap);
     showView('result');
     if (addToHistory) addHistory({ type: 'song', songKey: song.songKey, title: song.title, artist: song.artist, confidence, bpm: Number.isFinite(tempo.bpm) ? Math.round(tempo.bpm) : null, tempoConfidence: tempo.confidence || 0, video: Boolean(options.videoMotion) });
   }
 
   function showCatalogSongResult(song, confidence, source, tempo = {}, addToHistory = true, options = {}) {
-    if (Array.isArray(song?.danceIds) && song.danceIds.length) {
+    const groups = collectSongDanceGroups(song, options.recognizedSong || null);
+    if (groups.hasOriginal && groups.allDances.length) {
       showExactSongResult(song, confidence, source, tempo, addToHistory, options);
       return;
     }
     showAnalysisResult(tempo, addToHistory, `${source} · kein fest zugeordneter Tanz`, {
       ...options,
-      recognizedSong: song,
+      recognizedSong: options.recognizedSong || song,
     });
   }
 
@@ -1841,7 +1943,7 @@
       const confirmed = [...new Set(recognizedSong.confirmedDances || [])].filter(Boolean);
       const suggested = [...new Set(recognizedSong.suggestedDances || [])].filter((name) => name && !confirmed.includes(name));
       const mappingHtml = confirmed.length || suggested.length
-        ? `<small>${confirmed.length ? `<strong>Original Tanz:</strong> ${confirmed.map(escapeHtml).join(', ')}` : ''}${confirmed.length && suggested.length ? '<br>' : ''}${suggested.length ? `<strong>Vorschlag:</strong> ${suggested.map(escapeHtml).join(', ')}` : ''}</small>`
+        ? `<small>${confirmed.length ? `<strong>Original Tanz:</strong> ${confirmed.map(escapeHtml).join(', ')}` : ''}${confirmed.length && suggested.length ? '<br>' : ''}${suggested.length ? `<strong>Alternative Tänze:</strong> ${suggested.map(escapeHtml).join(', ')}` : ''}</small>`
         : '';
       $('#songResult').innerHTML = songResultHtml(recognizedSong, recognizedSong.apiDataAvailable ? 'Lokal erkannt · API zugeordnet' : 'Lokal erkannt') + mappingHtml;
     }
@@ -2448,8 +2550,20 @@
     try {
       const result = await identifyAudioBlob(blob);
       if (result.song) {
-        showCatalogSongResult(result.song, result.confidence, result.source, result.tempo);
+        showCatalogSongResult(result.song, result.confidence, result.source, result.tempo, true, { recognizedSong: result.recognizedSong || null });
         return;
+      }
+      if (result.recognizedSong) {
+        const mappedGroups = collectSongDanceGroups({ danceIds: [] }, result.recognizedSong);
+        if (mappedGroups.hasOriginal && mappedGroups.allDances.length) {
+          const syntheticSong = {
+            ...result.recognizedSong,
+            songKey: result.recognizedSong.songKey || songIdentity(result.recognizedSong.title, result.recognizedSong.artist || ''),
+            danceIds: [],
+          };
+          showExactSongResult(syntheticSong, result.recognizedSong.confidence || 100, result.source || 'Lokaler Audio-Fingerabdruck', result.tempo, true, { recognizedSong: result.recognizedSong });
+          return;
+        }
       }
       const source = result.recognizedSong
         ? 'Lied erkannt, aber keinem Tanz zugeordnet'
@@ -3109,7 +3223,7 @@
         <p>Diese App-Version enthält fest eingebaute Fingerprint-Pakete. Wenn hier keine Referenzen erkannt werden, fehlen wahrscheinlich einzelne Dateien aus dem Ordner <strong>data</strong> oder der alte Offline-Cache ist noch aktiv.</p>
         <div class="onboarding-steps">
           <div class="onboarding-step"><span>1</span><div><strong>Dateien prüfen</strong><br>Alle im Fingerprint-Index aufgeführten Paketdateien müssen auf GitHub vorhanden sein.</div></div>
-          <div class="onboarding-step"><span>2</span><div><strong>App vollständig neu laden</strong><br>Die installierte PWA schließen oder einmal neu installieren, damit der Cache v4.7.10 aktiv wird.</div></div>
+          <div class="onboarding-step"><span>2</span><div><strong>App vollständig neu laden</strong><br>Die installierte PWA schließen oder einmal neu installieren, damit der Cache v4.7.11 aktiv wird.</div></div>
           <div class="onboarding-step"><span>3</span><div><strong>Erneut aufnehmen</strong><br>Danach vergleicht die App die Mikrofonaufnahme kostenlos und lokal mit den eingebauten Referenzen.</div></div>
         </div>
         <div class="dialog-actions">
@@ -3675,7 +3789,7 @@
     RADIO_LIVE_API?.start?.();
     runDiagnostics();
     handleInitialRoute();
-    $('#versionText').textContent = `CLDF v4.7.10 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${SONG_API_ENTRIES.length} Song-Metadatensätze · ${availableFingerprintCount()} Audio-Referenzen · ${embeddedMotionReferenceConfiguredCount()} Bewegungsreferenzen`;
+    $('#versionText').textContent = `CLDF v4.7.11 · Offline · ${state.dances.length} lokale Tänze · ${GETINLINE_DANCES.length} Get-in-Line-Tänze · ${SONG_API_ENTRIES.length} Song-Metadatensätze · ${availableFingerprintCount()} Audio-Referenzen · ${embeddedMotionReferenceConfiguredCount()} Bewegungsreferenzen`;
     // Der Startbildschirm bleibt bei jedem neuen App-Start sichtbar,
     // bis der Benutzer bewusst auf „App öffnen“ tippt.
     $('#splash').classList.remove('hidden');
