@@ -1,9 +1,11 @@
 {
-  "package": "CLDF erste 10 v2",
+  "version": "v4-countbilder",
   "step_count": 10,
-  "individual_images": 10,
-  "responsive_portrait": true,
-  "responsive_landscape": true,
-  "rotation_blocker_removed": true,
-  "image_button_in_app": true
+  "count_image_files": 18,
+  "single_image_button_removed": true,
+  "single_image_gallery_present": false,
+  "source_posters_present": false,
+  "responsive_resize_handler": true,
+  "responsive_orientation_handler": true,
+  "javascript_syntax": "bestanden"
 }

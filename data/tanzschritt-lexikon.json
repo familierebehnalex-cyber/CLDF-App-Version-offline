@@ -19,7 +19,9 @@
       "tips": "Oberkörper ruhig und aufrecht halten.",
       "variants": "",
       "group": "motions",
-      "image": "./assets/tanzschritt-bilder/02-attitude.png"
+      "panelImages": [
+        "./assets/countbilder/attitude-1.webp"
+      ]
     },
     {
       "id": "boogie-move",
@@ -37,7 +39,9 @@
       "tips": "Die Bewegung kommt aus Hüfte und Fuß, nicht aus den Schultern.",
       "variants": "",
       "group": "motions",
-      "image": "./assets/tanzschritt-bilder/03-boogie-move.png"
+      "panelImages": [
+        "./assets/countbilder/boogie-move-1.webp"
+      ]
     },
     {
       "id": "brush",
@@ -55,7 +59,9 @@
       "tips": "",
       "variants": "",
       "group": "motions",
-      "image": "./assets/tanzschritt-bilder/05-brush.png"
+      "panelImages": [
+        "./assets/countbilder/brush-1.webp"
+      ]
     },
     {
       "id": "bump",
@@ -75,7 +81,9 @@
       "tips": "",
       "variants": "",
       "group": "motions",
-      "image": "./assets/tanzschritt-bilder/06-bump.png"
+      "panelImages": [
+        "./assets/countbilder/bump-1.webp"
+      ]
     },
     {
       "id": "close",
@@ -93,7 +101,9 @@
       "tips": "",
       "variants": "Nicht mit Together verwechseln: Together übernimmt das Gewicht.",
       "group": "motions",
-      "image": "./assets/tanzschritt-bilder/10-close.png"
+      "panelImages": [
+        "./assets/countbilder/close-1.webp"
+      ]
     },
     {
       "id": "anchor-step",
@@ -121,7 +131,11 @@
       "tips": "",
       "variants": "Auch spiegelbildlich mit links möglich.",
       "group": "steps",
-      "image": "./assets/tanzschritt-bilder/01-anchor-step.png"
+      "panelImages": [
+        "./assets/countbilder/anchor-step-1.webp",
+        "./assets/countbilder/anchor-step-2.webp",
+        "./assets/countbilder/anchor-step-3.webp"
+      ]
     },
     {
       "id": "boogie-walk",
@@ -143,7 +157,10 @@
       "tips": "",
       "variants": "Kann über mehrere Counts fortgesetzt werden.",
       "group": "steps",
-      "image": "./assets/tanzschritt-bilder/04-boogie-walk.png"
+      "panelImages": [
+        "./assets/countbilder/boogie-walk-1.webp",
+        "./assets/countbilder/boogie-walk-2.webp"
+      ]
     },
     {
       "id": "camel-walk",
@@ -167,7 +184,10 @@
       "tips": "",
       "variants": "",
       "group": "steps",
-      "image": "./assets/tanzschritt-bilder/07-camel-walk.png"
+      "panelImages": [
+        "./assets/countbilder/camel-walk-1.webp",
+        "./assets/countbilder/camel-walk-2.webp"
+      ]
     },
     {
       "id": "chaine-turn",
@@ -191,7 +211,10 @@
       "tips": "Kopf zuletzt mitnehmen und den Blick schnell wieder nach vorn richten.",
       "variants": "",
       "group": "steps",
-      "image": "./assets/tanzschritt-bilder/08-chaine-turn.png"
+      "panelImages": [
+        "./assets/countbilder/chaine-turn-1.webp",
+        "./assets/countbilder/chaine-turn-2.webp"
+      ]
     },
     {
       "id": "charleston-step",
@@ -223,7 +246,12 @@
       "tips": "",
       "variants": "",
       "group": "steps",
-      "image": "./assets/tanzschritt-bilder/09-charleston-step.png"
+      "panelImages": [
+        "./assets/countbilder/charleston-step-1.webp",
+        "./assets/countbilder/charleston-step-2.webp",
+        "./assets/countbilder/charleston-step-3.webp",
+        "./assets/countbilder/charleston-step-4.webp"
+      ]
     }
   ],
   "responsive": true,
