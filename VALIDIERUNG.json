@@ -1,14 +1,9 @@
 {
-  "package": "CLDF erste 10",
+  "package": "CLDF erste 10 v2",
   "step_count": 10,
-  "groups": {
-    "motions": 5,
-    "steps": 5
-  },
-  "files": [
-    "assets/basic-step-library.js",
-    "data/tanzschritt-lexikon.json",
-    "service-worker.js",
-    "LEXIKON-VORSCHAU-erste-10.html"
-  ]
+  "individual_images": 10,
+  "responsive_portrait": true,
+  "responsive_landscape": true,
+  "rotation_blocker_removed": true,
+  "image_button_in_app": true
 }
