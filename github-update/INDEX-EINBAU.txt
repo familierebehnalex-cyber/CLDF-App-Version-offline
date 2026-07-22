@@ -1,0 +1,11 @@
+Nur nötig, wenn die ShazamKit-Kennzeichnung auch außerhalb der nativen Android-App
+im GitHub-Quellstand vorhanden sein soll.
+
+In index.html direkt NACH
+  <script src="./assets/app.js?... "></script>
+einfügen:
+  <script src="./assets/shazamkit-bridge.js?v=4.7.13"></script>
+
+Die Datei bleibt in normalen Browsern inaktiv, weil dort window.CLDFAndroid fehlt.
+In der Android-App wird dieselbe Brücke automatisch injiziert; für den Android-Build
+muss die GitHub-Datei daher nicht zwingend hochgeladen werden.

@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">CLDF</string>
+    <string name="microphone_permission">Für die Musikerkennung benötigt CLDF Zugriff auf das Mikrofon.</string>
+</resources>
